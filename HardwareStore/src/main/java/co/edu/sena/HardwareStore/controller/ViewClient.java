@@ -19,7 +19,7 @@ public class ViewClient {
     @GetMapping("/clients")
     public String list(Model model) {
         model.addAttribute("clients", clientRepository.findAll());
-        return  "client";
+        return  "home";
     }
 
     @GetMapping("/client/form")
