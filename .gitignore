@@ -1,0 +1,20 @@
+# Archivos generados por el IDE (IntelliJ, Eclipse, etc.)
+.idea/
+*.iml
+.classpath
+.project
+.settings/
+bin/
+
+# Archivos de Maven (generados al compilar)
+target/
+build/
+out/
+
+# Logs y archivos temporales
+*.log
+*.tmp
+
+# Archivos del sistema operativo
+.DS_Store
+Thumbs.db
