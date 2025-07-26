@@ -27,6 +27,9 @@ public class Purchase {
     @ManyToOne
     @JoinColumn(name = "id_supplier", nullable = false)
     private Supplier supplier;
+    @ManyToOne
+    @JoinColumn(name = "id_employee", nullable = false)
+    private Employee employee;
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
@@ -88,6 +91,14 @@ public class Purchase {
 
     public void setSupplier(Supplier supplier) {
         this.supplier = supplier;
+    }
+
+    public Employee getEmployee() {
+        return employee;
+    }
+
+    public void setEmployee(Employee employee) {
+        this.employee = employee;
     }
 
     public LocalDateTime getCreatedAt() {
