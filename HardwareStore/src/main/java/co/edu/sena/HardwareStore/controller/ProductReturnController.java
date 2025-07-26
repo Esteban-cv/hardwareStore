@@ -24,7 +24,7 @@ public class ProductReturnController {
     @GetMapping
     public String list(Model model){
         model.addAttribute("productreturns", productReturnsRepository.findAll());
-        return "/productreturn/productreturns";
+        return "sales/returns";
     }
 
     @GetMapping("/form")
@@ -32,7 +32,7 @@ public class ProductReturnController {
         model.addAttribute("productreturn", new ProductReturns()); //Para la fk
         model.addAttribute("sales", saleRepository.findAll()); //Para la fk
         model.addAttribute("articles", articleRepository.findAll()); //Para la fk
-        return "/productreturns/productreturn_form";
+        return "sales/return_form";
     }
 
     @PostMapping("/save")
@@ -52,7 +52,7 @@ public class ProductReturnController {
         model.addAttribute("productreturn", productReturns);
         model.addAttribute("sales", saleRepository.findAll()); //Para la fk
         model.addAttribute("articles", articleRepository.findAll()); //Para la fk
-        return "/productreturns/productreturn_form";
+        return "sales/return_form";
 
     }
 

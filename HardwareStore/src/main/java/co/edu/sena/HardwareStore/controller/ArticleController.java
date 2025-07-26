@@ -2,6 +2,8 @@ package co.edu.sena.HardwareStore.controller;
 
 
 import co.edu.sena.HardwareStore.model.Article;
+import co.edu.sena.HardwareStore.model.Category;
+import co.edu.sena.HardwareStore.model.Unit;
 import co.edu.sena.HardwareStore.repository.ArticleRepository;
 import co.edu.sena.HardwareStore.repository.CategoryRepository;
 import co.edu.sena.HardwareStore.repository.UnitRepository;
@@ -25,15 +27,15 @@ public class ArticleController {
     @GetMapping
     public String list(Model model){
         model.addAttribute("articles", articleRepository.findAll());
-        return "/articles/article";
+        return "catalog/articles";
     }
 
     @GetMapping("/form")
     public String form(Model model){
         model.addAttribute("article", new Article());
-        model.addAttribute("categories", categoryRepository.findAll());
-        model.addAttribute("units", unitRepository.findAll());
-        return "/articles/article_form";
+        model.addAttribute("category", new Category());
+        model.addAttribute("unit", new Unit());
+        return "catalog/article_form";
     }
 
     @PostMapping("/save")
@@ -50,11 +52,10 @@ public class ArticleController {
             ra.addFlashAttribute("error", "Artículo no encontrado");
             return "redirect:/articles";
         }
-
         model.addAttribute("article", article);
         model.addAttribute("categories", categoryRepository.findAll());
         model.addAttribute("units", unitRepository.findAll());
-        return "/articles/article_form";
+        return "catalog/article_form";
     }
 
     @PostMapping("/delete/{id}")

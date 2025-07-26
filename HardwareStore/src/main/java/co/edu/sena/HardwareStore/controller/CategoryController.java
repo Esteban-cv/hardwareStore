@@ -19,13 +19,13 @@ public class CategoryController {
     @GetMapping
     public String list(Model model){
         model.addAttribute("categories", categoryRepository.findAll());
-        return "/categories/category";
+        return "catalog/categories";
     }
 
     @GetMapping("/form")
     public String form(Model model){
         model.addAttribute("category", new Category());
-        return "/categories/category_form";
+        return "catalog/category_form";
     }
 
     @PostMapping("/save")
@@ -43,7 +43,7 @@ public class CategoryController {
             return "redirect:/categories";
         }
         model.addAttribute("category", category);
-        return "/categories/category_form";
+        return "/catalog/category_form";
     }
 
     @PostMapping ("/delete/{id}")

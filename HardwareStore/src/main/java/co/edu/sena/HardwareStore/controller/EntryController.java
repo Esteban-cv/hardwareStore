@@ -21,14 +21,14 @@ public class EntryController {
     @GetMapping
     public String list(Model model){
         model.addAttribute("entries", entryRepository.findAll());
-        return "/entries/entry";
+        return "inventory/entries";
     }
 
     @GetMapping("/form")
     public String form(Model model){
         model.addAttribute("entry", new Entry());
         model.addAttribute("articles", articleRepository.findAll());
-        return "/entries/entry_form";
+        return "inventory/entry_form";
     }
 
     @PostMapping("/save")
@@ -48,7 +48,7 @@ public class EntryController {
 
         model.addAttribute("entry", entry);
         model.addAttribute("articles", articleRepository.findAll());
-        return "/entries/entry_form";
+        return "inventory/entry_form";
     }
 
     @PostMapping("/delete/{id}")

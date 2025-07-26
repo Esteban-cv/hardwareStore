@@ -29,47 +29,47 @@
             </li>
 
             <li class="nav-item">
-                <a href="@{/sales}" class="nav-link" th:href="@{/sales}">
+                <a href="#" class="nav-link" th:href="@{/sales}">
                     <span><i class="fas fa-shopping-cart"></i> Ventas</span>
                     <i class="fas fa-chevron-down"></i>
                 </a>
                 <ul class="sub-menu">
-                    <li><a href="#" class="nav-link" th:href="@{/sale/form}">Nueva Venta</a></li>
-                    <li><a href="#" class="nav-link" th:href="@{/returns}">Devoluciones</a></li>
+                    <li><a href="#" class="nav-link" th:href="@{/sales/form}">Nueva Venta</a></li>
+                    <li><a href="#" class="nav-link" th:href="@{/productreturns}">Devoluciones</a></li>
                 </ul>
             </li>
 
             <li class="nav-item">
-                <a href="#" class="nav-link" th:href="@{/compras}">
+                <a href="#" class="nav-link" th:href="@{/purchases}">
                     <span><i class="fas fa-truck"></i> Compras</span>
                     <i class="fas fa-chevron-down"></i>
                 </a>
                 <ul class="sub-menu">
-                    <li><a href="#" class="nav-link" th:href="@{/compras/nueva}">Nueva Compra</a></li>
-                    <li><a href="#" class="nav-link" th:href="@{/compras/historial}">Historial <span class="badge">10</span></a></li>
+                    <li><a href="#" class="nav-link" th:href="@{/purchases/form}">Nueva Compra</a></li>
                 </ul>
             </li>
 
             <li class="nav-item">
-                <a href="#" class="nav-link" th:href="@{/inventario}">
+                <a href="#" class="nav-link" th:href="@{/}">
                     <span><i class="fas fa-boxes"></i> Inventario</span>
                     <i class="fas fa-chevron-down"></i>
                 </a>
                 <ul class="sub-menu">
-                    <li><a href="#" class="nav-link" th:href="@{/inventario/ver}">Ver Inventario</a></li>
-                    <li><a href="#" class="nav-link" th:href="@{/inventario/entradas}">Entradas <span class="badge">10</span></a></li>
-                    <li><a href="#" class="nav-link" th:href="@{/inventario/ubicaciones}">Ubicaciones</a></li>
+                    <li><a href="#" class="nav-link" th:href="@{/inventory}">Ver Inventario</a></li>
+                    <li><a href="#" class="nav-link" th:href="@{/inventory/form}">Nuevo Inventario</a></li>
+                    <li><a href="#" class="nav-link" th:href="@{/entries}">Entradas <span class="badge">10</span></a></li>
+                    <li><a href="#" class="nav-link" th:href="@{/locations}">Ubicaciones</a></li>
                 </ul>
             </li>
 
             <li class="nav-item">
-                <a href="#" class="nav-link" th:href="@{/catalogo}">
+                <a href="#" class="nav-link" th:href="@{/}">
                     <span><i class="fas fa-list"></i> Catálogo</span>
                     <i class="fas fa-chevron-down"></i>
                 </a>
                 <ul class="sub-menu">
-                    <li><a href="#" class="nav-link" th:href="@{/catalogo/articulos}">Artículos</a></li>
-                    <li><a href="#" class="nav-link" th:href="@{/catalogo/categorias}">Categorías <span class="badge">10</span></a></li>
+                    <li><a href="#" class="nav-link" th:href="@{/articles}">Artículos</a></li>
+                    <li><a href="#" class="nav-link" th:href="@{/categories}">Categorías <span class="badge">10</span></a></li>
                 </ul>
             </li>
         </ul>
@@ -78,18 +78,18 @@
     <!-- Main Content -->
     <main class="main-content">
         <div class="dashboard-header">
-            <h1 th:text="#{dashboard.title}">Dashboard</h1>
+            <h1>Dashboard</h1>
         </div>
 
         <!-- Stats and Chart Section -->
         <div class="stats-grid">
             <div class="chart-container">
-                <h3 th:text="#{dashboard.increment.clients}">Incremento de clientes</h3>
+                <h3>Incremento de clientes</h3>
                 <canvas id="clientChart" width="400" height="200"></canvas>
             </div>
 
             <div class="active-clients">
-                <h3 th:text="#{dashboard.active.clients}">Clientes activos</h3>
+                <h3>Clientes activos</h3>
                 <div class="progress-ring">
                     <svg>
                         <defs>
@@ -102,7 +102,7 @@
                         <circle class="progress" cx="60" cy="60" r="45"></circle>
                     </svg>
                 </div>
-                <div class="client-number" th:text="${activeClients}">289</div>
+                <div class="client-number" >289</div>
             </div>
         </div>
 
@@ -110,67 +110,67 @@
         <div class="stats-cards">
             <div class="stat-card">
                 <i class="fas fa-users"></i>
-                <div class="stat-number" th:text="${totalClients}">5203</div>
-                <div class="stat-label" th:text="#{dashboard.total.clients}">Total clientes</div>
+                <div class="stat-number" >5203</div>
+                <div class="stat-label">Total clientes</div>
             </div>
 
             <div class="stat-card">
                 <i class="fas fa-box"></i>
-                <div class="stat-number" th:text="${totalArticles}">7909</div>
-                <div class="stat-label" th:text="#{dashboard.total.articles}">Total artículos</div>
+                <div class="stat-number" >7909</div>
+                <div class="stat-label">Total artículos</div>
             </div>
 
             <div class="stat-card">
                 <i class="fas fa-arrow-up"></i>
-                <div class="stat-number" th:text="${totalExits}">3209</div>
-                <div class="stat-label" th:text="#{dashboard.total.exits}">Total salidas</div>
+                <div class="stat-number" >3209</div>
+                <div class="stat-label">Total salidas</div>
             </div>
 
             <div class="stat-card">
                 <i class="fas fa-arrow-down"></i>
-                <div class="stat-number" th:text="${totalEntries}">4921</div>
-                <div class="stat-label" th:text="#{dashboard.total.entries}">Total entradas</div>
+                <div class="stat-number">4921</div>
+                <div class="stat-label">Total entradas</div>
             </div>
         </div>
 
         <!-- Clients Table -->
         <div class="clients-section">
-            <h3 th:text="#{dashboard.clients}">Clientes</h3>
-            <p class="clients-subtitle" th:text="#{dashboard.clients.subtitle}">Estos clientes han comprado en los últimos 6 meses.</p>
+            <h3>Clientes</h3>
+            <p class="clients-subtitle">Estos clientes han comprado en los últimos 6 meses.</p>
 
             <table class="clients-table">
                 <thead>
                 <tr>
-                    <th th:text="#{table.company}">Compañía</th>
-                    <th th:text="#{table.status}">Estado</th>
-                    <th th:text="#{table.about}">Acerca</th>
-                    <th th:text="#{table.sales.percentage}">Porcentaje ventas</th>
+                    <th >Compañía</th>
+                    <th >Estado</th>
+                    <th >Acerca</th>
+                    <th >Porcentaje ventas</th>
                     <th></th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="client : ${clients}">
+                <tr>
                     <td>
                         <div class="client-info">
-                            <div class="client-avatar" th:style="'background: ' + ${client.color}" th:text="${client.avatar}">C</div>
+                            <div class="client-avatar">C</div>
                             <div class="client-details">
-                                <h4 th:text="${client.name}">Catalog</h4>
-                                <p th:text="${client.email}">catalogapp.io</p>
+                                <h4 >Catalog</h4>
+                                <p >catalogapp.io</p>
                             </div>
                         </div>
                     </td>
                     <td>
-                        <span class="status-badge" th:class="'status-badge status-' + ${client.status}" th:text="#{status.__${client.status}__}">Cliente</span>
+                        <span class="status-badge" >Cliente</span>
                     </td>
                     <td>
-                        <div th:text="${client.description}">Content curating app</div>
-                        <small th:text="${client.subtitle}">Brings all your news into one place</small>
+                        <div>Content curating app</div>
+                        <small>Brings all your news into one place</small>
                     </td>
                     <td>
                         <div class="progress-bar">
-                            <div class="progress-fill" th:style="'width: ' + ${client.percentage} + '%'"></div>
+                            <div class="progress-fill" ></div>
                         </div>
-                        <small th:text="${client.percentage} + '%'">70%</small>
+                        <small>70%</small>
                     </td>
                     <td>
                         <button class="more-btn"><i class="fas fa-ellipsis-v"></i></button>
