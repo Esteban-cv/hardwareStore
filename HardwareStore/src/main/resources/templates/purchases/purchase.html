@@ -23,56 +23,62 @@
 
         <ul class="nav-menu">
             <li class="nav-item">
-                <a href="#" class="nav-link active" th:href="@{/}">
+                <a th:href="@{/home}" class="nav-link active">
                     <span><i class="fas fa-chart-bar"></i> Dashboard</span>
                 </a>
             </li>
 
             <li class="nav-item">
-                <a href="#" class="nav-link" th:href="@{/sales}">
+                <a th:href="@{/sales}" class="nav-link">
                     <span><i class="fas fa-shopping-cart"></i> Ventas</span>
                     <i class="fas fa-chevron-down"></i>
                 </a>
                 <ul class="sub-menu">
-                    <li><a href="#" class="nav-link" th:href="@{/sales/form}">Nueva Venta</a></li>
-                    <li><a href="#" class="nav-link" th:href="@{/sales/returns}">Devoluciones</a></li>
+                    <li><a th:href="@{/sales/form}" class="nav-link">Nueva Venta</a></li>
+                    <li><a th:href="@{/productreturns}" class="nav-link">Devoluciones</a></li>
                 </ul>
             </li>
 
             <li class="nav-item">
-                <a href="#" class="nav-link" th:href="@{/purchases}">
+                <a th:href="@{/purchases}" class="nav-link">
                     <span><i class="fas fa-truck"></i> Compras</span>
                     <i class="fas fa-chevron-down"></i>
                 </a>
                 <ul class="sub-menu">
-                    <li><a href="#" class="nav-link" th:href="@{/purchases/form}">Nueva Compra</a></li>
+                    <li><a th:href="@{/purchases/form}" class="nav-link">Nueva Compra</a></li>
                 </ul>
             </li>
 
             <li class="nav-item">
-                <a href="#" class="nav-link" th:href="@{/}">
+                <a th:href="@{/inventory}" class="nav-link">
                     <span><i class="fas fa-boxes"></i> Inventario</span>
                     <i class="fas fa-chevron-down"></i>
                 </a>
                 <ul class="sub-menu">
-                    <li><a href="#" class="nav-link" th:href="@{/inventory}">Ver Inventario</a></li>
-                    <li><a href="#" class="nav-link" th:href="@{/inventory/form}">Nuevo Inventario</a></li>
-                    <li><a href="#" class="nav-link" th:href="@{/entries}">Entradas <span class="badge">10</span></a></li>
-                    <li><a href="#" class="nav-link" th:href="@{/locations}">Ubicaciones</a></li>
+                    <li><a th:href="@{/inventory/form}" class="nav-link">Nuevo Inventario</a></li>
+                    <li><a th:href="@{/entries}" class="nav-link">Entradas <span class="badge">10</span></a></li>
+                    <li><a th:href="@{/locations}" class="nav-link">Ubicaciones</a></li>
                 </ul>
             </li>
 
             <li class="nav-item">
-                <a href="#" class="nav-link" th:href="@{/}">
+                <a th:href="@{/catalog}" class="nav-link">
                     <span><i class="fas fa-list"></i> Catálogo</span>
                     <i class="fas fa-chevron-down"></i>
                 </a>
                 <ul class="sub-menu">
-                    <li><a href="#" class="nav-link" th:href="@{/articles}">Artículos</a></li>
-                    <li><a href="#" class="nav-link" th:href="@{/categories}">Categorías <span class="badge">10</span></a></li>
+                    <li><a th:href="@{/catalog/articles}" class="nav-link">Artículos</a></li>
+                    <li><a th:href="@{/catalog/categories}" class="nav-link">Categorías</a></li>
                 </ul>
             </li>
         </ul>
+
+        <!-- Botón de Logout -->
+        <div class="logout-section" style="margin-top: auto; padding: 20px;">
+            <a th:href="@{/logout}" class="nav-link" style="color: #ef4444;">
+                <span><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</span>
+            </a>
+        </div>
     </nav>
 
     <!-- Main Content -->
@@ -102,7 +108,7 @@
                         <circle class="progress" cx="60" cy="60" r="45"></circle>
                     </svg>
                 </div>
-                <div class="client-number" >289</div>
+                <div class="client-number">289</div>
             </div>
         </div>
 
@@ -110,19 +116,19 @@
         <div class="stats-cards">
             <div class="stat-card">
                 <i class="fas fa-users"></i>
-                <div class="stat-number" >5203</div>
+                <div class="stat-number">5203</div>
                 <div class="stat-label">Total clientes</div>
             </div>
 
             <div class="stat-card">
                 <i class="fas fa-box"></i>
-                <div class="stat-number" >7909</div>
+                <div class="stat-number">7909</div>
                 <div class="stat-label">Total artículos</div>
             </div>
 
             <div class="stat-card">
                 <i class="fas fa-arrow-up"></i>
-                <div class="stat-number" >3209</div>
+                <div class="stat-number">3209</div>
                 <div class="stat-label">Total salidas</div>
             </div>
 
@@ -141,10 +147,10 @@
             <table class="clients-table">
                 <thead>
                 <tr>
-                    <th >Compañía</th>
-                    <th >Estado</th>
-                    <th >Acerca</th>
-                    <th >Porcentaje ventas</th>
+                    <th>Compañía</th>
+                    <th>Estado</th>
+                    <th>Acerca</th>
+                    <th>Porcentaje ventas</th>
                     <th></th>
                 </tr>
                 </thead>
@@ -154,13 +160,13 @@
                         <div class="client-info">
                             <div class="client-avatar">C</div>
                             <div class="client-details">
-                                <h4 >Catalog</h4>
-                                <p >catalogapp.io</p>
+                                <h4>Catalog</h4>
+                                <p>catalogapp.io</p>
                             </div>
                         </div>
                     </td>
                     <td>
-                        <span class="status-badge" >Cliente</span>
+                        <span class="status-badge">Cliente</span>
                     </td>
                     <td>
                         <div>Content curating app</div>
@@ -168,7 +174,7 @@
                     </td>
                     <td>
                         <div class="progress-bar">
-                            <div class="progress-fill" ></div>
+                            <div class="progress-fill"></div>
                         </div>
                         <small>70%</small>
                     </td>
