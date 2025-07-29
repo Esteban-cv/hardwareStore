@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ferretería Store - Dashboard</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
 </head>
 <body>
@@ -23,73 +23,79 @@
 
         <ul class="nav-menu">
             <li class="nav-item">
-                <a href="#" class="nav-link active" th:href="@{/}">
+                <a th:href="@{/home}" class="nav-link active">
                     <span><i class="fas fa-chart-bar"></i> Dashboard</span>
                 </a>
             </li>
 
             <li class="nav-item">
-                <a href="#" class="nav-link" th:href="@{/ventas}">
+                <a th:href="@{/sales}" class="nav-link">
                     <span><i class="fas fa-shopping-cart"></i> Ventas</span>
                     <i class="fas fa-chevron-down"></i>
                 </a>
                 <ul class="sub-menu">
-                    <li><a href="#" class="nav-link" th:href="@{/sale/form}">Nueva Venta</a></li>
-                    <li><a href="#" class="nav-link" th:href="@{/returns}">Devoluciones</a></li>
+                    <li><a th:href="@{/sales/form}" class="nav-link">Nueva Venta</a></li>
+                    <li><a th:href="@{/productreturns}" class="nav-link">Devoluciones</a></li>
                 </ul>
             </li>
 
             <li class="nav-item">
-                <a href="#" class="nav-link" th:href="@{/compras}">
+                <a th:href="@{/purchases}" class="nav-link">
                     <span><i class="fas fa-truck"></i> Compras</span>
                     <i class="fas fa-chevron-down"></i>
                 </a>
                 <ul class="sub-menu">
-                    <li><a href="#" class="nav-link" th:href="@{/compras/nueva}">Nueva Compra</a></li>
-                    <li><a href="#" class="nav-link" th:href="@{/compras/historial}">Historial <span class="badge">10</span></a></li>
+                    <li><a th:href="@{/purchases/form}" class="nav-link">Nueva Compra</a></li>
                 </ul>
             </li>
 
             <li class="nav-item">
-                <a href="#" class="nav-link" th:href="@{/inventario}">
+                <a th:href="@{/inventory}" class="nav-link">
                     <span><i class="fas fa-boxes"></i> Inventario</span>
                     <i class="fas fa-chevron-down"></i>
                 </a>
                 <ul class="sub-menu">
-                    <li><a href="#" class="nav-link" th:href="@{/inventario/ver}">Ver Inventario</a></li>
-                    <li><a href="#" class="nav-link" th:href="@{/inventario/entradas}">Entradas <span class="badge">10</span></a></li>
-                    <li><a href="#" class="nav-link" th:href="@{/inventario/ubicaciones}">Ubicaciones</a></li>
+                    <li><a th:href="@{/inventory/form}" class="nav-link">Nuevo Inventario</a></li>
+                    <li><a th:href="@{/entries}" class="nav-link">Entradas <span class="badge">10</span></a></li>
+                    <li><a th:href="@{/locations}" class="nav-link">Ubicaciones</a></li>
                 </ul>
             </li>
 
             <li class="nav-item">
-                <a href="#" class="nav-link" th:href="@{/catalogo}">
+                <a th:href="@{/catalog}" class="nav-link">
                     <span><i class="fas fa-list"></i> Catálogo</span>
                     <i class="fas fa-chevron-down"></i>
                 </a>
                 <ul class="sub-menu">
-                    <li><a href="#" class="nav-link" th:href="@{/catalogo/articulos}">Artículos</a></li>
-                    <li><a href="#" class="nav-link" th:href="@{/catalogo/categorias}">Categorías <span class="badge">10</span></a></li>
+                    <li><a th:href="@{/catalog/articles}" class="nav-link">Artículos</a></li>
+                    <li><a th:href="@{/catalog/categories}" class="nav-link">Categorías</a></li>
                 </ul>
             </li>
         </ul>
+
+        <!-- Botón de Logout -->
+        <div class="logout-section" style="margin-top: auto; padding: 20px;">
+            <a th:href="@{/logout}" class="nav-link" style="color: #ef4444;">
+                <span><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</span>
+            </a>
+        </div>
     </nav>
 
     <!-- Main Content -->
     <main class="main-content">
         <div class="dashboard-header">
-            <h1 th:text="#{dashboard.title}">Dashboard</h1>
+            <h1>Dashboard</h1>
         </div>
 
         <!-- Stats and Chart Section -->
         <div class="stats-grid">
             <div class="chart-container">
-                <h3 th:text="#{dashboard.increment.clients}">Incremento de clientes</h3>
+                <h3>Incremento de clientes</h3>
                 <canvas id="clientChart" width="400" height="200"></canvas>
             </div>
 
             <div class="active-clients">
-                <h3 th:text="#{dashboard.active.clients}">Clientes activos</h3>
+                <h3>Clientes activos</h3>
                 <div class="progress-ring">
                     <svg>
                         <defs>
@@ -102,7 +108,7 @@
                         <circle class="progress" cx="60" cy="60" r="45"></circle>
                     </svg>
                 </div>
-                <div class="client-number" th:text="${activeClients}">289</div>
+                <div class="client-number">289</div>
             </div>
         </div>
 
@@ -110,67 +116,67 @@
         <div class="stats-cards">
             <div class="stat-card">
                 <i class="fas fa-users"></i>
-                <div class="stat-number" th:text="${totalClients}">5203</div>
-                <div class="stat-label" th:text="#{dashboard.total.clients}">Total clientes</div>
+                <div class="stat-number">5203</div>
+                <div class="stat-label">Total clientes</div>
             </div>
 
             <div class="stat-card">
                 <i class="fas fa-box"></i>
-                <div class="stat-number" th:text="${totalArticles}">7909</div>
-                <div class="stat-label" th:text="#{dashboard.total.articles}">Total artículos</div>
+                <div class="stat-number">7909</div>
+                <div class="stat-label">Total artículos</div>
             </div>
 
             <div class="stat-card">
                 <i class="fas fa-arrow-up"></i>
-                <div class="stat-number" th:text="${totalExits}">3209</div>
-                <div class="stat-label" th:text="#{dashboard.total.exits}">Total salidas</div>
+                <div class="stat-number">3209</div>
+                <div class="stat-label">Total salidas</div>
             </div>
 
             <div class="stat-card">
                 <i class="fas fa-arrow-down"></i>
-                <div class="stat-number" th:text="${totalEntries}">4921</div>
-                <div class="stat-label" th:text="#{dashboard.total.entries}">Total entradas</div>
+                <div class="stat-number">4921</div>
+                <div class="stat-label">Total entradas</div>
             </div>
         </div>
 
         <!-- Clients Table -->
         <div class="clients-section">
-            <h3 th:text="#{dashboard.clients}">Clientes</h3>
-            <p class="clients-subtitle" th:text="#{dashboard.clients.subtitle}">Estos clientes han comprado en los últimos 6 meses.</p>
+            <h3>Clientes</h3>
+            <p class="clients-subtitle">Estos clientes han comprado en los últimos 6 meses.</p>
 
             <table class="clients-table">
                 <thead>
                 <tr>
-                    <th th:text="#{table.company}">Compañía</th>
-                    <th th:text="#{table.status}">Estado</th>
-                    <th th:text="#{table.about}">Acerca</th>
-                    <th th:text="#{table.sales.percentage}">Porcentaje ventas</th>
+                    <th>Compañía</th>
+                    <th>Estado</th>
+                    <th>Acerca</th>
+                    <th>Porcentaje ventas</th>
                     <th></th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="client : ${clients}">
+                <tr>
                     <td>
                         <div class="client-info">
-                            <div class="client-avatar" th:style="'background: ' + ${client.color}" th:text="${client.avatar}">C</div>
+                            <div class="client-avatar">C</div>
                             <div class="client-details">
-                                <h4 th:text="${client.name}">Catalog</h4>
-                                <p th:text="${client.email}">catalogapp.io</p>
+                                <h4>Catalog</h4>
+                                <p>catalogapp.io</p>
                             </div>
                         </div>
                     </td>
                     <td>
-                        <span class="status-badge" th:class="'status-badge status-' + ${client.status}" th:text="#{status.__${client.status}__}">Cliente</span>
+                        <span class="status-badge">Cliente</span>
                     </td>
                     <td>
-                        <div th:text="${client.description}">Content curating app</div>
-                        <small th:text="${client.subtitle}">Brings all your news into one place</small>
+                        <div>Content curating app</div>
+                        <small>Brings all your news into one place</small>
                     </td>
                     <td>
                         <div class="progress-bar">
-                            <div class="progress-fill" th:style="'width: ' + ${client.percentage} + '%'"></div>
+                            <div class="progress-fill"></div>
                         </div>
-                        <small th:text="${client.percentage} + '%'">70%</small>
+                        <small>70%</small>
                     </td>
                     <td>
                         <button class="more-btn"><i class="fas fa-ellipsis-v"></i></button>
@@ -191,5 +197,50 @@
         <span>Hecho con <i class="fas fa-heart"></i> por Aprendices SENA</span>
     </div>
 </footer>
+
+<script th:inline="javascript">
+    // Chart.js configuration
+    const ctx = document.getElementById('clientChart').getContext('2d');
+    const chartData = /*[[${chartData}]]*/ [
+        110, 125, 140, 120, 135, 150, 145, 160, 155, 170, 165, 180
+    ];
+
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11'],
+            datasets: [{
+                data: chartData,
+                borderColor: '#10b981',
+                backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                borderWidth: 2,
+                fill: true,
+                tension: 0.4
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 220,
+                    ticks: {
+                        stepSize: 55
+                    }
+                },
+                x: {
+                    grid: {
+                        display: true
+                    }
+                }
+            }
+        }
+    });
+</script>
 </body>
 </html>
