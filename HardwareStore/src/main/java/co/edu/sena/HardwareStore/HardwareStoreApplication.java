@@ -8,6 +8,6 @@ public class HardwareStoreApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(HardwareStoreApplication.class, args);
+		System.out.println("APP STARTED");
 	}
-
 }

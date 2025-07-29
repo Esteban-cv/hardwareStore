@@ -1,6 +1,7 @@
 package co.edu.sena.HardwareStore.controller;
 
-import co.edu.sena.HardwareStore.model.Category;
+import co.edu.sena.HardwareStore.model.Client;
+import co.edu.sena.HardwareStore.model.Employee;
 import co.edu.sena.HardwareStore.model.Sale;
 import co.edu.sena.HardwareStore.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,17 +33,17 @@ public class SaleController {
     private ArticleRepository articleRepository;
 
     @GetMapping
-    public String list(Model model) {
+    public String listSales(Model model) {
         model.addAttribute("sales", saleRepository.findAll());
-        return "/sales/sale";
+        return "sales/sale";
     }
 
     @GetMapping("/form")
     public String form(Model model) {
         model.addAttribute("sale", new Sale());
-        model.addAttribute("clients", clientRepository.findAll());
-        model.addAttribute("employees", employeeRepository.findAll());
-        return "/sales/sale_form";
+        model.addAttribute("clients", new Client());
+        model.addAttribute("employees", new Employee());
+        return "sales/sale_form";
     }
 
     @PostMapping("/save")
@@ -62,7 +63,7 @@ public class SaleController {
         model.addAttribute("sale", sale);
         model.addAttribute("clients", clientRepository.findAll());
         model.addAttribute("employees", employeeRepository.findAll());
-        return "/sales/sale_form";
+        return "sales/sale_form";
     }
 
     @PostMapping("/delete/{id}")
@@ -72,4 +73,3 @@ public class SaleController {
         return "redirect:/sales";
     }
 }
-
