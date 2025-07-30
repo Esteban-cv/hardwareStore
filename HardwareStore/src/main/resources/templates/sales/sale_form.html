@@ -7,6 +7,8 @@
     <link rel="stylesheet" th:href="@{/css/style.css}">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+
+
 </head>
 <body>
 <div class="container">
@@ -82,110 +84,55 @@
     </nav>
 
     <!-- Main Content -->
-    <main class="main-content">
-        <div class="dashboard-header">
-            <h1>Dashboard</h1>
-        </div>
+    <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+        <div class="pt-4">
+            <h1 class="text-success">Lista de Ventas</h1>
 
-        <!-- Stats and Chart Section -->
-        <div class="stats-grid">
-            <div class="chart-container">
-                <h3>Incremento de clientes</h3>
-                <canvas id="clientChart" width="400" height="200"></canvas>
-            </div>
+            <!-- Mensaje éxito -->
+            <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
 
-            <div class="active-clients">
-                <h3>Clientes activos</h3>
-                <div class="progress-ring">
-                    <svg>
-                        <defs>
-                            <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                                <stop offset="0%" style="stop-color:#667eea"/>
-                                <stop offset="100%" style="stop-color:#764ba2"/>
-                            </linearGradient>
-                        </defs>
-                        <circle class="bg" cx="60" cy="60" r="45"></circle>
-                        <circle class="progress" cx="60" cy="60" r="45"></circle>
-                    </svg>
+            <a th:href="@{/sales/form}" class="btn btn-primary mb-3">📝 Registrar Venta</a>
+
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped">
+                    <thead class="table-success">
+                    <tr>
+                        <th>⚙️</th>
+                        <th>ID</th>
+                        <th>Fecha</th>
+                        <th>Total</th>
+                        <th>ID Cliente</th>
+                        <th>ID Empleado</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="sale : ${sales}">
+                        <td>
+                            <a th:href="@{'/sales/edit/' + ${sale.id}}" class="btn btn-outline-primary btn-sm">✏️</a>
+                            <form th:action="@{'/sales/delete/' + ${sale.id}}" method="post" style="display:inline;">
+                                <button type="submit" class="btn btn-outline-danger btn-sm"
+                                        onclick="return confirm('¿Está seguro que desea eliminar esta Venta?')">🗑️
+                                </button>
+                            </form>
+                        </td>
+                        <td th:text="${sale.id}"></td>
+                        <td th:text="${#dates.format(sale.date, 'yyyy-MM-dd')}"></td>
+                        <td th:text="${sale.total}"></td>
+                        <td th:text="${sale.client.id}"></td>
+                        <td th:text="${sale.employee.id}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <!-- Mensaje si no hay ventas -->
+                <div th:if="${#lists.isEmpty(sales)}" class="alert alert-warning">
+                    No hay ventas para mostrar.
                 </div>
-                <div class="client-number">289</div>
             </div>
-        </div>
-
-        <!-- Stats Cards -->
-        <div class="stats-cards">
-            <div class="stat-card">
-                <i class="fas fa-users"></i>
-                <div class="stat-number">5203</div>
-                <div class="stat-label">Total clientes</div>
-            </div>
-
-            <div class="stat-card">
-                <i class="fas fa-box"></i>
-                <div class="stat-number">7909</div>
-                <div class="stat-label">Total artículos</div>
-            </div>
-
-            <div class="stat-card">
-                <i class="fas fa-arrow-up"></i>
-                <div class="stat-number">3209</div>
-                <div class="stat-label">Total salidas</div>
-            </div>
-
-            <div class="stat-card">
-                <i class="fas fa-arrow-down"></i>
-                <div class="stat-number">4921</div>
-                <div class="stat-label">Total entradas</div>
-            </div>
-        </div>
-
-        <!-- Clients Table -->
-        <div class="clients-section">
-            <h3>Clientes</h3>
-            <p class="clients-subtitle">Estos clientes han comprado en los últimos 6 meses.</p>
-
-            <table class="clients-table">
-                <thead>
-                <tr>
-                    <th>Compañía</th>
-                    <th>Estado</th>
-                    <th>Acerca</th>
-                    <th>Porcentaje ventas</th>
-                    <th></th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td>
-                        <div class="client-info">
-                            <div class="client-avatar">C</div>
-                            <div class="client-details">
-                                <h4>Catalog</h4>
-                                <p>catalogapp.io</p>
-                            </div>
-                        </div>
-                    </td>
-                    <td>
-                        <span class="status-badge">Cliente</span>
-                    </td>
-                    <td>
-                        <div>Content curating app</div>
-                        <small>Brings all your news into one place</small>
-                    </td>
-                    <td>
-                        <div class="progress-bar">
-                            <div class="progress-fill"></div>
-                        </div>
-                        <small>70%</small>
-                    </td>
-                    <td>
-                        <button class="more-btn"><i class="fas fa-ellipsis-v"></i></button>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
         </div>
     </main>
+
+
 </div>
 
 <!-- Footer -->
