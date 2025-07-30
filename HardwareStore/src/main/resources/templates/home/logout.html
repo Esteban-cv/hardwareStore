@@ -1,10 +1,156 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ferretería Store - Cerrar Sesión</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{css/styles.css}">
 </head>
-<body>
+<body class="body-logout">
+<div class="background-logout">
+    <div class="floating-tools-logout tool-logout-1">🔨</div>
+    <div class="floating-tools-logout tool-logout-2">🔧</div>
+    <div class="floating-tools-logout tool-logout-3">⚡</div>
+    <div class="floating-tools-logout tool-logout-4">🔩</div>
+    <div class="floating-tools-logout tool-logout-5">⚙️</div>
+</div>
 
+<div class="container-logout">
+    <div class="logout-section">
+        <div class="logo-logout-container">
+            <div class="main-logo-logout"></div>
+        </div>
+
+        <h1 class="logout-title">¡Hasta pronto!</h1>
+        <h2 class="logout-subtitle">Has cerrado sesión exitosamente</h2>
+        <p class="logout-description">
+            Gracias por usar Ferretería Store. Tu sesión ha sido cerrada de forma segura.
+            Esperamos verte pronto de nuevo.
+        </p>
+
+        <div class="logout-buttons">
+            <a href="/" class="btn-logout btn-primary-logout">
+                🏠 Volver al Inicio
+            </a>
+            <button class="btn-logout btn-secondary-logout" onclick="openLoginModal()">
+                🔑 Iniciar Sesión Nuevamente
+            </button>
+        </div>
+
+        <div class="logout-info">
+            <div class="info-card-logout">
+                <i class="fas fa-shield-alt icon-logout"></i>
+                <h3 class="info-title-logout">Sesión Segura</h3>
+                <p class="info-text-logout">Tu información está protegida</p>
+            </div>
+            <div class="info-card-logout">
+                <i class="fas fa-clock icon-logout"></i>
+                <h3 class="info-title-logout">Disponibilidad 24/7</h3>
+                <p class="info-text-logout">Accede cuando lo necesites</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Footer -->
+<footer class="footer-logout">
+    <div class="footer-left-logout">
+        <span>© 2025 Ferretería Store. Todos los derechos reservados.</span>
+    </div>
+    <div class="footer-right-logout">
+        <span>Hecho con <i class="fas fa-heart heart-logout"></i> por Aprendices SENA</span>
+    </div>
+</footer>
+
+<!-- Modal de Login -->
+<div class="login-modal-logout" id="loginModal">
+    <div class="modal-content-logout">
+        <button class="close-modal-logout" onclick="closeLoginModal()">&times;</button>
+        <h2 class="modal-title-logout">Iniciar Sesión</h2>
+
+        <!-- Mostrar mensajes de error o éxito -->
+        <div th:if="${error}" class="alert-logout alert-error-logout">
+            <span th:text="${error}"></span>
+        </div>
+
+        <div th:if="${message}" class="alert-logout alert-success-logout">
+            <span th:text="${message}"></span>
+        </div>
+
+        <form th:action="@{/login}" method="post">
+            <div class="form-group-logout">
+                <label class="form-label-logout" for="username">Usuario</label>
+                <input
+                        type="text"
+                        id="username"
+                        name="username"
+                        class="form-input-logout"
+                        placeholder="Usuario"
+                        required
+                >
+            </div>
+
+            <div class="form-group-logout">
+                <label class="form-label-logout" for="password">Contraseña</label>
+                <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        class="form-input-logout"
+                        placeholder="Contraseña"
+                        required
+                >
+            </div>
+
+            <button type="submit" class="btn-logout btn-primary-logout submit-btn-logout">
+                Ingresar
+            </button>
+        </form>
+
+        <div class="test-users-logout">
+            <p><strong>Usuarios de prueba:</strong></p>
+            <p>Usuario: <strong>admin</strong> - Contraseña: <strong>admin123</strong></p>
+        </div>
+    </div>
+</div>
+
+<script>
+    function openLoginModal() {
+        document.getElementById('loginModal').style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeLoginModal() {
+        document.getElementById('loginModal').style.display = 'none';
+        document.body.style.overflow = 'auto';
+    }
+
+    // Cerrar modal al hacer clic fuera
+    document.getElementById('loginModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeLoginModal();
+        }
+    });
+
+    // Cerrar modal con ESC
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeLoginModal();
+        }
+    });
+
+    // Animación de entrada
+    window.addEventListener('load', function() {
+        document.querySelector('.logout-section').style.opacity = '0';
+        document.querySelector('.logout-section').style.transform = 'translateY(30px)';
+        document.querySelector('.logout-section').style.transition = 'all 1s ease';
+
+        setTimeout(() => {
+            document.querySelector('.logout-section').style.opacity = '1';
+            document.querySelector('.logout-section').style.transform = 'translateY(0)';
+        }, 200);
+    });
+</script>
 </body>
 </html>
