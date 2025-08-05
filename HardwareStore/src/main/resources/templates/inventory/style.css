@@ -1,0 +1,47 @@
+/* Estilos para el menú desplegable */
+.nav-item.has-submenu {
+    position: relative;
+}
+
+.sub-menu {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+    padding-left: 20px;
+}
+
+.sub-menu.active {
+    max-height: 500px; /* Ajusta según la cantidad de elementos */
+    transition: max-height 0.5s ease-in;
+}
+
+.dropdown-icon {
+    transition: transform 0.3s ease;
+}
+
+.dropdown-icon.rotate {
+    transform: rotate(180deg);
+}
+
+/* Estilos para los enlaces del submenú */
+.sub-menu li a {
+    padding: 10px 15px;
+    display: block;
+    color: #6b7280;
+    font-size: 14px;
+}
+
+.sub-menu li a:hover {
+    color: #3b82f6;
+    background-color: rgba(59, 130, 246, 0.1);
+}
+
+/* Estilo para el logout */
+.logout-section {
+    margin-top: auto;
+    padding: 20px;
+}
+
+.logout-link {
+    color: #ef4444;
+}
