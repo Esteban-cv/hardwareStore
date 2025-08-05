@@ -83,18 +83,27 @@
     </nav>
 
     <!-- Main Content -->
-    <!-- Main Content -->
     <main class="main-content">
         <div class="dashboard-header">
             <h1>Compras</h1>
+            <h4>Historial de compras del inventario</h4>
+        </div>
+
+        <div class="action-buttons" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px;">
+            <a th:href="@{/purchases/form}" class="btn-add" style="display: flex; align-items: center; gap: 5px;">
+                <i class="fas fa-plus-circle"></i> Nueva Compra
+            </a>
+            <a th:href="@{/purchases/purchasereport}" class="btn-pdf" style="display: flex; align-items: center; gap: 5px;">
+                <i class="fas fa-file-export"></i>PDF
+            </a>
+            <a th:href="@{#}" class="btn-excel" style="display: flex; align-items: center; gap: 5px;">
+                <i class="fas fa-file-export"></i>EXCEL
+            </a>
         </div>
 
         <!-- Clients Table -->
-        <div class="clients-section">
-            <h3>Compras</h3>
-            <p class="clients-subtitle">Historial de Compras del inventario</p>
-
-            <table class="clients-table">
+        <div class="section-for-all">
+            <table class="tables-for-all">
                 <thead>
                 <tr>
                     <th>ID</th>
@@ -102,9 +111,9 @@
                     <th>CANTIDAD</th>
                     <th>TOTAL</th>
                     <th>ESTADO</th>
-                    <th>ID ARTICLE</th>
-                    <th>ID SUPPLIER</th>
-                    <th>ID EMPLOYEE</th>
+                    <th>PROVEEDOR</th>
+                    <th>EMPLEADO</th>
+                    <th>NOMBRE ARTICULO</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -114,16 +123,43 @@
                     <td th:text="${purchase.quantity}" ></td>
                     <td th:text="${purchase.total}" ></td>
                     <td th:text="${purchase.status}" ></td>
-                    <td th:text="${purchase.article.idArticle}" ></td>
-                    <td th:text="${purchase.supplier.idSupplier}" ></td>
-                    <td th:text="${purchase.employee.idEmployee}" ></td>
+                    <td th:text="${purchase.supplier.name}" ></td>
+                    <td th:text="${purchase.employee.name}" ></td>
+                    <td th:text="${purchase.article.name}" ></td>
                     <td>
-                        <button class="more-btn"><i class="fas fa-pencil-"></i></button>
-                        <button class="more-btn"><i class="fas fa-ellipsis-v"></i></button>
+                        <a th:href="@{'/purchases/edit/' + ${purchase.idPurchase}}" class="btn-edit">
+                            <i class="fas fa-pencil-alt"></i>
+                        </a>
+                        <form th:action="@{'/purchases/delete/' + ${purchase.idPurchase}}" method="post" style="display:inline;">
+                            <button type="submit" class="btn-delete">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </form>
                     </td>
                 </tr>
                 </tbody>
             </table>
+            <nav class="pagination-nav">
+                <ul class="pagination-list">
+
+                    <!-- back -->
+                    <li th:classappend="${!purchases.hasPrevious()} ? 'disabled'">
+                        <a th:href="@{/purchases(page=${purchases.number - 1})}">Anterior</a>
+                    </li>
+
+                    <!-- numbers -->
+                    <li th:each="i : ${#numbers.sequence(0, purchases.totalPages - 1)}"
+                        th:classappend="${i == purchases.number} ? 'active'">
+                        <a th:href="@{/purchases(page=${i})}" th:text="${i + 1}"></a>
+                    </li>
+
+                    <!-- next -->
+                    <li th:classappend="${!purchases.hasNext()} ? 'disabled'">
+                        <a th:href="@{/purchases(page=${purchases.number + 1})}">Siguiente</a>
+                    </li>
+
+                </ul>
+            </nav>
         </div>
     </main>
 </div>
@@ -137,5 +173,50 @@
         <span>Hecho con <i class="fas fa-heart"></i> por Aprendices SENA</span>
     </div>
 </footer>
+
+<script th:inline="javascript">
+    // Chart.js configuration
+    const ctx = document.getElementById('clientChart').getContext('2d');
+    const chartData = /*[[${chartData}]]*/ [
+        110, 125, 140, 120, 135, 150, 145, 160, 155, 170, 165, 180
+    ];
+
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11'],
+            datasets: [{
+                data: chartData,
+                borderColor: '#10b981',
+                backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                borderWidth: 2,
+                fill: true,
+                tension: 0.4
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 220,
+                    ticks: {
+                        stepSize: 55
+                    }
+                },
+                x: {
+                    grid: {
+                        display: true
+                    }
+                }
+            }
+        }
+    });
+</script>
 </body>
 </html>

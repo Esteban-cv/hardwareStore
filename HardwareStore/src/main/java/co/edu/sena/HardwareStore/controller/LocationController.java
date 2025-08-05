@@ -2,21 +2,35 @@ package co.edu.sena.HardwareStore.controller;
 
 import co.edu.sena.HardwareStore.model.Location;
 import co.edu.sena.HardwareStore.repository.LocationRepository;
+import co.edu.sena.HardwareStore.services.PdfReportService;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.io.IOException;
+import java.math.RoundingMode;
+import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/locations")
 public class LocationController {
     @Autowired
     private LocationRepository locationRepository;
-
+    @Autowired
+    private PdfReportService pdfReportService;
     @GetMapping
-    public String list(Model model){
-        model.addAttribute("locations", locationRepository.findAll());
+    public String listLocations(@RequestParam(defaultValue = "0") int page, Model model) {
+        Page<Location> locations = locationRepository.findAll(PageRequest.of(page, 10, Sort.by("idLocation").descending()));
+        model.addAttribute("locations", locations);
         return "inventory/locations";
     }
 
@@ -49,5 +63,31 @@ public class LocationController {
         locationRepository.deleteById(idLocation);
         ra.addFlashAttribute("success", "Ubicación eliminada exitosamente");
         return "redirect:/locations";
+    }
+
+    @GetMapping("/locationreport")
+    public void generateSaleReport(HttpServletResponse response) throws IOException {
+        try {
+            List<Location> locations = locationRepository.findAll();
+            List<String> headers = Arrays.asList("ID", "Nombre", "Código");
+            List<List<String>> rows = locations.stream()
+                    .map(s -> {
+                        // Formatear fecha (ejemplo para java.util.Date)
+                        return Arrays.asList(
+                                String.valueOf(s.getIdLocation()),
+                                String.valueOf(s.getName()),
+                                String.valueOf(s.getCode())
+                        );
+                    })
+                    .collect(Collectors.toList());
+
+            response.setContentType("application/pdf");
+            response.setHeader("Content-Disposition", "attachment; filename=reporte_ubicaciones.pdf");
+            pdfReportService.generatePdf(response, "Reporte de Ubicaciones", headers, rows);
+
+        } catch (Exception e) {
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.getWriter().println("Error al generar el reporte: " + e.getMessage());
+        }
     }
 }

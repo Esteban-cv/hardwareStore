@@ -6,11 +6,23 @@ import co.edu.sena.HardwareStore.model.Location;
 import co.edu.sena.HardwareStore.repository.ArticleRepository;
 import co.edu.sena.HardwareStore.repository.InventoryRepository;
 import co.edu.sena.HardwareStore.repository.LocationRepository;
+import co.edu.sena.HardwareStore.services.PdfReportService;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.io.IOException;
+import java.math.RoundingMode;
+import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/inventory")
@@ -23,9 +35,13 @@ public class InventoryController {
     @Autowired
     private ArticleRepository articleRepository;
 
+    @Autowired
+    private PdfReportService pdfReportService;
+
     @GetMapping
-    public String list(Model model){
-        model.addAttribute("all_inventory", inventoryRepository.findAll());
+    public String listInventory(@RequestParam(defaultValue = "0") int page, Model model) {
+        Page<Inventory> all_inventory = inventoryRepository.findAll(PageRequest.of(page, 10, Sort.by("updatedAt").descending()));
+        model.addAttribute("all_inventory", all_inventory);
         return "inventory/all_inventory";
     }
 
@@ -62,5 +78,35 @@ public class InventoryController {
         inventoryRepository.deleteById(idInventory);
         ra.addFlashAttribute("success", "Inventario eliminado exitosamente");
         return "redirect:/inventory";
+    }
+
+    @GetMapping("/inventoryreport")
+    public void generateInventoryReport(HttpServletResponse response) throws IOException {
+        try {
+            List<Inventory> all_inventory = inventoryRepository.findAll();
+            List<String> headers = Arrays.asList("ID", "Stock Actual", "Stock Mínimo", "Fecha Actualización", "Articulo", "Ubicación");
+            List<List<String>> rows = all_inventory .stream()
+                    .map(s -> {
+                        // Formatear fecha (ejemplo para java.util.Date)
+                        String fechaFormateada = s.getUpdatedAt().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+                        return Arrays.asList(
+                                String.valueOf(s.getIdInventory()),
+                                String.valueOf(s.getCurrentStock()),
+                                String.valueOf(s.getMinimumStock()),
+                                fechaFormateada, // ✅ Aquí va la fecha correctamente
+                                s.getArticle() != null ? s.getArticle().getName() : "N/A",
+                                s.getLocation() != null ? s.getLocation().getName() : "N/A"
+                        );
+                    })
+                    .collect(Collectors.toList());
+
+            response.setContentType("application/pdf");
+            response.setHeader("Content-Disposition", "attachment; filename=reporte_inventario.pdf");
+            pdfReportService.generatePdf(response, "Reporte de Inventario", headers, rows);
+
+        } catch (Exception e) {
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.getWriter().println("Error al generar el reporte: " + e.getMessage());
+        }
     }
 }
