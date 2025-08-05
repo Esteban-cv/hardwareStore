@@ -7,11 +7,23 @@ import co.edu.sena.HardwareStore.model.Unit;
 import co.edu.sena.HardwareStore.repository.ArticleRepository;
 import co.edu.sena.HardwareStore.repository.CategoryRepository;
 import co.edu.sena.HardwareStore.repository.UnitRepository;
+import co.edu.sena.HardwareStore.services.PdfReportService;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.io.IOException;
+import java.math.RoundingMode;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.Collections;
 
 @Controller
 @RequestMapping("/catalog")
@@ -22,21 +34,30 @@ public class CatalogController {
     @Autowired
     private CategoryRepository categoryRepository;
     @Autowired
+    private PdfReportService pdfReportService;
+    @Autowired
     private UnitRepository unitRepository;
 
     @GetMapping("/articles")
-    public String listArticles(Model model){
-        model.addAttribute("articles", articleRepository.findAll());
+    public String listArticles(@RequestParam(defaultValue = "0") int page, Model model){
+        Page<Article> articles = articleRepository.findAll(PageRequest.of(page,10, Sort.by("idArticle").descending()));
+        articles.forEach(p ->{
+            if (p.getPrice() != null) {
+                p.setPrice(p.getPrice().setScale(2, RoundingMode.HALF_UP));
+            }
+        });
+        model.addAttribute("articles", articles);
         return "catalog/articles";
     }
 
     @GetMapping("/categories")
-    public String listCategories(Model model){
-        model.addAttribute("categories", categoryRepository.findAll());
+    public String listCategories(@RequestParam(defaultValue = "0") int page,Model model){
+        Page<Category> categories = categoryRepository.findAll(PageRequest.of(page,10,Sort.by("idCategory").descending()));
+        model.addAttribute("categories", categories);
         return "catalog/categories";
     }
 
-    @GetMapping("/form/article")
+    @GetMapping("/article/form")
     public String formArticle(Model model){
         model.addAttribute("article", new Article());
         model.addAttribute("category", new Category());
@@ -44,7 +65,7 @@ public class CatalogController {
         return "catalog/article_form";
     }
 
-    @GetMapping("/form/category")
+    @GetMapping("/category/form")
     public String formCategory(Model model){
         model.addAttribute("category", new Category());
         return "catalog/category_form";
@@ -95,10 +116,66 @@ public class CatalogController {
         return "redirect:/articles";
     }
 
-    @PostMapping("/deleteCategories/{id}")
+    @PostMapping("/deleteCategory/{id}")
     public String deleteCategories(@PathVariable("id") Integer idCategory, RedirectAttributes ra){
         categoryRepository.deleteById(idCategory);
         ra.addFlashAttribute("success", "Categoria eliminada exitosamente");
         return "redirect:/categories";
+    }
+
+    @GetMapping("/articlereport")
+    public void generateArticleReport(HttpServletResponse response) throws IOException {
+        try {
+            List<Article> articles = articleRepository.findAll();
+            List<String> headers = Arrays.asList("ID", "Nombre", "Código", "Cantidad", "Precio", "Categoría", "Unidad");
+            List<List<String>> rows = articles.stream()
+                    .map(article -> {
+                        String precioFormateado = article.getPrice() != null
+                                ? String.format("$%,.2f", article.getPrice())
+                                : "$0.00";
+                        return Arrays.asList(
+                                String.valueOf(article.getIdArticle()),
+                                article.getName() != null ? article.getName() : "N/A",
+                                article.getCode() != null ? article.getCode() : "N/A",
+                                String.valueOf(article.getQuantity()),
+                                precioFormateado,
+                                article.getCategory() != null ? article.getCategory().getName() : "Sin categoría",
+                                article.getUnit() != null ? article.getUnit().getName() : "Sin unidad"
+                        );
+                    })
+                    .collect(Collectors.toList());
+
+            // Configurar respuesta HTTP
+            response.setContentType("application/pdf");
+            response.setHeader("Content-Disposition", "attachment; filename=reporte_articulos.pdf");
+
+            // Generar PDF
+            pdfReportService.generatePdf(response, "Reporte de Artículos", headers, rows);
+
+        } catch (Exception e) {
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.getWriter().println("Error al generar el reporte: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/categoryreport")
+    public void generateCategoryReport(HttpServletResponse response) throws IOException {
+        try {
+            List<Category> categories = categoryRepository.findAll();
+            List<String> headers = Arrays.asList("ID", "Nombre");
+            List<List<String>> rows = categories.stream()
+                    .map(category -> Arrays.asList(
+                            String.valueOf(category.getIdCategory()),
+                            category.getName() != null ? category.getName() : "N/A"
+                    ))
+                    .collect(Collectors.toList());
+            response.setContentType("application/pdf");
+            response.setHeader("Content-Disposition", "attachment; filename=reporte_categorias.pdf");
+            pdfReportService.generatePdf(response, "Reporte de Categorías", headers, rows);
+
+        } catch (Exception e) {
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.getWriter().println("Error al generar el reporte: " + e.getMessage());
+        }
     }
 }
