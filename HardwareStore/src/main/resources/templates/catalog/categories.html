@@ -84,108 +84,73 @@
     <!-- Main Content -->
     <main class="main-content">
         <div class="dashboard-header">
-            <h1>Dashboard</h1>
+            <h1>Categorías</h1>
+            <h4>Información de categorías</h4>
         </div>
 
-        <!-- Stats and Chart Section -->
-        <div class="stats-grid">
-            <div class="chart-container">
-                <h3>Incremento de clientes</h3>
-                <canvas id="clientChart" width="400" height="200"></canvas>
-            </div>
-
-            <div class="active-clients">
-                <h3>Clientes activos</h3>
-                <div class="progress-ring">
-                    <svg>
-                        <defs>
-                            <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                                <stop offset="0%" style="stop-color:#667eea"/>
-                                <stop offset="100%" style="stop-color:#764ba2"/>
-                            </linearGradient>
-                        </defs>
-                        <circle class="bg" cx="60" cy="60" r="45"></circle>
-                        <circle class="progress" cx="60" cy="60" r="45"></circle>
-                    </svg>
-                </div>
-                <div class="client-number">289</div>
-            </div>
+        <div class="action-buttons" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px;">
+            <a th:href="@{/catalog/category/form}" class="btn-add" style="display: flex; align-items: center; gap: 5px;">
+                <i class="fas fa-plus-circle"></i> Nueva Categoría
+            </a>
+            <a th:href="@{/catalog/categoryreport}" class="btn-pdf" style="display: flex; align-items: center; gap: 5px;">
+                <i class="fas fa-file-export"></i>PDF
+            </a>
+            <a th:href="@{#}" class="btn-excel" style="display: flex; align-items: center; gap: 5px;">
+                <i class="fas fa-file-export"></i>EXCEL
+            </a>
         </div>
 
-        <!-- Stats Cards -->
-        <div class="stats-cards">
-            <div class="stat-card">
-                <i class="fas fa-users"></i>
-                <div class="stat-number">5203</div>
-                <div class="stat-label">Total clientes</div>
-            </div>
 
-            <div class="stat-card">
-                <i class="fas fa-box"></i>
-                <div class="stat-number">7909</div>
-                <div class="stat-label">Total artículos</div>
-            </div>
-
-            <div class="stat-card">
-                <i class="fas fa-arrow-up"></i>
-                <div class="stat-number">3209</div>
-                <div class="stat-label">Total salidas</div>
-            </div>
-
-            <div class="stat-card">
-                <i class="fas fa-arrow-down"></i>
-                <div class="stat-number">4921</div>
-                <div class="stat-label">Total entradas</div>
-            </div>
-        </div>
-
-        <!-- Clients Table -->
-        <div class="clients-section">
-            <h3>Clientes</h3>
-            <p class="clients-subtitle">Estos clientes han comprado en los últimos 6 meses.</p>
-
-            <table class="clients-table">
+        <!-- Categories Table -->
+        <div class="section-for-all">
+            <table class="tables-for-all">
                 <thead>
                 <tr>
-                    <th>Compañía</th>
-                    <th>Estado</th>
-                    <th>Acerca</th>
-                    <th>Porcentaje ventas</th>
-                    <th></th>
+                    <th>ID</th>
+                    <th>NOMBRE</th>
+                    <th>ACCIONES</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
+                <tr th:each="category : ${categories.content}">
+                    <td th:text="${category.idCategory}"></td>
+                    <td th:text="${category.name}"></td>
                     <td>
-                        <div class="client-info">
-                            <div class="client-avatar">C</div>
-                            <div class="client-details">
-                                <h4>Catalog</h4>
-                                <p>catalogapp.io</p>
-                            </div>
-                        </div>
-                    </td>
-                    <td>
-                        <span class="status-badge">Cliente</span>
-                    </td>
-                    <td>
-                        <div>Content curating app</div>
-                        <small>Brings all your news into one place</small>
-                    </td>
-                    <td>
-                        <div class="progress-bar">
-                            <div class="progress-fill"></div>
-                        </div>
-                        <small>70%</small>
-                    </td>
-                    <td>
-                        <button class="more-btn"><i class="fas fa-ellipsis-v"></i></button>
+                        <a th:href="@{'/catalog/editCategory/' + ${category.idCategory}}" class="btn-edit">
+                            <i class="fas fa-pencil-alt"></i>
+                        </a>
+                        <form th:action="@{'/catalog/deleteCategory/' + ${category.idCategory}}" method="post" style="display:inline;">
+                            <button type="submit" class="btn-delete"><i class="fas fa-trash-alt"></i></button>
+                        </form>
                     </td>
                 </tr>
                 </tbody>
             </table>
+
+            <!-- pagination -->
+            <nav class="pagination-nav">
+                <ul class="pagination-list">
+                    <!-- back -->
+                    <li th:classappend="${!categories.hasPrevious()} ? 'disabled'">
+                        <a th:href="@{/catalog/categories(page=${categories.number - 1})}">Anterior</a>
+                    </li>
+
+                    <!-- numbers -->
+                    <li th:each="i : ${#numbers.sequence(0, categories.totalPages - 1)}"
+                        th:classappend="${i == categories.number} ? 'active'">
+                        <a th:href="@{/catalog/categories(page=${i})}" th:text="${i + 1}"></a>
+                    </li>
+
+                    <!-- next -->
+                    <li th:classappend="${!categories.hasNext()} ? 'disabled'">
+                        <a th:href="@{/catalog/categories(page=${categories.number + 1})}">Siguiente</a>
+                    </li>
+                </ul>
+            </nav>
         </div>
     </main>
+
+
 </div>
 
 <!-- Footer -->
@@ -197,50 +162,5 @@
         <span>Hecho con <i class="fas fa-heart"></i> por Aprendices SENA</span>
     </div>
 </footer>
-
-<script th:inline="javascript">
-    // Chart.js configuration
-    const ctx = document.getElementById('clientChart').getContext('2d');
-    const chartData = /*[[${chartData}]]*/ [
-        110, 125, 140, 120, 135, 150, 145, 160, 155, 170, 165, 180
-    ];
-
-    new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11'],
-            datasets: [{
-                data: chartData,
-                borderColor: '#10b981',
-                backgroundColor: 'rgba(16, 185, 129, 0.1)',
-                borderWidth: 2,
-                fill: true,
-                tension: 0.4
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: {
-                    display: false
-                }
-            },
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    max: 220,
-                    ticks: {
-                        stepSize: 55
-                    }
-                },
-                x: {
-                    grid: {
-                        display: true
-                    }
-                }
-            }
-        }
-    });
-</script>
 </body>
 </html>

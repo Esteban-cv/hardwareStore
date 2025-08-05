@@ -4,11 +4,24 @@ import co.edu.sena.HardwareStore.model.Client;
 import co.edu.sena.HardwareStore.model.Employee;
 import co.edu.sena.HardwareStore.model.Sale;
 import co.edu.sena.HardwareStore.repository.*;
+import co.edu.sena.HardwareStore.services.PdfReportService;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.io.IOException;
+import java.math.RoundingMode;
+import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/sales")
@@ -18,25 +31,26 @@ public class SaleController {
     private SaleRepository saleRepository;
 
     @Autowired
-    private SaleDetailRepository saleDetailRepository;
-
-    @Autowired
-    private ProductReturnsRepository productReturnsRepository;
-
-    @Autowired
     private ClientRepository clientRepository;
 
     @Autowired
     private EmployeeRepository employeeRepository;
 
     @Autowired
-    private ArticleRepository articleRepository;
+    private PdfReportService pdfReportService;
 
     @GetMapping
-    public String listSales(Model model) {
-        model.addAttribute("sales", saleRepository.findAll());
+    public String listSales(@RequestParam(defaultValue = "0") int page, Model model) {
+        Page<Sale> sales = saleRepository.findAll(PageRequest.of(page, 10, Sort.by("date").descending()));
+        sales.forEach(s ->{
+            if (s.getTotal() != null) {
+                s.setTotal(s.getTotal().setScale(2, RoundingMode.HALF_UP));
+            }
+        });
+        model.addAttribute("sales", sales);
         return "sales/sale";
     }
+
 
     @GetMapping("/form")
     public String form(Model model) {
@@ -71,5 +85,34 @@ public class SaleController {
         saleRepository.deleteById(idSale);
         ra.addFlashAttribute("success", "Venta eliminada exitosamente.");
         return "redirect:/sales";
+    }
+
+    @GetMapping("/salereport")
+    public void generateSaleReport(HttpServletResponse response) throws IOException {
+        try {
+            List<Sale> sales = saleRepository.findAll();
+            List<String> headers = Arrays.asList("ID", "Fecha", "Total", "Cliente", "Empleado");
+            List<List<String>> rows = sales.stream()
+                    .map(s -> {
+                        // Formatear fecha (ejemplo para java.util.Date)
+                        String fechaFormateada = s.getDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+                        return Arrays.asList(
+                                String.valueOf(s.getIdSale()),
+                                fechaFormateada,
+                                String.valueOf(s.getTotal()),
+                                s.getClient() != null ? s.getClient().getName() : "N/A",
+                                s.getEmployee() != null ? s.getEmployee().getName() : "N/A"
+                        );
+                    })
+                    .collect(Collectors.toList());
+
+            response.setContentType("application/pdf");
+            response.setHeader("Content-Disposition", "attachment; filename=reporte_ventas.pdf");
+            pdfReportService.generatePdf(response, "Reporte de Ventas", headers, rows);
+
+        } catch (Exception e) {
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.getWriter().println("Error al generar el reporte: " + e.getMessage());
+        }
     }
 }
