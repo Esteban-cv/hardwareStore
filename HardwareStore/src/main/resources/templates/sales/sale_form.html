@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ferretería Store - Dashboard</title>
+    <link rel="stylesheet" th:href="@{/css/form_stylesheet.css}">
     <link rel="stylesheet" th:href="@{/css/style.css}">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
@@ -37,6 +38,7 @@
                 <ul class="sub-menu">
                     <li><a th:href="@{/sales/form}" class="nav-link">Nueva Venta</a></li>
                     <li><a th:href="@{/productreturns}" class="nav-link">Devoluciones</a></li>
+                    <li><a th:href="@{/productreturns/form}" class="nav-link">Nueva devolucion</a></li>
                 </ul>
             </li>
 
@@ -82,7 +84,200 @@
         </div>
     </nav>
 
+    <main class="form-main-container form-accent-returns">
+        <div class="form-header">
+            <div class="form-title-section">
+                <h1 class="form-title">
+                    <i class="fas fa-shopping-cart"></i>
+                    Nueva Venta
+                </h1>
+                <p class="form-subtitle">Registra una nueva venta de productos</p>
+            </div>
+            <div class="form-header-actions">
+                <a th:href="@{/sales}" class="btn-pdf">
+                    <i class="fas fa-arrow-left"></i>
+                    Volver al listado
+                </a>
+            </div>
+        </div>
 
+        <div class="form-container">
+            <form class="form-content" th:action="@{/sales/save}" method="post">
+
+                <!-- Información General -->
+                <div class="form-section">
+                    <div class="form-section-header">
+                        <h2 class="form-section-title">
+                            <i class="fas fa-info-circle"></i>
+                            Información General
+                        </h2>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-input-group">
+                            <label for="date" class="form-label">
+                                <i class="fas fa-calendar-alt"></i>
+                                Fecha de Venta
+                            </label>
+                            <input
+                                    type="date"
+                                    id="date"
+                                    name="date"
+                                    class="form-input"
+                                    required
+                            >
+                            <span class="form-field-hint">Selecciona la fecha de la venta</span>
+                        </div>
+
+                        <div class="form-input-group">
+                            <label for="total" class="form-label">
+                                <i class="fas fa-dollar-sign"></i>
+                                Total de la Venta
+                            </label>
+                            <input
+                                    type="number"
+                                    id="total"
+                                    name="total"
+                                    class="form-input"
+                                    step="0.01"
+                                    min="0"
+                                    placeholder="0.00"
+                                    required
+                            >
+                            <span class="form-field-hint">Monto total de la venta</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Información del Cliente y Empleado -->
+                <div class="form-section">
+                    <div class="form-section-header">
+                        <h2 class="form-section-title">
+                            <i class="fas fa-users"></i>
+                            Cliente y Empleado
+                        </h2>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-input-group">
+                            <label for="id_client" class="form-label">
+                                <i class="fas fa-user"></i>
+                                Cliente
+                            </label>
+                            <select id="id_client" name="id_client" class="form-select" required>
+                                <option value="">Selecciona un cliente</option>
+                                <option value="1">Juan Pérez - CC: 12345678</option>
+                                <option value="2">María García - CC: 87654321</option>
+                                <option value="3">Carlos López - CC: 11223344</option>
+                                <option value="4">Ana Martínez - CC: 44332211</option>
+                                <option value="5">Luis Rodríguez - CC: 55667788</option>
+                            </select>
+                            <span class="form-field-hint">Cliente que realiza la compra</span>
+                        </div>
+
+                        <div class="form-input-group">
+                            <label for="id_employee" class="form-label">
+                                <i class="fas fa-user-tie"></i>
+                                Empleado
+                            </label>
+                            <select id="id_employee" name="id_employee" class="form-select" required>
+                                <option value="">Selecciona un empleado</option>
+                                <option value="1">Roberto Silva - Vendedor</option>
+                                <option value="2">Patricia Morales - Cajera</option>
+                                <option value="3">Diego Herrera - Supervisor</option>
+                                <option value="4">Carmen Jiménez - Vendedora</option>
+                                <option value="5">Felipe Castro - Gerente</option>
+                            </select>
+                            <span class="form-field-hint">Empleado que realiza la venta</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Botones de Acción -->
+                <div class="form-actions-container">
+                    <button type="submit" class="btn-add">
+                        <i class="fas fa-save"></i>
+                        Guardar Venta
+                    </button>
+                    <button type="reset" class="btn-excel">
+                        <i class="fas fa-eraser"></i>
+                        Limpiar Formulario
+                    </button>
+                    <a th:href="@{/sales}" class="btn-pdf">
+                        <i class="fas fa-times"></i>
+                        Cancelar
+                    </a>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <!-- EJEMPLO: Formulario de Devoluciones con las mismas clases -->
+    <main class="form-main-container form-accent-returns" style="display: none;">
+        <div class="form-header">
+            <div class="form-title-section">
+                <h1 class="form-title">
+                    <i class="fas fa-undo-alt"></i>
+                    Nueva Devolución
+                </h1>
+                <p class="form-subtitle">Registra una nueva devolución de productos</p>
+            </div>
+            <div class="form-header-actions">
+                <a th:href="@{/productreturns}" class="form-btn-back">
+                    <i class="fas fa-arrow-left"></i>
+                    Volver al listado
+                </a>
+            </div>
+        </div>
+
+        <div class="form-container">
+            <form class="form-content" th:action="@{/productreturns/save}" method="post">
+                <div class="form-section">
+                    <div class="form-section-header">
+                        <h2 class="form-section-title">
+                            <i class="fas fa-info-circle"></i>
+                            Información General
+                        </h2>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-input-group">
+                            <label for="date" class="form-label">
+                                <i class="fas fa-calendar-alt"></i>
+                                Fecha de Devolución
+                            </label>
+                            <input type="date" id="date" name="date" class="form-input" required>
+                            <span class="form-field-hint">Selecciona la fecha de la devolución</span>
+                        </div>
+
+                        <div class="form-input-group">
+                            <label for="total" class="form-label">
+                                <i class="fas fa-dollar-sign"></i>
+                                Total de la Devolución
+                            </label>
+                            <input type="number" id="total" name="total" class="form-input" step="0.01" min="0" placeholder="0.00" required>
+                            <span class="form-field-hint">Monto total de la devolución</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-actions-container">
+                    <button type="submit" class="btn-add">
+                        <i class="fas fa-save"></i>
+                        Guardar Devolución
+                    </button>
+                    <button type="reset" class="btn-excel">
+                        <i class="fas fa-eraser"></i>
+                        Limpiar Formulario
+                    </button>
+                    <a th:href="@{/productreturns}" class="btn-pdf">
+                        <i class="fas fa-times"></i>
+                        Cancelar
+                    </a>
+                </div>
+            </form>
+        </div>
+    </main>
 
 </div>
 
