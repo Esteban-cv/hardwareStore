@@ -356,6 +356,7 @@ body {
 .btn-edit {
     background: linear-gradient(45deg, #f59e0b, #facc15); /* naranja a amarillo */
     color: #fff;
+    text-decoration: none;
     border: none;
     padding: 6px 10px;
     border-radius: 6px;

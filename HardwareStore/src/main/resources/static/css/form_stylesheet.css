@@ -1,0 +1,353 @@
+:root {
+  --accent-sales: #10b981;        /* Verde para ventas */
+  --accent-returns: #667eea;      /* Morado para devoluciones */
+  --accent-purchases: #3b82f6;    /* Azul para compras */
+  --accent-inventory: #f59e0b;    /* Naranja para inventario */
+  --accent-catalog: #8b5cf6;      /* Violeta para catálogo */
+
+  /* Colores base del sistema */
+  --color-primary: #374151;
+  --color-secondary: #6b7280;
+  --color-muted: #9ca3af;
+  --color-background: #f8f9fa;
+  --color-white: #ffffff;
+  --color-border: #e5e7eb;
+  --color-border-light: #f3f4f6;
+}
+
+/* Clases de acento para diferentes módulos */
+.form-accent-sales { --current-accent: var(--accent-sales); }
+.form-accent-returns { --current-accent: var(--accent-returns); }
+.form-accent-purchases { --current-accent: var(--accent-purchases); }
+.form-accent-inventory { --current-accent: var(--accent-inventory); }
+.form-accent-catalog { --current-accent: var(--accent-catalog); }
+
+/* ======================================
+   CONTENEDOR PRINCIPAL
+   ====================================== */
+.form-main-container {
+  flex: 1;
+  padding: 30px;
+  background: var(--color-background);
+}
+
+/* ======================================
+   HEADER DEL FORMULARIO
+   ====================================== */
+.form-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.form-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--color-primary);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.form-title i {
+  color: var(--current-accent);
+  font-size: 26px;
+}
+
+.form-subtitle {
+  color: var(--color-secondary);
+  font-size: 16px;
+  margin: 0;
+}
+
+.form-btn-back {
+  background: #f3f4f6;
+  color: var(--color-primary);
+  text-decoration: none;
+  border: 1px solid var(--color-border);
+  padding: 12px 20px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+}
+
+.form-btn-back:hover {
+  background: #e5e7eb;
+  color: #1f2937;
+}
+
+/* ======================================
+   CONTENEDOR DEL FORMULARIO
+   ====================================== */
+.form-container {
+  background: var(--color-white);
+  border-radius: 16px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+}
+
+.form-content {
+  padding: 0;
+}
+
+/* ======================================
+   SECCIONES DEL FORMULARIO
+   ====================================== */
+.form-section {
+  border-bottom: 1px solid var(--color-border-light);
+  padding: 30px;
+}
+
+.form-section:last-child {
+  border-bottom: none;
+}
+
+.form-section-header {
+  margin-bottom: 25px;
+}
+
+.form-section-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #1f2937;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+}
+
+.form-section-title i {
+  color: var(--current-accent);
+  font-size: 18px;
+}
+
+/* ======================================
+   GRID Y CAMPOS
+   ====================================== */
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 25px;
+}
+
+.form-input-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-primary);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.form-label i {
+  color: var(--color-secondary);
+  font-size: 13px;
+  width: 16px;
+}
+
+/* ======================================
+   INPUTS Y SELECTS
+   ====================================== */
+.form-input,
+.form-select {
+  width: 100%;
+  padding: 14px 16px;
+  border: 2px solid var(--color-border);
+  border-radius: 10px;
+  font-size: 15px;
+  color: var(--color-primary);
+  background: var(--color-white);
+  transition: all 0.3s ease;
+  font-family: inherit;
+}
+
+.form-input:focus,
+.form-select:focus {
+  outline: none;
+  border-color: var(--current-accent);
+  box-shadow: 0 0 0 3px rgba(var(--current-accent), 0.1);
+  background: #fefefe;
+}
+
+.form-input:hover,
+.form-select:hover {
+  border-color: #d1d5db;
+}
+
+/* Select específico */
+.form-select {
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 12px center;
+  background-repeat: no-repeat;
+  background-size: 16px;
+  padding-right: 40px;
+  appearance: none;
+}
+
+/* Hints de los campos */
+.form-field-hint {
+  font-size: 12px;
+  color: var(--color-muted);
+  margin-top: 6px;
+  font-style: italic;
+}
+
+/* ======================================
+   CONTENEDOR DE ACCIONES
+   ====================================== */
+.form-actions-container {
+  padding: 30px;
+  background: #f9fafb;
+  display: flex;
+  gap: 15px;
+  justify-content: flex-end;
+  border-top: 1px solid var(--color-border-light);
+}
+
+/* ======================================
+   BOTONES DEL FORMULARIO
+   ====================================== */
+.form-btn-primary {
+  background: linear-gradient(135deg, var(--current-accent) 0%, color-mix(in srgb, var(--current-accent) 80%, black) 100%);
+  color: white;
+  border: none;
+  padding: 14px 28px;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--current-accent) 30%, transparent);
+}
+
+.form-btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px color-mix(in srgb, var(--current-accent) 40%, transparent);
+}
+
+.form-btn-secondary {
+  background: #f3f4f6;
+  color: var(--color-primary);
+  border: 2px solid var(--color-border);
+  padding: 14px 28px;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+}
+
+.form-btn-secondary:hover {
+  background: #e5e7eb;
+  border-color: #d1d5db;
+}
+
+.form-btn-cancel {
+  background: #fef2f2;
+  color: #dc2626;
+  text-decoration: none;
+  border: 2px solid #fecaca;
+  padding: 14px 28px;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+}
+
+.form-btn-cancel:hover {
+  background: #fee2e2;
+  border-color: #fca5a5;
+}
+
+/* ======================================
+   ESTADOS DE VALIDACIÓN
+   ====================================== */
+.form-input:invalid:not(:focus):not(:placeholder-shown) {
+  border-color: #ef4444;
+  background: #fef2f2;
+}
+
+.form-select:invalid:not(:focus) {
+  border-color: #ef4444;
+  background: #fef2f2;
+}
+
+/* ======================================
+   RESPONSIVE DESIGN
+   ====================================== */
+@media (max-width: 768px) {
+  .form-main-container {
+    padding: 20px;
+  }
+
+  .form-header {
+    flex-direction: column;
+    gap: 20px;
+    align-items: stretch;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .form-actions-container {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .form-btn-primary,
+  .form-btn-secondary,
+  .form-btn-cancel {
+    justify-content: center;
+  }
+}
+
+/* ======================================
+   UTILIDADES ESPECÍFICAS POR MÓDULO
+   ====================================== */
+
+/* Personalización adicional para ventas */
+.form-accent-sales .form-title i {
+  animation: bounce 2s infinite;
+}
+
+/* Personalización adicional para devoluciones */
+.form-accent-returns .form-title i {
+  animation: rotateIn 1s ease-out;
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+  40% { transform: translateY(-5px); }
+  60% { transform: translateY(-3px); }
+}
+
+@keyframes rotateIn {
+  from { transform: rotate(-180deg); opacity: 0; }
+  to { transform: rotate(0deg); opacity: 1; }
+}
