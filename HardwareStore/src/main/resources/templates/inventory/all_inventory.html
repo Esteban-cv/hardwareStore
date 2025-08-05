@@ -87,23 +87,32 @@
     <main class="main-content">
         <div class="dashboard-header">
             <h1>Inventario</h1>
+            <h4>Historial del Inventario</h4>
+        </div>
+
+        <div class="action-buttons" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px;">
+            <a th:href="@{/all_inventory/form}" class="btn-add" style="display: flex; align-items: center; gap: 5px;">
+                <i class="fas fa-plus-circle"></i> Actualizar Inventario
+            </a>
+            <a th:href="@{/inventory/inventoryreport}" class="btn-pdf" style="display: flex; align-items: center; gap: 5px;">
+                <i class="fas fa-file-export"></i>PDF
+            </a>
+            <a th:href="@{#}" class="btn-excel" style="display: flex; align-items: center; gap: 5px;">
+                <i class="fas fa-file-export"></i>EXCEL
+            </a>
         </div>
 
         <!-- Clients Table -->
-        <div class="clients-section">
-            <h3>Inventario</h3>
-            <p class="clients-subtitle">Historial del inventario</p>
-
-            <table class="clients-table">
+        <div class="section-for-all">
+            <table class="tables-for-all">
                 <thead>
                 <tr>
                     <th>ID</th>
                     <th>STOCK ACTUAL</th>
                     <th>STOCK MÍNIMO</th>
                     <th>FECHA ACTUALIZACIÓN</th>
-                    <th>ID UBICACIÓN</th>
-                    <th>ID ARTICLE</th>
-
+                    <th>UBICACIÓN</th>
+                    <th>ARTICULO</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -112,8 +121,8 @@
                     <td th:text="${inventory.currentStock}"></td>
                     <td th:text="${inventory.minimumStock}"></td>
                     <td th:text="${inventory.updatedAt}"></td>
-                    <td th:text="${inventory.location.idLocation}"></td>
-                    <td th:text="${inventory.article.idArticle}"></td>
+                    <td th:text="${inventory.location.name}"></td>
+                    <td th:text="${inventory.article.name}"></td>
                     <td>
                         <button class="more-btn"><i class="fas fa-pencil-"></i></button>
                         <button class="more-btn"><i class="fas fa-ellipsis-v"></i></button>
@@ -121,6 +130,27 @@
                 </tr>
                 </tbody>
             </table>
+            <nav class="pagination-nav">
+                <ul class="pagination-list">
+
+                    <!-- back -->
+                    <li th:classappend="${!all_inventory.hasPrevious()} ? 'disabled'">
+                        <a th:href="@{/all_inventory(page=${all_inventory.number - 1})}">Anterior</a>
+                    </li>
+
+                    <!-- numbers -->
+                    <li th:each="i : ${#numbers.sequence(0, all_inventory.totalPages - 1)}"
+                        th:classappend="${i == all_inventory.number} ? 'active'">
+                        <a th:href="@{/all_inventory(page=${i})}" th:text="${i + 1}"></a>
+                    </li>
+
+                    <!-- next -->
+                    <li th:classappend="${!all_inventory.hasNext()} ? 'disabled'">
+                        <a th:href="@{/all_inventory(page=${all_inventory.number + 1})}">Siguiente</a>
+                    </li>
+
+                </ul>
+            </nav>
         </div>
     </main>
 </div>
@@ -134,5 +164,50 @@
         <span>Hecho con <i class="fas fa-heart"></i> por Aprendices SENA</span>
     </div>
 </footer>
+
+<script th:inline="javascript">
+    // Chart.js configuration
+    const ctx = document.getElementById('clientChart').getContext('2d');
+    const chartData = /*[[${chartData}]]*/ [
+        110, 125, 140, 120, 135, 150, 145, 160, 155, 170, 165, 180
+    ];
+
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11'],
+            datasets: [{
+                data: chartData,
+                borderColor: '#10b981',
+                backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                borderWidth: 2,
+                fill: true,
+                tension: 0.4
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 220,
+                    ticks: {
+                        stepSize: 55
+                    }
+                },
+                x: {
+                    grid: {
+                        display: true
+                    }
+                }
+            }
+        }
+    });
+</script>
 </body>
 </html>
