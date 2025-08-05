@@ -25,7 +25,7 @@ public class InventoryController {
 
     @GetMapping
     public String list(Model model){
-        model.addAttribute("inventory", inventoryRepository.findAll());
+        model.addAttribute("all_inventory", inventoryRepository.findAll());
         return "inventory/all_inventory";
     }
 

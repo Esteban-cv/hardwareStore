@@ -18,6 +18,7 @@ public class Purchase {
     private Integer quantity;
     private LocalDate date;
     @Column(precision = 10, scale = 2, nullable = false)
+    private BigDecimal total;
     private BigDecimal unitPrice;
     @Column(length = 20)
     private String status;
@@ -59,6 +60,14 @@ public class Purchase {
 
     public void setDate(LocalDate date) {
         this.date = date;
+    }
+
+    public BigDecimal getTotal() {
+        return total;
+    }
+
+    public void setTotal(BigDecimal total) {
+        this.total = total;
     }
 
     public BigDecimal getUnitPrice() {
