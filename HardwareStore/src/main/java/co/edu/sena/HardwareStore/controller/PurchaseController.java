@@ -7,6 +7,7 @@ import co.edu.sena.HardwareStore.repository.ArticleRepository;
 import co.edu.sena.HardwareStore.repository.EmployeeRepository;
 import co.edu.sena.HardwareStore.repository.PurchaseRepository;
 import co.edu.sena.HardwareStore.repository.SupplierRepository;
+import co.edu.sena.HardwareStore.services.ExcelReportService;
 import co.edu.sena.HardwareStore.services.PdfReportService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +41,8 @@ public class PurchaseController {
     private EmployeeRepository employeeRepository;
     @Autowired
     private PdfReportService pdfReportService;
+    @Autowired
+    private ExcelReportService excelReportService;
     @GetMapping
     public String listPurchases(@RequestParam(defaultValue = "0") int page, Model model) {
         Page<Purchase> purchases = purchaseRepository.findAll(PageRequest.of(page, 10, Sort.by("date").descending()));
@@ -118,6 +121,37 @@ public class PurchaseController {
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             response.getWriter().println("Error al generar el reporte: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/purchasereport/excel")
+    public void generatePurchaseExcelReport(HttpServletResponse response) throws IOException {
+        try {
+            List<Purchase> purchases = purchaseRepository.findAll();
+            List<String> headers = Arrays.asList("ID", "Fecha", "Cantidad", "Total", "Estado", "Proveedor", "Empleado", "Articulo");
+            List<List<String>> rows = purchases.stream()
+                    .map(s -> {
+                        String fechaFormateada = s.getDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+                        return Arrays.asList(
+                                String.valueOf(s.getIdPurchase()),
+                                fechaFormateada,
+                                String.valueOf(s.getQuantity()),
+                                String.valueOf(s.getTotal()),
+                                String.valueOf(s.getStatus()),
+                                s.getSupplier() != null ? s.getSupplier().getName() : "N/A",
+                                s.getEmployee() != null ? s.getEmployee().getName() : "N/A",
+                                s.getArticle() != null ? s.getArticle().getName() : "N/A"
+                        );
+                    })
+                    .collect(Collectors.toList());
+
+            response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+            response.setHeader("Content-Disposition", "attachment; filename=reporte_compras.xlsx");
+
+            excelReportService.generateExcel(response, "Compras", headers, rows);
+        } catch (Exception e) {
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.getWriter().println("Error al generar el reporte Excel: " + e.getMessage());
         }
     }
 }

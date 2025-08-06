@@ -6,6 +6,7 @@ import co.edu.sena.HardwareStore.model.Sale;
 import co.edu.sena.HardwareStore.repository.ArticleRepository;
 import co.edu.sena.HardwareStore.repository.ProductReturnsRepository;
 import co.edu.sena.HardwareStore.repository.SaleRepository;
+import co.edu.sena.HardwareStore.services.ExcelReportService;
 import co.edu.sena.HardwareStore.services.PdfReportService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,9 @@ public class ProductReturnController {
     private SaleRepository saleRepository;
     @Autowired
     private ArticleRepository articleRepository;
+    @Autowired
+    private ExcelReportService excelReportService;
+
     @Autowired
     private PdfReportService pdfReportService;
 
@@ -106,4 +110,34 @@ public class ProductReturnController {
             response.getWriter().println("Error al generar el reporte: " + e.getMessage());
         }
     }
+
+    @GetMapping("/returnreport/excel")
+    public void generateReturnExcelReport(HttpServletResponse response) throws IOException {
+        try {
+            List<ProductReturns> productReturns = productReturnsRepository.findAll();
+            List<String> headers = Arrays.asList("ID", "Cantidad", "Fecha", "Cantidad Venta", "Articulo");
+            List<List<String>> rows = productReturns.stream()
+                    .map(r -> {
+                        String fechaFormateada = r.getDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+                        return Arrays.asList(
+                                String.valueOf(r.getIdReturn()),
+                                String.valueOf(r.getQuantity()),
+                                fechaFormateada,
+                                String.valueOf(r.getSale() != null ? r.getSale().getTotal() : "N/A"),
+                                r.getArticle() != null ? r.getArticle().getName() : "N/A"
+                        );
+                    })
+                    .collect(Collectors.toList());
+
+            response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+            response.setHeader("Content-Disposition", "attachment; filename=reporte_devoluciones.xlsx");
+
+            excelReportService.generateExcel(response, "Devoluciones", headers, rows);
+
+        } catch (Exception e) {
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.getWriter().println("Error al generar el reporte Excel: " + e.getMessage());
+        }
+    }
+
 }

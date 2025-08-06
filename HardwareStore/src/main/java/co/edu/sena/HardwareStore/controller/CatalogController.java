@@ -7,6 +7,7 @@ import co.edu.sena.HardwareStore.model.Unit;
 import co.edu.sena.HardwareStore.repository.ArticleRepository;
 import co.edu.sena.HardwareStore.repository.CategoryRepository;
 import co.edu.sena.HardwareStore.repository.UnitRepository;
+import co.edu.sena.HardwareStore.services.ExcelReportService;
 import co.edu.sena.HardwareStore.services.PdfReportService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,9 @@ public class CatalogController {
     private PdfReportService pdfReportService;
     @Autowired
     private UnitRepository unitRepository;
+    @Autowired
+    private ExcelReportService excelReportService;
+
 
     @GetMapping("/articles")
     public String listArticles(@RequestParam(defaultValue = "0") int page, Model model){
@@ -176,6 +180,62 @@ public class CatalogController {
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             response.getWriter().println("Error al generar el reporte: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/articlereport/excel")
+    public void generateArticleExcelReport(HttpServletResponse response) throws IOException {
+        try {
+            List<Article> articles = articleRepository.findAll();
+            List<String> headers = Arrays.asList("ID", "Nombre", "Código", "Cantidad", "Precio", "Categoría", "Unidad");
+            List<List<String>> rows = articles.stream()
+                    .map(article -> {
+                        String precioFormateado = article.getPrice() != null
+                                ? String.format("$%,.2f", article.getPrice())
+                                : "$0.00";
+                        return Arrays.asList(
+                                String.valueOf(article.getIdArticle()),
+                                article.getName() != null ? article.getName() : "N/A",
+                                article.getCode() != null ? article.getCode() : "N/A",
+                                String.valueOf(article.getQuantity()),
+                                precioFormateado,
+                                article.getCategory() != null ? article.getCategory().getName() : "Sin categoría",
+                                article.getUnit() != null ? article.getUnit().getName() : "Sin unidad"
+                        );
+                    })
+                    .collect(Collectors.toList());
+
+            response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+            response.setHeader("Content-Disposition", "attachment; filename=reporte_articulos.xlsx");
+
+            excelReportService.generateExcel(response, "Artículos", headers, rows);
+
+        } catch (Exception e) {
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.getWriter().println("Error al generar el reporte Excel: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/categoryreport/excel")
+    public void generateCategoryExcelReport(HttpServletResponse response) throws IOException {
+        try {
+            List<Category> categories = categoryRepository.findAll();
+            List<String> headers = Arrays.asList("ID", "Nombre");
+            List<List<String>> rows = categories.stream()
+                    .map(category -> Arrays.asList(
+                            String.valueOf(category.getIdCategory()),
+                            category.getName() != null ? category.getName() : "N/A"
+                    ))
+                    .collect(Collectors.toList());
+
+            response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+            response.setHeader("Content-Disposition", "attachment; filename=reporte_categorias.xlsx");
+
+            excelReportService.generateExcel(response, "Categorías", headers, rows);
+
+        } catch (Exception e) {
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.getWriter().println("Error al generar el reporte Excel: " + e.getMessage());
         }
     }
 }
