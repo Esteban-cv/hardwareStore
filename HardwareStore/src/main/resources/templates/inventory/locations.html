@@ -164,50 +164,5 @@
         <span>Hecho con <i class="fas fa-heart"></i> por Aprendices SENA</span>
     </div>
 </footer>
-
-<script th:inline="javascript">
-    // Chart.js configuration
-    const ctx = document.getElementById('clientChart').getContext('2d');
-    const chartData = /*[[${chartData}]]*/ [
-        110, 125, 140, 120, 135, 150, 145, 160, 155, 170, 165, 180
-    ];
-
-    new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11'],
-            datasets: [{
-                data: chartData,
-                borderColor: '#10b981',
-                backgroundColor: 'rgba(16, 185, 129, 0.1)',
-                borderWidth: 2,
-                fill: true,
-                tension: 0.4
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: {
-                    display: false
-                }
-            },
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    max: 220,
-                    ticks: {
-                        stepSize: 55
-                    }
-                },
-                x: {
-                    grid: {
-                        display: true
-                    }
-                }
-            }
-        }
-    });
-</script>
 </body>
 </html>
