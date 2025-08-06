@@ -1,9 +1,11 @@
+
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ferretería Store - Dashboard</title>
+  <link rel="stylesheet" th:href="@{/css/form_stylesheet.css}">
   <link rel="stylesheet" th:href="@{/css/style.css}">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
@@ -82,111 +84,161 @@
     </div>
   </nav>
 
-  <!-- Main Content -->
-  <main class="main-content">
-    <div class="dashboard-header">
-      <h1>Dashboard</h1>
+  <main class="form-main-container form-accent-returns">
+    <div class="form-header">
+      <div class="form-title-section">
+        <h1 class="form-title">
+          <i class="fas fa-shopping-cart"></i>
+          Nueva Ubicación
+        </h1>
+        <p class="form-subtitle">Registra una nueva ubicación</p>
+      </div>
+      <div class="form-header-actions">
+        <a th:href="@{/sales}" class="btn-pdf">
+          <i class="fas fa-arrow-left"></i>
+          Volver al listado
+        </a>
+      </div>
     </div>
 
-    <!-- Stats and Chart Section -->
-    <div class="stats-grid">
-      <div class="chart-container">
-        <h3>Incremento de clientes</h3>
-        <canvas id="clientChart" width="400" height="200"></canvas>
-      </div>
+    <div class="form-container">
+      <form class="form-content" th:action="@{/sales/save}" method="post">
 
-      <div class="active-clients">
-        <h3>Clientes activos</h3>
-        <div class="progress-ring">
-          <svg>
-            <defs>
-              <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" style="stop-color:#667eea"/>
-                <stop offset="100%" style="stop-color:#764ba2"/>
-              </linearGradient>
-            </defs>
-            <circle class="bg" cx="60" cy="60" r="45"></circle>
-            <circle class="progress" cx="60" cy="60" r="45"></circle>
-          </svg>
+        <!-- Información General -->
+        <div class="form-section">
+          <div class="form-section-header">
+            <h2 class="form-section-title">
+              <i class="fas fa-info-circle"></i>
+              Información General
+            </h2>
+          </div>
+
+          <div class="form-grid">
+            <div class="form-input-group">
+              <label for="clientName" class="form-label">
+                <i class="fas fa-user"></i>
+                Nombre
+              </label>
+              <input
+                      type="text"
+                      id="clientName"
+                      name="clientName"
+                      class="form-input"
+                      title="Solo letras y espacios"
+                      placeholder="Ej: Almacen principal"
+                      required
+              >
+              <span class="form-field-hint">Escriba el nombre de la ubicación</span>
+            </div>
+
+            <div class="form-input-group">
+              <label for="clientName" class="form-label">
+                <i class="fas fa-user"></i>
+                Código
+              </label>
+              <input
+                      type="text"
+                      id="clientName"
+                      name="clientName"
+                      class="form-input"
+                      title="Solo letras y espacios"
+                      placeholder="Ej: ALM-001"
+                      required
+              >
+              <span class="form-field-hint">Escriba el código de la ubicación</span>
+            </div>
+          </div>
         </div>
-        <div class="client-number">289</div>
-      </div>
-    </div>
 
-    <!-- Stats Cards -->
-    <div class="stats-cards">
-      <div class="stat-card">
-        <i class="fas fa-users"></i>
-        <div class="stat-number">5203</div>
-        <div class="stat-label">Total clientes</div>
-      </div>
 
-      <div class="stat-card">
-        <i class="fas fa-box"></i>
-        <div class="stat-number">7909</div>
-        <div class="stat-label">Total artículos</div>
-      </div>
 
-      <div class="stat-card">
-        <i class="fas fa-arrow-up"></i>
-        <div class="stat-number">3209</div>
-        <div class="stat-label">Total salidas</div>
-      </div>
 
-      <div class="stat-card">
-        <i class="fas fa-arrow-down"></i>
-        <div class="stat-number">4921</div>
-        <div class="stat-label">Total entradas</div>
-      </div>
-    </div>
-
-    <!-- Clients Table -->
-    <div class="clients-section">
-      <h3>Clientes</h3>
-      <p class="clients-subtitle">Estos clientes han comprado en los últimos 6 meses.</p>
-
-      <table class="clients-table">
-        <thead>
-        <tr>
-          <th>Compañía</th>
-          <th>Estado</th>
-          <th>Acerca</th>
-          <th>Porcentaje ventas</th>
-          <th></th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-          <td>
-            <div class="client-info">
-              <div class="client-avatar">C</div>
-              <div class="client-details">
-                <h4>Catalog</h4>
-                <p>catalogapp.io</p>
-              </div>
-            </div>
-          </td>
-          <td>
-            <span class="status-badge">Cliente</span>
-          </td>
-          <td>
-            <div>Content curating app</div>
-            <small>Brings all your news into one place</small>
-          </td>
-          <td>
-            <div class="progress-bar">
-              <div class="progress-fill"></div>
-            </div>
-            <small>70%</small>
-          </td>
-          <td>
-            <button class="more-btn"><i class="fas fa-ellipsis-v"></i></button>
-          </td>
-        </tr>
-        </tbody>
-      </table>
+        <!-- Botones de Acción -->
+        <div class="form-actions-container">
+          <button type="submit" class="btn-add">
+            <i class="fas fa-save"></i>
+            Guardar Ubicación
+          </button>
+          <button type="reset" class="btn-excel">
+            <i class="fas fa-eraser"></i>
+            Limpiar Formulario
+          </button>
+          <a th:href="@{/sales}" class="btn-pdf">
+            <i class="fas fa-times"></i>
+            Cancelar
+          </a>
+        </div>
+      </form>
     </div>
   </main>
+
+  <!-- EJEMPLO: Formulario de Devoluciones con las mismas clases -->
+  <main class="form-main-container form-accent-returns" style="display: none;">
+    <div class="form-header">
+      <div class="form-title-section">
+        <h1 class="form-title">
+          <i class="fas fa-undo-alt"></i>
+          Nueva Devolución
+        </h1>
+        <p class="form-subtitle">Registra una nueva devolución de productos</p>
+      </div>
+      <div class="form-header-actions">
+        <a th:href="@{/productreturns}" class="form-btn-back">
+          <i class="fas fa-arrow-left"></i>
+          Volver al listado
+        </a>
+      </div>
+    </div>
+
+    <div class="form-container">
+      <form class="form-content" th:action="@{/productreturns/save}" method="post">
+        <div class="form-section">
+          <div class="form-section-header">
+            <h2 class="form-section-title">
+              <i class="fas fa-info-circle"></i>
+              Información General
+            </h2>
+          </div>
+
+          <div class="form-grid">
+            <div class="form-input-group">
+              <label for="date" class="form-label">
+                <i class="fas fa-calendar-alt"></i>
+                Fecha de Devolución
+              </label>
+              <input type="date" id="date" name="date" class="form-input" required>
+              <span class="form-field-hint">Selecciona la fecha de la devolución</span>
+            </div>
+
+            <div class="form-input-group">
+              <label for="total" class="form-label">
+                <i class="fas fa-dollar-sign"></i>
+                Total de la Devolución
+              </label>
+              <input type="number" id="total" name="total" class="form-input" step="0.01" min="0" placeholder="0.00" required>
+              <span class="form-field-hint">Monto total de la devolución</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-actions-container">
+          <button type="submit" class="btn-add">
+            <i class="fas fa-save"></i>
+            Guardar Devolución
+          </button>
+          <button type="reset" class="btn-excel">
+            <i class="fas fa-eraser"></i>
+            Limpiar Formulario
+          </button>
+          <a th:href="@{/productreturns}" class="btn-pdf">
+            <i class="fas fa-times"></i>
+            Cancelar
+          </a>
+        </div>
+      </form>
+    </div>
+  </main>
+
 </div>
 
 <!-- Footer -->
@@ -198,50 +250,5 @@
     <span>Hecho con <i class="fas fa-heart"></i> por Aprendices SENA</span>
   </div>
 </footer>
-
-<script th:inline="javascript">
-  // Chart.js configuration
-  const ctx = document.getElementById('clientChart').getContext('2d');
-  const chartData = /*[[${chartData}]]*/ [
-      110, 125, 140, 120, 135, 150, 145, 160, 155, 170, 165, 180
-  ];
-
-  new Chart(ctx, {
-      type: 'line',
-      data: {
-          labels: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11'],
-          datasets: [{
-              data: chartData,
-              borderColor: '#10b981',
-              backgroundColor: 'rgba(16, 185, 129, 0.1)',
-              borderWidth: 2,
-              fill: true,
-              tension: 0.4
-          }]
-      },
-      options: {
-          responsive: true,
-          plugins: {
-              legend: {
-                  display: false
-              }
-          },
-          scales: {
-              y: {
-                  beginAtZero: true,
-                  max: 220,
-                  ticks: {
-                      stepSize: 55
-                  }
-              },
-              x: {
-                  grid: {
-                      display: true
-                  }
-              }
-          }
-      }
-  });
-</script>
 </body>
 </html>
