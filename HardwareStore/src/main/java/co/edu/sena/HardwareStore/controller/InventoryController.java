@@ -40,8 +40,8 @@ public class InventoryController {
 
     @GetMapping
     public String listInventory(@RequestParam(defaultValue = "0") int page, Model model) {
-        Page<Inventory> all_inventory = inventoryRepository.findAll(PageRequest.of(page, 10, Sort.by("updatedAt").descending()));
-        model.addAttribute("all_inventory", all_inventory);
+        Page<Inventory> inventories = inventoryRepository.findAll(PageRequest.of(page, 10, Sort.by("updatedAt").descending()));
+        model.addAttribute("inventories", inventories);
         return "inventory/all_inventory";
     }
 
