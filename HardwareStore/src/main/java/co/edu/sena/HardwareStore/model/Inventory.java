@@ -13,8 +13,10 @@ public class Inventory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_inventory")
     private Integer idInventory;
-    private Integer current_stock;
-    private Integer minimum_stock;
+    @Column(name = "current_stock")
+    private Integer currentStock;
+    @Column(name = "minimum_stock")
+    private Integer minimumStock;
     @ManyToOne
     @JoinColumn(name = "id_article", nullable = false)
     private Article article;
@@ -36,20 +38,20 @@ public class Inventory {
         this.idInventory = idInventory;
     }
 
-    public Integer getCurrent_stock() {
-        return current_stock;
+    public Integer getCurrentStock() {
+        return currentStock;
     }
 
-    public void setCurrent_stock(Integer current_stock) {
-        this.current_stock = current_stock;
+    public void setCurrentStock(Integer currentStock) {
+        this.currentStock = currentStock;
     }
 
-    public Integer getMinimum_stock() {
-        return minimum_stock;
+    public Integer getMinimumStock() {
+        return minimumStock;
     }
 
-    public void setMinimum_stock(Integer minimum_stock) {
-        this.minimum_stock = minimum_stock;
+    public void setMinimumStock(Integer minimumStock) {
+        this.minimumStock = minimumStock;
     }
 
     public Article getArticle() {

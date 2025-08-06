@@ -1,9 +1,11 @@
+
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ferretería Store - Dashboard</title>
+    <link rel="stylesheet" th:href="@{/css/form_stylesheet.css}">
     <link rel="stylesheet" th:href="@{/css/style.css}">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
@@ -36,6 +38,7 @@
                 <ul class="sub-menu">
                     <li><a th:href="@{/sales/form}" class="nav-link">Nueva Venta</a></li>
                     <li><a th:href="@{/productreturns}" class="nav-link">Devoluciones</a></li>
+                    <li><a th:href="@{/productreturns/form}" class="nav-link">Nueva devolucion</a></li>
                 </ul>
             </li>
 
@@ -81,111 +84,114 @@
         </div>
     </nav>
 
-    <!-- Main Content -->
-    <main class="main-content">
-        <div class="dashboard-header">
-            <h1>Dashboard</h1>
+    <main class="form-main-container form-accent-returns">
+        <div class="form-header">
+            <div class="form-title-section">
+                <h1 class="form-title">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span th:text="${sale.idSale != null} ? 'Editar Venta' : 'Nueva Venta'"></span>
+                </h1>
+                <p class="form-subtitle" th:text="${sale.idSale != null} ?
+                'Actualiza los datos de la venta' : 'Registra una nueva venta'"></p>
+            </div>
+            <div class="form-header-actions">
+                <a th:href="@{/sales}" class="btn-pdf">
+                    <i class="fas fa-arrow-left"></i>
+                    Volver al listado
+                </a>
+            </div>
         </div>
 
-        <!-- Stats and Chart Section -->
-        <div class="stats-grid">
-            <div class="chart-container">
-                <h3>Incremento de clientes</h3>
-                <canvas id="clientChart" width="400" height="200"></canvas>
-            </div>
+        <div class="form-container">
+            <form class="form-content" th:action="@{/sales/save}" method="post" th:object="${sale}">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                <input type="hidden" th:field="*{idSale}">
 
-            <div class="active-clients">
-                <h3>Clientes activos</h3>
-                <div class="progress-ring">
-                    <svg>
-                        <defs>
-                            <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                                <stop offset="0%" style="stop-color:#667eea"/>
-                                <stop offset="100%" style="stop-color:#764ba2"/>
-                            </linearGradient>
-                        </defs>
-                        <circle class="bg" cx="60" cy="60" r="45"></circle>
-                        <circle class="progress" cx="60" cy="60" r="45"></circle>
-                    </svg>
+                <div class="form-section">
+                    <div class="form-section-header">
+                        <h2 class="form-section-title">
+                            <i class="fas fa-info-circle"></i>
+                            Información General
+                        </h2>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-input-group">
+                            <label for="date" class="form-label">
+                                <i class="fas fa-calendar-alt"></i>
+                                Fecha
+                            </label>
+                            <input type="date" id="date" th:field="*{date}" class="form-input" required>
+                            <span class="form-field-hint">Fecha de la venta</span>
+                        </div>
+
+                        <div class="form-input-group">
+                            <label for="total" class="form-label">
+                                <i class="fas fa-dollar-sign"></i>
+                                Total
+                            </label>
+                            <input type="number" id="total" th:field="*{total}" class="form-input" step="0.01" min="0" required>
+                            <span class="form-field-hint">Total de la venta</span>
+                        </div>
+                    </div>
                 </div>
-                <div class="client-number">289</div>
-            </div>
-        </div>
 
-        <!-- Stats Cards -->
-        <div class="stats-cards">
-            <div class="stat-card">
-                <i class="fas fa-users"></i>
-                <div class="stat-number">5203</div>
-                <div class="stat-label">Total clientes</div>
-            </div>
+                <div class="form-section">
+                    <div class="form-section-header">
+                        <h2 class="form-section-title">
+                            <i class="fas fa-users"></i>
+                            Participantes
+                        </h2>
+                    </div>
 
-            <div class="stat-card">
-                <i class="fas fa-box"></i>
-                <div class="stat-number">7909</div>
-                <div class="stat-label">Total artículos</div>
-            </div>
-
-            <div class="stat-card">
-                <i class="fas fa-arrow-up"></i>
-                <div class="stat-number">3209</div>
-                <div class="stat-label">Total salidas</div>
-            </div>
-
-            <div class="stat-card">
-                <i class="fas fa-arrow-down"></i>
-                <div class="stat-number">4921</div>
-                <div class="stat-label">Total entradas</div>
-            </div>
-        </div>
-
-        <!-- Clients Table -->
-        <div class="clients-section">
-            <h3>Clientes</h3>
-            <p class="clients-subtitle">Estos clientes han comprado en los últimos 6 meses.</p>
-
-            <table class="clients-table">
-                <thead>
-                <tr>
-                    <th>Compañía</th>
-                    <th>Estado</th>
-                    <th>Acerca</th>
-                    <th>Porcentaje ventas</th>
-                    <th></th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td>
-                        <div class="client-info">
-                            <div class="client-avatar">C</div>
-                            <div class="client-details">
-                                <h4>Catalog</h4>
-                                <p>catalogapp.io</p>
-                            </div>
+                    <div class="form-grid">
+                        <div class="form-input-group">
+                            <label for="client" class="form-label">
+                                <i class="fas fa-user"></i>
+                                Cliente
+                            </label>
+                            <select id="client" th:field="*{client.idClient}" class="form-select" required>
+                                <option value="">Seleccione cliente</option>
+                                <option th:each="client : ${clients}"
+                                        th:value="${client.idClient}"
+                                        th:text="${client.name}"></option>
+                            </select>
                         </div>
-                    </td>
-                    <td>
-                        <span class="status-badge">Cliente</span>
-                    </td>
-                    <td>
-                        <div>Content curating app</div>
-                        <small>Brings all your news into one place</small>
-                    </td>
-                    <td>
-                        <div class="progress-bar">
-                            <div class="progress-fill"></div>
+
+                        <div class="form-input-group">
+                            <label for="employee" class="form-label">
+                                <i class="fas fa-user-tie"></i>
+                                Empleado
+                            </label>
+                            <select id="employee" th:field="*{employee.idEmployee}" class="form-select" required>
+                                <option value="">Seleccione empleado</option>
+                                <option th:each="employee : ${employees}"
+                                        th:value="${employee.idEmployee}"
+                                        th:text="${employee.name}"></option>
+                            </select>
                         </div>
-                        <small>70%</small>
-                    </td>
-                    <td>
-                        <button class="more-btn"><i class="fas fa-ellipsis-v"></i></button>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
+                    </div>
+                </div>
+
+                <div class="form-actions-container">
+                    <button type="submit" class="btn-add">
+                        <i class="fas fa-save"></i>
+                        <span th:text="${sale.idSale != null} ? 'Actualizar' : 'Guardar'"></span>
+                    </button>
+                    <button type="reset" class="btn-excel">
+                        <i class="fas fa-eraser"></i>
+                        Limpiar
+                    </button>
+                    <a th:href="@{/sales}" class="btn-pdf">
+                        <i class="fas fa-times"></i>
+                        Cancelar
+                    </a>
+                </div>
+            </form>
         </div>
     </main>
+
+
 </div>
 
 <!-- Footer -->
