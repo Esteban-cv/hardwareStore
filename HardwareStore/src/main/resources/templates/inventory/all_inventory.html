@@ -86,10 +86,10 @@
     <!-- Main Content -->
     <main class="main-content">
         <div class="dashboard-header">
-            <h1>Inventario</h1>
-            <h4>Historial del Inventario</h4>
+            <h1>Gestíon de Inventario</h1>
         </div>
-
+        <h4>Gestiona fácilmente el inventario registrado: consulta, edita o elimina según sea necesario.</h4>
+        <br>
         <div class="action-buttons" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px;">
             <a th:href="@{/inventory/form}" class="btn-add" style="display: flex; align-items: center; gap: 5px;">
                 <i class="fas fa-plus-circle"></i> Nuevo Inventario
@@ -124,8 +124,14 @@
                     <td th:text="${inventory.location.name}"></td>
                     <td th:text="${inventory.article.name}"></td>
                     <td>
-                        <button class="more-btn"><i class="fas fa-pencil-"></i></button>
-                        <button class="more-btn"><i class="fas fa-ellipsis-v"></i></button>
+                        <a th:href="@{'/inventory/edit/' + ${inventory.idInventory}}" class="btn-edit">
+                            <i class="fas fa-pencil-alt"></i>
+                        </a>
+                        <form th:action="@{'/inventory/delete/' + ${inventory.idInventory}}" method="post" style="display:inline;">
+                            <button type="submit" class="btn-delete">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </form>
                     </td>
                 </tr>
                 </tbody>
