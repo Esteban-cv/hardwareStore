@@ -85,10 +85,10 @@
     <!-- Main Content -->
     <main class="main-content">
         <div class="dashboard-header">
-            <h1>Compras</h1>
-            <h4>Historial de compras del inventario</h4>
+            <h1>Gestíon de Compras</h1>
         </div>
-
+        <h4>Gestiona fácilmente las compras registradas: consulta, edita o elimina según sea necesario.</h4>
+        <br>
         <div class="action-buttons" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px;">
             <a th:href="@{/purchases/form}" class="btn-add" style="display: flex; align-items: center; gap: 5px;">
                 <i class="fas fa-plus-circle"></i> Nueva Compra
@@ -114,6 +114,7 @@
                     <th>PROVEEDOR</th>
                     <th>EMPLEADO</th>
                     <th>NOMBRE ARTICULO</th>
+                    <th>ACCIONES</th>
                 </tr>
                 </thead>
                 <tbody>
