@@ -4,6 +4,7 @@ import co.edu.sena.HardwareStore.model.Client;
 import co.edu.sena.HardwareStore.model.Employee;
 import co.edu.sena.HardwareStore.model.Sale;
 import co.edu.sena.HardwareStore.repository.*;
+import co.edu.sena.HardwareStore.services.ExcelReportService;
 import co.edu.sena.HardwareStore.services.PdfReportService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +39,8 @@ public class SaleController {
 
     @Autowired
     private EmployeeRepository employeeRepository;
+    @Autowired
+    private ExcelReportService excelReportService;
 
     @GetMapping
     public String listSales(@RequestParam(defaultValue = "0") int page, Model model) {
@@ -109,4 +112,36 @@ public class SaleController {
             response.getWriter().println("Error al generar el reporte: " + e.getMessage());
         }
     }
+
+    @GetMapping("/salereport/excel")
+    public void generateSaleExcelReport(HttpServletResponse response) throws IOException {
+        try {
+            List<Sale> sales = saleRepository.findAll();
+            List<String> headers = Arrays.asList("ID", "Fecha", "Total", "Cliente", "Empleado");
+            List<List<String>> rows = sales.stream()
+                    .map(s -> {
+                        String fechaFormateada = s.getDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+                        return Arrays.asList(
+                                String.valueOf(s.getIdSale()),
+                                fechaFormateada,
+                                String.valueOf(s.getTotal()),
+                                s.getClient() != null ? s.getClient().getName() : "N/A",
+                                s.getEmployee() != null ? s.getEmployee().getName() : "N/A"
+                        );
+                    })
+                    .collect(Collectors.toList());
+
+            response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+            response.setHeader("Content-Disposition", "attachment; filename=reporte_ventas.xlsx");
+
+            excelReportService.generateExcel(response, "Ventas", headers, rows);
+
+        } catch (Exception e) {
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.getWriter().println("Error al generar el reporte Excel: " + e.getMessage());
+        }
+    }
+
+
+
 }

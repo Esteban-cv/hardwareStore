@@ -2,6 +2,7 @@ package co.edu.sena.HardwareStore.controller;
 
 import co.edu.sena.HardwareStore.model.Location;
 import co.edu.sena.HardwareStore.repository.LocationRepository;
+import co.edu.sena.HardwareStore.services.ExcelReportService;
 import co.edu.sena.HardwareStore.services.PdfReportService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,8 @@ public class LocationController {
     private LocationRepository locationRepository;
     @Autowired
     private PdfReportService pdfReportService;
+    @Autowired
+    private ExcelReportService excelReportService;
     @GetMapping
     public String listLocations(@RequestParam(defaultValue = "0") int page, Model model) {
         Page<Location> locations = locationRepository.findAll(PageRequest.of(page, 10, Sort.by("idLocation").descending()));
@@ -88,6 +91,30 @@ public class LocationController {
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             response.getWriter().println("Error al generar el reporte: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/locationreport/excel")
+    public void generateLocationExcelReport(HttpServletResponse response) throws IOException {
+        try {
+            List<Location> locations = locationRepository.findAll();
+            List<String> headers = Arrays.asList("ID", "Nombre", "Código");
+            List<List<String>> rows = locations.stream()
+                    .map(s -> Arrays.asList(
+                            String.valueOf(s.getIdLocation()),
+                            s.getName(),
+                            s.getCode()
+                    ))
+                    .collect(Collectors.toList());
+
+            response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+            response.setHeader("Content-Disposition", "attachment; filename=reporte_ubicaciones.xlsx");
+
+            excelReportService.generateExcel(response, "Ubicaciones", headers, rows);
+
+        } catch (Exception e) {
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.getWriter().println("Error al generar el reporte Excel: " + e.getMessage());
         }
     }
 }
