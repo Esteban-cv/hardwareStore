@@ -89,9 +89,10 @@
             <div class="form-title-section">
                 <h1 class="form-title">
                     <i class="fas fa-shopping-cart"></i>
-                    Nueva Venta
+                    <span th:text="${sale.idSale != null} ? 'Editar Venta' : 'Nueva Venta'"></span>
                 </h1>
-                <p class="form-subtitle">Registra una nueva venta de productos</p>
+                <p class="form-subtitle" th:text="${sale.idSale != null} ?
+                'Actualiza los datos de la venta' : 'Registra una nueva venta'"></p>
             </div>
             <div class="form-header-actions">
                 <a th:href="@{/sales}" class="btn-pdf">
@@ -102,9 +103,10 @@
         </div>
 
         <div class="form-container">
-            <form class="form-content" th:action="@{/sales/save}" method="post">
+            <form class="form-content" th:action="@{/sales/save}" method="post" th:object="${sale}">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                <input type="hidden" th:field="*{idSale}">
 
-                <!-- Información General -->
                 <div class="form-section">
                     <div class="form-section-header">
                         <h2 class="form-section-title">
@@ -117,91 +119,68 @@
                         <div class="form-input-group">
                             <label for="date" class="form-label">
                                 <i class="fas fa-calendar-alt"></i>
-                                Fecha de Venta
+                                Fecha
                             </label>
-                            <input
-                                    type="date"
-                                    id="date"
-                                    name="date"
-                                    class="form-input"
-                                    required
-                            >
-                            <span class="form-field-hint">Selecciona la fecha de la venta</span>
+                            <input type="date" id="date" th:field="*{date}" class="form-input" required>
+                            <span class="form-field-hint">Fecha de la venta</span>
                         </div>
 
                         <div class="form-input-group">
                             <label for="total" class="form-label">
                                 <i class="fas fa-dollar-sign"></i>
-                                Total de la Venta
+                                Total
                             </label>
-                            <input
-                                    type="number"
-                                    id="total"
-                                    name="total"
-                                    class="form-input"
-                                    step="0.01"
-                                    min="0"
-                                    placeholder="0.00"
-                                    required
-                            >
-                            <span class="form-field-hint">Monto total de la venta</span>
+                            <input type="number" id="total" th:field="*{total}" class="form-input" step="0.01" min="0" required>
+                            <span class="form-field-hint">Total de la venta</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- Información del Cliente y Empleado -->
                 <div class="form-section">
                     <div class="form-section-header">
                         <h2 class="form-section-title">
                             <i class="fas fa-users"></i>
-                            Cliente y Empleado
+                            Participantes
                         </h2>
                     </div>
 
                     <div class="form-grid">
                         <div class="form-input-group">
-                            <label for="id_client" class="form-label">
+                            <label for="client" class="form-label">
                                 <i class="fas fa-user"></i>
                                 Cliente
                             </label>
-                            <select id="id_client" name="id_client" class="form-select" required>
-                                <option value="">Selecciona un cliente</option>
-                                <option value="1">Juan Pérez - CC: 12345678</option>
-                                <option value="2">María García - CC: 87654321</option>
-                                <option value="3">Carlos López - CC: 11223344</option>
-                                <option value="4">Ana Martínez - CC: 44332211</option>
-                                <option value="5">Luis Rodríguez - CC: 55667788</option>
+                            <select id="client" th:field="*{client.idClient}" class="form-select" required>
+                                <option value="">Seleccione cliente</option>
+                                <option th:each="client : ${clients}"
+                                        th:value="${client.idClient}"
+                                        th:text="${client.name}"></option>
                             </select>
-                            <span class="form-field-hint">Cliente que realiza la compra</span>
                         </div>
 
                         <div class="form-input-group">
-                            <label for="id_employee" class="form-label">
+                            <label for="employee" class="form-label">
                                 <i class="fas fa-user-tie"></i>
                                 Empleado
                             </label>
-                            <select id="id_employee" name="id_employee" class="form-select" required>
-                                <option value="">Selecciona un empleado</option>
-                                <option value="1">Roberto Silva - Vendedor</option>
-                                <option value="2">Patricia Morales - Cajera</option>
-                                <option value="3">Diego Herrera - Supervisor</option>
-                                <option value="4">Carmen Jiménez - Vendedora</option>
-                                <option value="5">Felipe Castro - Gerente</option>
+                            <select id="employee" th:field="*{employee.idEmployee}" class="form-select" required>
+                                <option value="">Seleccione empleado</option>
+                                <option th:each="employee : ${employees}"
+                                        th:value="${employee.idEmployee}"
+                                        th:text="${employee.name}"></option>
                             </select>
-                            <span class="form-field-hint">Empleado que realiza la venta</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- Botones de Acción -->
                 <div class="form-actions-container">
                     <button type="submit" class="btn-add">
                         <i class="fas fa-save"></i>
-                        Guardar Venta
+                        <span th:text="${sale.idSale != null} ? 'Actualizar' : 'Guardar'"></span>
                     </button>
                     <button type="reset" class="btn-excel">
                         <i class="fas fa-eraser"></i>
-                        Limpiar Formulario
+                        Limpiar
                     </button>
                     <a th:href="@{/sales}" class="btn-pdf">
                         <i class="fas fa-times"></i>
@@ -212,72 +191,6 @@
         </div>
     </main>
 
-    <!-- EJEMPLO: Formulario de Devoluciones con las mismas clases -->
-    <main class="form-main-container form-accent-returns" style="display: none;">
-        <div class="form-header">
-            <div class="form-title-section">
-                <h1 class="form-title">
-                    <i class="fas fa-undo-alt"></i>
-                    Nueva Devolución
-                </h1>
-                <p class="form-subtitle">Registra una nueva devolución de productos</p>
-            </div>
-            <div class="form-header-actions">
-                <a th:href="@{/productreturns}" class="form-btn-back">
-                    <i class="fas fa-arrow-left"></i>
-                    Volver al listado
-                </a>
-            </div>
-        </div>
-
-        <div class="form-container">
-            <form class="form-content" th:action="@{/productreturns/save}" method="post">
-                <div class="form-section">
-                    <div class="form-section-header">
-                        <h2 class="form-section-title">
-                            <i class="fas fa-info-circle"></i>
-                            Información General
-                        </h2>
-                    </div>
-
-                    <div class="form-grid">
-                        <div class="form-input-group">
-                            <label for="date" class="form-label">
-                                <i class="fas fa-calendar-alt"></i>
-                                Fecha de Devolución
-                            </label>
-                            <input type="date" id="date" name="date" class="form-input" required>
-                            <span class="form-field-hint">Selecciona la fecha de la devolución</span>
-                        </div>
-
-                        <div class="form-input-group">
-                            <label for="total" class="form-label">
-                                <i class="fas fa-dollar-sign"></i>
-                                Total de la Devolución
-                            </label>
-                            <input type="number" id="total" name="total" class="form-input" step="0.01" min="0" placeholder="0.00" required>
-                            <span class="form-field-hint">Monto total de la devolución</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-actions-container">
-                    <button type="submit" class="btn-add">
-                        <i class="fas fa-save"></i>
-                        Guardar Devolución
-                    </button>
-                    <button type="reset" class="btn-excel">
-                        <i class="fas fa-eraser"></i>
-                        Limpiar Formulario
-                    </button>
-                    <a th:href="@{/productreturns}" class="btn-pdf">
-                        <i class="fas fa-times"></i>
-                        Cancelar
-                    </a>
-                </div>
-            </form>
-        </div>
-    </main>
 
 </div>
 

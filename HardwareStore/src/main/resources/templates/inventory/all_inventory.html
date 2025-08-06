@@ -91,8 +91,8 @@
         </div>
 
         <div class="action-buttons" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px;">
-            <a th:href="@{/all_inventory/form}" class="btn-add" style="display: flex; align-items: center; gap: 5px;">
-                <i class="fas fa-plus-circle"></i> Actualizar Inventario
+            <a th:href="@{/inventory/form}" class="btn-add" style="display: flex; align-items: center; gap: 5px;">
+                <i class="fas fa-plus-circle"></i> Nuevo Inventario
             </a>
             <a th:href="@{/inventory/inventoryreport}" class="btn-pdf" style="display: flex; align-items: center; gap: 5px;">
                 <i class="fas fa-file-export"></i>PDF
@@ -116,7 +116,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="inventory : ${all_inventory}">
+                <tr th:each="inventory : ${inventories}">
                     <td th:text="${inventory.idInventory}"></td>
                     <td th:text="${inventory.currentStock}"></td>
                     <td th:text="${inventory.minimumStock}"></td>
@@ -134,19 +134,19 @@
                 <ul class="pagination-list">
 
                     <!-- back -->
-                    <li th:classappend="${!all_inventory.hasPrevious()} ? 'disabled'">
-                        <a th:href="@{/all_inventory(page=${all_inventory.number - 1})}">Anterior</a>
+                    <li th:classappend="${!inventories.hasPrevious()} ? 'disabled'">
+                        <a th:href="@{/inventories(page=${inventories.number - 1})}">Anterior</a>
                     </li>
 
                     <!-- numbers -->
-                    <li th:each="i : ${#numbers.sequence(0, all_inventory.totalPages - 1)}"
-                        th:classappend="${i == all_inventory.number} ? 'active'">
-                        <a th:href="@{/all_inventory(page=${i})}" th:text="${i + 1}"></a>
+                    <li th:each="i : ${#numbers.sequence(0, inventories.totalPages - 1)}"
+                        th:classappend="${i == inventories.number} ? 'active'">
+                        <a th:href="@{/inventories(page=${i})}" th:text="${i + 1}"></a>
                     </li>
 
                     <!-- next -->
-                    <li th:classappend="${!all_inventory.hasNext()} ? 'disabled'">
-                        <a th:href="@{/all_inventory(page=${all_inventory.number + 1})}">Siguiente</a>
+                    <li th:classappend="${!inventories.hasNext()} ? 'disabled'">
+                        <a th:href="@{/inventories(page=${inventories.number + 1})}">Siguiente</a>
                     </li>
 
                 </ul>
@@ -164,50 +164,5 @@
         <span>Hecho con <i class="fas fa-heart"></i> por Aprendices SENA</span>
     </div>
 </footer>
-
-<script th:inline="javascript">
-    // Chart.js configuration
-    const ctx = document.getElementById('clientChart').getContext('2d');
-    const chartData = /*[[${chartData}]]*/ [
-        110, 125, 140, 120, 135, 150, 145, 160, 155, 170, 165, 180
-    ];
-
-    new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11'],
-            datasets: [{
-                data: chartData,
-                borderColor: '#10b981',
-                backgroundColor: 'rgba(16, 185, 129, 0.1)',
-                borderWidth: 2,
-                fill: true,
-                tension: 0.4
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: {
-                    display: false
-                }
-            },
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    max: 220,
-                    ticks: {
-                        stepSize: 55
-                    }
-                },
-                x: {
-                    grid: {
-                        display: true
-                    }
-                }
-            }
-        }
-    });
-</script>
 </body>
 </html>

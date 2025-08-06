@@ -28,6 +28,9 @@ import java.util.stream.Collectors;
 public class SaleController {
 
     @Autowired
+    private PdfReportService pdfReportService;
+
+    @Autowired
     private SaleRepository saleRepository;
 
     @Autowired
@@ -36,42 +39,33 @@ public class SaleController {
     @Autowired
     private EmployeeRepository employeeRepository;
 
-    @Autowired
-    private PdfReportService pdfReportService;
-
     @GetMapping
     public String listSales(@RequestParam(defaultValue = "0") int page, Model model) {
         Page<Sale> sales = saleRepository.findAll(PageRequest.of(page, 10, Sort.by("date").descending()));
-        sales.forEach(s ->{
-            if (s.getTotal() != null) {
-                s.setTotal(s.getTotal().setScale(2, RoundingMode.HALF_UP));
-            }
-        });
         model.addAttribute("sales", sales);
         return "sales/sale";
     }
 
-
     @GetMapping("/form")
     public String form(Model model) {
         model.addAttribute("sale", new Sale());
-        model.addAttribute("clients", new Client());
-        model.addAttribute("employees", new Employee());
+        model.addAttribute("clients", clientRepository.findAll());
+        model.addAttribute("employees", employeeRepository.findAll());
         return "sales/sale_form";
     }
 
     @PostMapping("/save")
     public String save(@ModelAttribute Sale sale, RedirectAttributes ra) {
         saleRepository.save(sale);
-        ra.addFlashAttribute("success", "Venta guardada exitosamente.");
+        ra.addFlashAttribute("success", "Venta guardada exitosamente");
         return "redirect:/sales";
     }
 
     @GetMapping("/edit/{id}")
-    public String edit(@PathVariable("id") Long idSale, Model model, RedirectAttributes ra) {
-        Sale sale = saleRepository.findById(idSale).orElse(null);
+    public String edit(@PathVariable("id") Long id, Model model, RedirectAttributes ra) {
+        Sale sale = saleRepository.findById(id).orElse(null);
         if (sale == null) {
-            ra.addFlashAttribute("error", "Venta no encontrada.");
+            ra.addFlashAttribute("error", "Venta no encontrada");
             return "redirect:/sales";
         }
         model.addAttribute("sale", sale);
@@ -81,9 +75,9 @@ public class SaleController {
     }
 
     @PostMapping("/delete/{id}")
-    public String delete(@PathVariable("id") Long idSale, RedirectAttributes ra) {
-        saleRepository.deleteById(idSale);
-        ra.addFlashAttribute("success", "Venta eliminada exitosamente.");
+    public String delete(@PathVariable("id") Long id, RedirectAttributes ra) {
+        saleRepository.deleteById(id);
+        ra.addFlashAttribute("success", "Venta eliminada exitosamente");
         return "redirect:/sales";
     }
 
