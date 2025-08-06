@@ -40,7 +40,7 @@ public class CatalogController {
 
     @GetMapping("/articles")
     public String listArticles(@RequestParam(defaultValue = "0") int page, Model model){
-        Page<Article> articles = articleRepository.findAll(PageRequest.of(page,10, Sort.by("idArticle").descending()));
+        Page<Article> articles = articleRepository.findAll(PageRequest.of(page,10, Sort.by("idArticle").ascending()));
         articles.forEach(p ->{
             if (p.getPrice() != null) {
                 p.setPrice(p.getPrice().setScale(2, RoundingMode.HALF_UP));
@@ -52,7 +52,7 @@ public class CatalogController {
 
     @GetMapping("/categories")
     public String listCategories(@RequestParam(defaultValue = "0") int page,Model model){
-        Page<Category> categories = categoryRepository.findAll(PageRequest.of(page,10,Sort.by("idCategory").descending()));
+        Page<Category> categories = categoryRepository.findAll(PageRequest.of(page,10,Sort.by("idCategory").ascending()));
         model.addAttribute("categories", categories);
         return "catalog/categories";
     }
