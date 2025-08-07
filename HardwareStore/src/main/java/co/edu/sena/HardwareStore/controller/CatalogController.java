@@ -64,7 +64,7 @@ public class CatalogController {
         return "catalog/article_form";
     }
 
-    @PostMapping("/save/article")
+    @PostMapping("/article/save")
     public String saveArticle(@ModelAttribute Article article, RedirectAttributes ra) {
         try {
             articleRepository.save(article);

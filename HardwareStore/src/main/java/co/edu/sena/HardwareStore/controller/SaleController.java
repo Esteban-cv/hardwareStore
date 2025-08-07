@@ -1,7 +1,5 @@
 package co.edu.sena.HardwareStore.controller;
 
-import co.edu.sena.HardwareStore.model.Client;
-import co.edu.sena.HardwareStore.model.Employee;
 import co.edu.sena.HardwareStore.model.Sale;
 import co.edu.sena.HardwareStore.repository.*;
 import co.edu.sena.HardwareStore.services.ExcelReportService;
@@ -17,8 +15,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
-import java.math.RoundingMode;
-import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
@@ -27,6 +23,9 @@ import java.util.stream.Collectors;
 @Controller
 @RequestMapping("/sales")
 public class SaleController {
+
+    @Autowired
+    private ArticleRepository articleRepository;
 
     @Autowired
     private PdfReportService pdfReportService;
@@ -54,6 +53,7 @@ public class SaleController {
         model.addAttribute("sale", new Sale());
         model.addAttribute("clients", clientRepository.findAll());
         model.addAttribute("employees", employeeRepository.findAll());
+        model.addAttribute("articles", articleRepository.findAll());
         return "sales/sale_form";
     }
 
@@ -74,6 +74,7 @@ public class SaleController {
         model.addAttribute("sale", sale);
         model.addAttribute("clients", clientRepository.findAll());
         model.addAttribute("employees", employeeRepository.findAll());
+        model.addAttribute("articles", articleRepository.findAll());
         return "sales/sale_form";
     }
 

@@ -1,0 +1,449 @@
+/* ======================================
+   ESTILOS ESPECÍFICOS PARA MÓDULO DE VENTAS
+   ====================================== */
+
+/* Contenedor principal de ventas, coherente y responsive */
+.sales-container {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 30px;
+    margin-top: 20px;
+}
+
+/* ======================================
+   PANEL DE PRODUCTOS
+   ====================================== */
+.products-panel {
+    background: var(--color-white);
+    border-radius: 16px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+    height: fit-content;
+}
+
+.search-products {
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.search-products .form-input-group {
+    position: relative;
+}
+
+.search-icon {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--color-muted);
+    pointer-events: none;
+}
+
+.products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 15px;
+    max-height: 600px;
+    overflow-y: auto;
+    padding-right: 10px;
+}
+
+.products-grid::-webkit-scrollbar {
+    width: 6px;
+}
+
+.products-grid::-webkit-scrollbar-track {
+    background: var(--color-border-light);
+    border-radius: 3px;
+}
+
+.products-grid::-webkit-scrollbar-thumb {
+    background: var(--color-muted);
+    border-radius: 3px;
+}
+
+.products-grid::-webkit-scrollbar-thumb:hover {
+    background: var(--color-secondary);
+}
+
+.product-card {
+    border: 2px solid var(--color-border);
+    border-radius: 12px;
+    padding: 16px;
+    background: var(--color-white);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    position: relative;
+}
+
+.product-card:hover {
+    border-color: var(--current-accent);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+}
+
+.product-info h4 {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--color-primary);
+    margin-bottom: 5px;
+    line-height: 1.3;
+}
+
+.product-code {
+    font-size: 12px;
+    color: var(--color-muted);
+    font-family: monospace;
+    margin-bottom: 8px;
+}
+
+.product-category {
+    background: var(--current-accent);
+    color: white;
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-weight: 500;
+    opacity: 0.9;
+}
+
+.product-details {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 15px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.product-price {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--accent-sales);
+}
+
+.product-stock {
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 8px;
+    border-radius: 8px;
+}
+
+.stock-good {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.stock-low {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.stock-out {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.btn-add-product {
+    background: #2563eb;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.btn-add-product:hover:not(:disabled) {
+    background: #1d4ed8;
+    transform: scale(1.05);
+}
+
+.btn-add-product:disabled {
+    background: var(--color-muted);
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+/* ======================================
+   PANEL DE VENTA
+   ====================================== */
+.sale-panel {
+    background: var(--color-white);
+    border-radius: 16px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+    height: fit-content;
+    position: sticky;
+    top: 20px;
+}
+
+/* ======================================
+   CARRITO DE COMPRAS
+   ====================================== */
+.cart-count {
+    background: var(--current-accent);
+    color: white;
+    font-size: 12px;
+    padding: 3px 8px;
+    border-radius: 10px;
+    font-weight: 600;
+    margin-left: 8px;
+}
+
+.cart-container {
+    min-height: 200px;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.empty-cart {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--color-muted);
+}
+
+.empty-cart i {
+    font-size: 48px;
+    margin-bottom: 15px;
+    opacity: 0.5;
+}
+
+.empty-cart p {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.empty-cart span {
+    font-size: 14px;
+}
+
+.cart-items {
+    display: none;
+}
+
+.cart-items.active {
+    display: block;
+}
+
+.cart-item {
+    border-bottom: 1px solid var(--color-border-light);
+    padding: 15px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    animation: slideIn 0.3s ease;
+}
+
+.cart-item:last-child {
+    border-bottom: none;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.cart-item-info {
+    flex: 1;
+}
+
+.cart-item-name {
+    font-weight: 600;
+    color: var(--color-primary);
+    font-size: 14px;
+    margin-bottom: 3px;
+}
+
+.cart-item-code {
+    font-size: 11px;
+    color: var(--color-muted);
+    font-family: monospace;
+}
+
+.cart-item-price {
+    font-size: 12px;
+    color: var(--color-secondary);
+}
+
+.cart-item-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.quantity-controls {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background: var(--color-border-light);
+    border-radius: 8px;
+    padding: 2px;
+}
+
+.quantity-btn {
+    background: none;
+    border: none;
+    width: 24px;
+    height: 24px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+    transition: background 0.2s ease;
+}
+
+.quantity-btn:hover {
+    background: var(--color-border);
+}
+
+.quantity-display {
+    min-width: 30px;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 0 5px;
+}
+
+.cart-item-total {
+    font-weight: 700;
+    color: var(--current-accent);
+    font-size: 14px;
+    min-width: 60px;
+    text-align: right;
+}
+
+.btn-remove-item {
+    background: #fee2e2;
+    color: #dc2626;
+    border: none;
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-remove-item:hover {
+    background: #fecaca;
+    transform: scale(1.1);
+}
+
+/* ======================================
+   RESUMEN DE VENTA
+   ====================================== */
+.sale-summary {
+    background: var(--color-border-light);
+    border-radius: 12px;
+    padding: 20px;
+    margin-top: 15px;
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
+.summary-row:last-child {
+    margin-bottom: 0;
+}
+
+.total-row {
+    border-top: 2px solid var(--color-border);
+    padding-top: 15px;
+    margin-top: 15px;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--color-primary);
+}
+
+.total-row span:last-child {
+    color: var(--current-accent);
+}
+
+/* ======================================
+   RESPONSIVE DESIGN
+   ====================================== */
+/* ===================== RESPONSIVE ===================== */
+@media (max-width: 1200px) {
+  .sales-container {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  .sale-panel {
+    position: static;
+  }
+}
+@media (max-width: 768px) {
+  .products-grid {
+    grid-template-columns: 1fr;
+    max-height: 400px;
+  }
+  .product-details {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 15px;
+  }
+  .btn-add-product {
+    width: 100%;
+    justify-content: center;
+  }
+  .cart-item {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+  .cart-item-controls {
+    justify-content: space-between;
+  }
+}
+
+/* ======================================
+   ESTADOS Y ANIMACIONES
+   ====================================== */
+.product-card.adding {
+    border-color: var(--current-accent);
+    background: rgba(var(--current-accent), 0.05);
+    transform: scale(1.02);
+}
+
+.btn-add-product.loading {
+    pointer-events: none;
+}
+
+.btn-add-product.loading::after {
+    content: '';
+    width: 12px;
+    height: 12px;
+    border: 2px solid transparent;
+    border-top: 2px solid currentColor;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-left: 5px;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}

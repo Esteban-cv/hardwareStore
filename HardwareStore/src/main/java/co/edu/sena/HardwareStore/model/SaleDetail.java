@@ -17,6 +17,8 @@ public class SaleDetail {
     private Integer quantity;
     @Column(name = "unit_price", precision = 10, scale = 2, nullable = false)
     private BigDecimal unitPrice;
+    @Column(name = "total")
+    private Integer total;
     @ManyToOne
     @JoinColumn(name = "id_sale", nullable = false)
     private Sale sale;
@@ -52,6 +54,14 @@ public class SaleDetail {
 
     public void setUnitPrice(BigDecimal unitPrice) {
         this.unitPrice = unitPrice;
+    }
+
+    public Integer getTotal() {
+        return total;
+    }
+
+    public void setTotal(Integer total) {
+        this.total = total;
     }
 
     public Sale getSale() {
