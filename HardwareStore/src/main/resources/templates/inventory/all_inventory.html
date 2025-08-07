@@ -108,21 +108,22 @@
                 <thead>
                 <tr>
                     <th>ID</th>
+                    <th>ARTICULO</th>
+                    <th>UBICACIÓN</th>
                     <th>STOCK ACTUAL</th>
                     <th>STOCK MÍNIMO</th>
                     <th>FECHA ACTUALIZACIÓN</th>
-                    <th>UBICACIÓN</th>
-                    <th>ARTICULO</th>
+                    <th>ACCIONES</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr th:each="inventory : ${inventories}">
                     <td th:text="${inventory.idInventory}"></td>
+                    <td th:text="${inventory.article.name}"></td>
+                    <td th:text="${inventory.location.name}"></td>
                     <td th:text="${inventory.currentStock}"></td>
                     <td th:text="${inventory.minimumStock}"></td>
                     <td th:text="${inventory.updatedAt}"></td>
-                    <td th:text="${inventory.location.name}"></td>
-                    <td th:text="${inventory.article.name}"></td>
                     <td>
                         <a th:href="@{'/inventory/edit/' + ${inventory.idInventory}}" class="btn-edit">
                             <i class="fas fa-pencil-alt"></i>
