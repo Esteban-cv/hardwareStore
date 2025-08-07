@@ -2,6 +2,7 @@
    ESTILOS ESPECÍFICOS PARA MÓDULO DE VENTAS
    ====================================== */
 
+/* Contenedor principal de ventas, coherente y responsive */
 .sales-container {
     display: grid;
     grid-template-columns: 2fr 1fr;
@@ -144,11 +145,7 @@
 }
 
 .btn-add-product {
-<<<<<<< HEAD
     background: #2563eb;
-=======
-    background: var(--current-accent);
->>>>>>> b0d7b5d149e29323e61a434fc4ee1eeb25761e07
     color: white;
     border: none;
     padding: 8px 12px;
@@ -164,11 +161,7 @@
 }
 
 .btn-add-product:hover:not(:disabled) {
-<<<<<<< HEAD
     background: #1d4ed8;
-=======
-    background: color-mix(in srgb, var(--current-accent) 85%, black);
->>>>>>> b0d7b5d149e29323e61a434fc4ee1eeb25761e07
     transform: scale(1.05);
 }
 
@@ -393,43 +386,38 @@
 /* ======================================
    RESPONSIVE DESIGN
    ====================================== */
+/* ===================== RESPONSIVE ===================== */
 @media (max-width: 1200px) {
-    .sales-container {
-        grid-template-columns: 1fr;
-        gap: 20px;
-    }
-
-    .sale-panel {
-        position: static;
-    }
+  .sales-container {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  .sale-panel {
+    position: static;
+  }
 }
-
 @media (max-width: 768px) {
-    .products-grid {
-        grid-template-columns: 1fr;
-        max-height: 400px;
-    }
-
-    .product-details {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 15px;
-    }
-
-    .btn-add-product {
-        width: 100%;
-        justify-content: center;
-    }
-
-    .cart-item {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 10px;
-    }
-
-    .cart-item-controls {
-        justify-content: space-between;
-    }
+  .products-grid {
+    grid-template-columns: 1fr;
+    max-height: 400px;
+  }
+  .product-details {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 15px;
+  }
+  .btn-add-product {
+    width: 100%;
+    justify-content: center;
+  }
+  .cart-item {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+  .cart-item-controls {
+    justify-content: space-between;
+  }
 }
 
 /* ======================================

@@ -64,7 +64,7 @@
 }
 
 .form-title i {
-  color: var(--current-accent);
+  color: blue;
   font-size: 26px;
 }
 
@@ -140,7 +140,7 @@
 }
 
 .form-section-title i {
-  color: var(--current-accent);
+  color: blue;
   font-size: 18px;
 }
 
@@ -570,6 +570,8 @@
 }
 
 /* Mejoras para la cantidad en el carrito */
+
+/* Input de cantidad en el carrito (unificado y responsive) */
 .quantity-input {
   width: 50px;
   text-align: center;
@@ -578,18 +580,17 @@
   padding: 4px;
   font-size: 12px;
 }
-
 .quantity-input::-webkit-outer-spin-button,
 .quantity-input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
-
 .quantity-input[type=number] {
   -moz-appearance: textfield;
+  appearance: textfield;
 }
 
-/* Botón de remover item del carrito */
+/* Botón de remover item del carrito (unificado y responsive) */
 .remove-item-btn {
   background: #fee2e2;
   color: #dc2626;
@@ -604,7 +605,6 @@
   transition: all 0.3s ease;
   font-size: 12px;
 }
-
 .remove-item-btn:hover {
   background: #fecaca;
   transform: scale(1.1);
@@ -629,17 +629,18 @@
 }
 
 /* Responsive para pantallas pequeñas */
+
 @media (max-width: 1200px) {
   .sales-container {
     grid-template-columns: 1fr;
   }
-
   .sale-panel {
     position: static;
   }
 }
 
 /* Estilos para asegurar que los botones se vean */
+
 .product-details {
   display: flex;
   flex-direction: column;
@@ -684,6 +685,7 @@
 }
 
 /* Asegurar que las tarjetas de producto se vean bien */
+
 .product-card {
   display: flex;
   flex-direction: column;
@@ -741,6 +743,7 @@
 }
 
 /* Corregir para que no haya conflictos con otros estilos */
+
 .products-grid .btn-add-product {
   margin-top: 10px !important;
   width: 100% !important;
@@ -815,3 +818,4 @@
     position: static;
   }
 }
+

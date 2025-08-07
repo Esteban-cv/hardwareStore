@@ -2,7 +2,6 @@ package co.edu.sena.HardwareStore.controller;
 
 
 import co.edu.sena.HardwareStore.model.Entry;
-import co.edu.sena.HardwareStore.model.Purchase;
 import co.edu.sena.HardwareStore.repository.ArticleRepository;
 import co.edu.sena.HardwareStore.repository.EntryRepository;
 import co.edu.sena.HardwareStore.services.ExcelReportService;
@@ -18,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
-import java.math.RoundingMode;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;

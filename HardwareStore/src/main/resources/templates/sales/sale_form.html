@@ -5,24 +5,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ferretería Store - Nueva Venta</title>
-    <link rel="stylesheet" th:href="@{/css/form_stylesheet.css}">
     <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/form_stylesheet.css}">
     <link rel="stylesheet" th:href="@{/css/sales-module.css}">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
 </head>
 
 <body>
     <div class="container">
         <!-- Sidebar Mejorado -->
-        <nav class="sidebar">
+        <nav class="sidebar" id="sidebar">
             <div class="sidebar-inner">
                 <!-- Logo -->
                 <div class="logo">
                     <i class="fas fa-tools"></i>
                     <h2>Ferretería Store</h2>
                 </div>
-            </div>
 
                 <!-- Buscador -->
                 <div class="search-box">
@@ -41,7 +39,7 @@
                     </li>
 
                     <!-- Ventas (con submenú) -->
-                    <li class="nav-item has-submenu">
+                    <li class="nav-item has-submenu active">
                         <a class="nav-link">
                             <i class="fas fa-shopping-cart"></i>
                             <span>Ventas</span>
@@ -49,7 +47,7 @@
                         </a>
                         <ul class="sub-menu">
                             <li><a th:href="@{/sales}" class="nav-link">Consultar</a></li>
-                            <li><a th:href="@{/sales/form}" class="nav-link">Nueva Venta</a></li>
+                            <li><a th:href="@{/sales/form}" class="nav-link active">Nueva Venta</a></li>
                         </ul>
                     </li>
 
@@ -88,7 +86,7 @@
                         </a>
                         <ul class="sub-menu">
                             <li><a th:href="@{/inventory}" class="nav-link">Consultar</a></li>
-                            <li><a th:href="@{/purchases/form}" class="nav-link">Nuevo Inventario</a></li>
+                            <li><a th:href="@{/inventory/form}" class="nav-link">Nuevo Inventario</a></li>
                         </ul>
                     </li>
 
@@ -116,7 +114,7 @@
             </div>
         </nav>
 
-        <main class="form-main-container form-accent-return">
+        <main class="main-content form-accent-sales">
             <div class="form-header">
                 <div class="form-title-section">
                     <h1 class="form-title">
@@ -130,12 +128,10 @@
                 <div class="form-header-actions">
                     <a th:href="@{/sales}" class="btn-pdf">
                         <i class="fas fa-arrow-left"></i>
-                        Volver al listado
+                        <span class="btn-text">Volver al listado</span>
                     </a>
                 </div>
             </div>
-
-            
 
             <div class="sales-container">
                 <!-- Panel de Productos -->
@@ -173,8 +169,7 @@
                                 </div>
 
                                 <div class="product-details">
-                                    <div
-                                        style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                                    <div class="product-price-stock">
                                         <div class="product-price"
                                             th:text="'$' + ${#numbers.formatDecimal(article.price, 1, 2, 'COMMA')}">
                                             $0.00</div>
@@ -185,7 +180,8 @@
                                     </div>
                                     <button type="button" class="btn-add-product" th:disabled="${article.quantity == 0}"
                                         onclick="addToCart(this)">
-                                        <i class="fas fa-plus"></i> Agregar
+                                        <i class="fas fa-plus"></i>
+                                        <span>Agregar</span>
                                     </button>
                                 </div>
                             </div>
@@ -253,11 +249,12 @@
                                 <h2 class="form-section-title">
                                     <i class="fas fa-shopping-cart"></i>
                                     Carrito de Ventas
-                                    <span class="cart-count" id="cartCount">(0)</span>
+                                    <span id="cartCount">(0)</span>
                                 </h2>
                                 <button type="button" class="btn-cancel" onclick="clearCart()"
                                     title="Limpiar todo el carrito" style="font-size: 12px; padding: 5px 10px;">
-                                    <i class="fas fa-eraser"></i>Limpiar carrito
+                                    <i class="fas fa-eraser"></i>
+                                    <span class="btn-text">Limpiar carrito</span>
                                 </button>
                             </div>
 
@@ -306,15 +303,15 @@
                         <div class="form-actions-container">
                             <button type="submit" class="btn-add" id="processButton" disabled>
                                 <i class="fas fa-cash-register"></i>
-                                Procesar Venta
+                                <span>Procesar Venta</span>
                             </button>
                             <button type="button" class="btn-cancel" onclick="clearCart()">
                                 <i class="fas fa-eraser"></i>
-                                Limpiar Carrito
+                                <span>Limpiar Carrito</span>
                             </button>
                             <a th:href="@{/sales}" class="btn-pdf">
                                 <i class="fas fa-times"></i>
-                                Cancelar
+                                <span>Cancelar</span>
                             </a>
                         </div>
 
@@ -325,10 +322,7 @@
                     </form>
                 </div>
             </div>
-
-            
         </main>
-
     </div>
 
     <!-- Footer -->

@@ -441,7 +441,6 @@ window.addEventListener('error', function(e) {
     showNotification('Ha ocurrido un error inesperado', 'error');
 });
 
-<<<<<<< HEAD
 document.addEventListener('DOMContentLoaded', function() {
     // Toggle submenús
     const hasSubmenuItems = document.querySelectorAll('.has-submenu');
@@ -468,7 +467,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Filtrado de menú por búsqueda
-    const sidebarSearch = document.getElementById('sidebarSearch');
+    const barSearch = document.getElementById('sidebarSearch');
     const navItems = document.querySelectorAll('.nav-item');
 
     if (sidebarSearch) {
@@ -497,19 +496,3 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
-=======
-// ======================================
-// EXPORT PARA TESTING (OPCIONAL)
-// ======================================
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = {
-        addToCart,
-        updateQuantity,
-        removeFromCart,
-        clearCart,
-        updateTotals,
-        saveCartToSession,
-        loadCartFromSession
-    };
-}
->>>>>>> b0d7b5d149e29323e61a434fc4ee1eeb25761e07

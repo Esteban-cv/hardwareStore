@@ -1,3 +1,60 @@
+/* ===================== RESPONSIVE SIDEBAR ===================== */
+.sidebar-toggle {
+  display: none;
+  position: fixed;
+  top: 18px;
+  left: 18px;
+  z-index: 201;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 20px;
+  color: #3b82f6;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  cursor: pointer;
+}
+
+@media (max-width: 900px) {
+  .sidebar-toggle {
+    display: block;
+  }
+  .sidebar {
+    left: -100vw;
+    transition: left 0.3s;
+  }
+  .sidebar.sidebar-open {
+    left: 0;
+    box-shadow: 2px 0 8px rgba(0,0,0,0.12);
+  }
+  .main-content {
+    margin-left: 0;
+    padding: 20px 10px 20px 10px;
+  }
+}
+
+@media (max-width: 600px) {
+  .sidebar-toggle {
+    top: 10px;
+    left: 10px;
+    padding: 8px 12px;
+    font-size: 18px;
+  }
+  .sidebar {
+    width: 90vw;
+    min-width: unset;
+    height: 100vh;
+    left: -100vw;
+  }
+  .sidebar.sidebar-open {
+    width: 90vw;
+    left: 0;
+  }
+  .main-content {
+    margin-left: 0;
+    padding: 10px 5px 10px 5px;
+  }
+}
 * {
     margin: 0;
     padding: 0;
@@ -10,28 +67,33 @@ body {
     color: #333;
 }
 
+/* Contenedor principal, coherente y responsive */
 .container {
     display: flex;
     min-height: 100vh;
 }
 
 /* Sidebar Mejorado */
+/* Sidebar principal, coherente y responsive */
 .sidebar {
-    width: 280px;
+    width: 260px;
+    min-width: 220px;
+    background: #fff;
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.05);
     height: 100vh;
-    background: #ffffff;
-    border-right: 1px solid #e5e7eb;
-    display: flex;
-    flex-direction: column;
     position: fixed;
     left: 0;
     top: 0;
     z-index: 100;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid #e5e7eb;
     transition: all 0.3s ease;
 }
 
+/* Interior del sidebar */
 .sidebar-inner {
+    flex: 1;
     display: flex;
     flex-direction: column;
     height: 100%;
@@ -195,9 +257,13 @@ body {
 }
 
 /* Main Content */
+/* Contenido principal, coherente y responsive */
 .main-content {
-    flex: 1;
-    padding: 30px;
+    margin-left: 260px;
+    padding: 30px 40px 30px 40px;
+    width: 100%;
+    min-height: 100vh;
+    background: #f8f9fa;
 }
 
 .dashboard-header {
@@ -1035,38 +1101,7 @@ body {
     pointer-events: none;
 }
 
-.container {
-    display: flex;
-}
-
-.sidebar {
-    width: 260px;
-    min-width: 220px;
-    background: #fff;
-    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.05);
-    height: 100vh;
-    position: fixed;
-    left: 0;
-    top: 0;
-    z-index: 100;
-    display: flex;
-    flex-direction: column;
-}
-
-.sidebar-inner {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-}
-
-.main-content {
-    margin-left: 260px;
-    padding: 30px 40px 30px 40px;
-    width: 100%;
-    min-height: 100vh;
-    background: #f8f9fa;
-}
+/* ...el resto del código permanece igual, sin duplicados... */
 
 @media (max-width: 900px) {
     .sidebar {
@@ -1117,4 +1152,6 @@ body {
         padding: 10px 5px;
     }
 }
+
+
 

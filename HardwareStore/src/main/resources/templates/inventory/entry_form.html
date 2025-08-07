@@ -86,7 +86,7 @@
                         </a>
                         <ul class="sub-menu">
                             <li><a th:href="@{/inventory}" class="nav-link">Consultar</a></li>
-                            <li><a th:href="@{/purchases/form}" class="nav-link">Nuevo Inventario</a></li>
+                            <li><a th:href="@{/inventory/form}" class="nav-link">Nuevo Inventario</a></li>
                         </ul>
                     </li>
 
@@ -124,7 +124,7 @@
                     <p class="form-subtitle">Registra una nueva entrada</p>
                 </div>
                 <div class="form-header-actions">
-                    <a th:href="@{/sales}" class="btn-pdf">
+                    <a th:href="@{/entries}" class="btn-pdf">
                         <i class="fas fa-arrow-left"></i>
                         Volver al listado
                     </a>
@@ -132,7 +132,7 @@
             </div>
 
             <div class="form-container">
-                <form class="form-content" th:action="@{/sales/save}" method="post">
+                <form class="form-content" th:action="@{/entries/save}" method="post">
 
                     <!-- Información General -->
                     <div class="form-section">
