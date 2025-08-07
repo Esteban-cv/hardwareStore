@@ -25,6 +25,9 @@ public class Article {
     @ManyToOne
     @JoinColumn(name = "id_unit", nullable = false)
     private Unit unit;
+    @ManyToOne
+    @JoinColumn(name = "id_supplier")
+    private Supplier supplier;
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
@@ -86,6 +89,14 @@ public class Article {
 
     public void setUnit(Unit unit) {
         this.unit = unit;
+    }
+
+    public Supplier getSupplier() {
+        return supplier;
+    }
+
+    public void setSupplier(Supplier supplier) {
+        this.supplier = supplier;
     }
 
     public LocalDateTime getCreatedAt() {

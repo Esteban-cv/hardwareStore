@@ -2,7 +2,6 @@ package co.edu.sena.HardwareStore.controller;
 
 
 import co.edu.sena.HardwareStore.model.ProductReturns;
-import co.edu.sena.HardwareStore.model.Sale;
 import co.edu.sena.HardwareStore.repository.ArticleRepository;
 import co.edu.sena.HardwareStore.repository.ProductReturnsRepository;
 import co.edu.sena.HardwareStore.repository.SaleRepository;
@@ -19,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
-import java.math.RoundingMode;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
@@ -41,46 +39,46 @@ public class ProductReturnController {
     private PdfReportService pdfReportService;
 
     @GetMapping
-    public String list(@RequestParam(defaultValue = "0") int page, Model model){
-        Page<ProductReturns> productReturns = productReturnsRepository.findAll(PageRequest.of(page, 10, Sort.by("date").descending()));
-        model.addAttribute("productreturns", productReturns);
+    public String list(@RequestParam(defaultValue = "0") int page, Model model) {
+        Page<ProductReturns> returns = productReturnsRepository.findAll(
+                PageRequest.of(page, 10, Sort.by("date").descending()));
+        model.addAttribute("productreturns", returns);
         return "sales/returns";
     }
 
     @GetMapping("/form")
-    public String form(Model model){
-        model.addAttribute("productreturn", new ProductReturns()); //Para la fk
-        model.addAttribute("sales", saleRepository.findAll()); //Para la fk
-        model.addAttribute("articles", articleRepository.findAll()); //Para la fk
+    public String form(Model model) {
+        model.addAttribute("productreturn", new ProductReturns());
+        model.addAttribute("sales", saleRepository.findAll());
+        model.addAttribute("articles", articleRepository.findAll());
         return "sales/return_form";
     }
 
     @PostMapping("/save")
-    public String save(@ModelAttribute ProductReturns productReturns, RedirectAttributes ra){
-        productReturnsRepository.save(productReturns);
-        ra.addFlashAttribute("success", "Producto guardado exitosamente");
+    public String save(@ModelAttribute ProductReturns productReturn, RedirectAttributes ra) {
+        productReturnsRepository.save(productReturn);
+        ra.addFlashAttribute("success", "Devolución guardada exitosamente");
         return "redirect:/productreturns";
     }
 
     @GetMapping("/edit/{id}")
-    public String edit(@PathVariable("id") Integer idProductReturns, Model model, RedirectAttributes ra){
-        ProductReturns productReturns = productReturnsRepository.findById(idProductReturns).orElse(null);
-        if(productReturns == null){
-            ra.addFlashAttribute("error", "No se encontroó la devolución solicitada");
+    public String edit(@PathVariable("id") Integer id, Model model, RedirectAttributes ra) {
+        ProductReturns productReturn = productReturnsRepository.findById(id).orElse(null);
+        if (productReturn == null) {
+            ra.addFlashAttribute("error", "Devolución no encontrada");
             return "redirect:/productreturns";
         }
-        model.addAttribute("productreturn", productReturns);
-        model.addAttribute("sales", saleRepository.findAll()); //Para la fk
-        model.addAttribute("articles", articleRepository.findAll()); //Para la fk
+        model.addAttribute("productreturn", productReturn);
+        model.addAttribute("sales", saleRepository.findAll());
+        model.addAttribute("articles", articleRepository.findAll());
         return "sales/return_form";
-
     }
 
     @PostMapping("/delete/{id}")
-    public String delete(@PathVariable("id") Integer idProductReturns, RedirectAttributes ra){
-        productReturnsRepository.deleteById(idProductReturns);
-        ra.addFlashAttribute("success", "Producto retornado eliminado");
-        return  "redirect:/productreturns";
+    public String delete(@PathVariable("id") Integer id, RedirectAttributes ra) {
+        productReturnsRepository.deleteById(id);
+        ra.addFlashAttribute("success", "Devolución eliminada exitosamente");
+        return "redirect:/productreturns";
     }
 
     @GetMapping("/returnreport")

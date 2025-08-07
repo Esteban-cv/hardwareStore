@@ -1,7 +1,5 @@
 package co.edu.sena.HardwareStore.controller;
 
-import co.edu.sena.HardwareStore.model.Client;
-import co.edu.sena.HardwareStore.model.Employee;
 import co.edu.sena.HardwareStore.model.Sale;
 import co.edu.sena.HardwareStore.repository.*;
 import co.edu.sena.HardwareStore.services.ExcelReportService;
@@ -17,8 +15,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
-import java.math.RoundingMode;
-import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
@@ -27,6 +23,12 @@ import java.util.stream.Collectors;
 @Controller
 @RequestMapping("/sales")
 public class SaleController {
+
+    @Autowired
+    private ArticleRepository articleRepository;
+
+    @Autowired
+    private PdfReportService pdfReportService;
 
     @Autowired
     private SaleRepository saleRepository;
@@ -39,54 +41,47 @@ public class SaleController {
     @Autowired
     private ExcelReportService excelReportService;
 
-    @Autowired
-    private PdfReportService pdfReportService;
-
     @GetMapping
     public String listSales(@RequestParam(defaultValue = "0") int page, Model model) {
         Page<Sale> sales = saleRepository.findAll(PageRequest.of(page, 10, Sort.by("date").descending()));
-        sales.forEach(s ->{
-            if (s.getTotal() != null) {
-                s.setTotal(s.getTotal().setScale(2, RoundingMode.HALF_UP));
-            }
-        });
         model.addAttribute("sales", sales);
         return "sales/sale";
     }
 
-
     @GetMapping("/form")
     public String form(Model model) {
         model.addAttribute("sale", new Sale());
-        model.addAttribute("clients", new Client());
-        model.addAttribute("employees", new Employee());
+        model.addAttribute("clients", clientRepository.findAll());
+        model.addAttribute("employees", employeeRepository.findAll());
+        model.addAttribute("articles", articleRepository.findAll());
         return "sales/sale_form";
     }
 
     @PostMapping("/save")
     public String save(@ModelAttribute Sale sale, RedirectAttributes ra) {
         saleRepository.save(sale);
-        ra.addFlashAttribute("success", "Venta guardada exitosamente.");
+        ra.addFlashAttribute("success", "Venta guardada exitosamente");
         return "redirect:/sales";
     }
 
     @GetMapping("/edit/{id}")
-    public String edit(@PathVariable("id") Long idSale, Model model, RedirectAttributes ra) {
-        Sale sale = saleRepository.findById(idSale).orElse(null);
+    public String edit(@PathVariable("id") Long id, Model model, RedirectAttributes ra) {
+        Sale sale = saleRepository.findById(id).orElse(null);
         if (sale == null) {
-            ra.addFlashAttribute("error", "Venta no encontrada.");
+            ra.addFlashAttribute("error", "Venta no encontrada");
             return "redirect:/sales";
         }
         model.addAttribute("sale", sale);
         model.addAttribute("clients", clientRepository.findAll());
         model.addAttribute("employees", employeeRepository.findAll());
+        model.addAttribute("articles", articleRepository.findAll());
         return "sales/sale_form";
     }
 
     @PostMapping("/delete/{id}")
-    public String delete(@PathVariable("id") Long idSale, RedirectAttributes ra) {
-        saleRepository.deleteById(idSale);
-        ra.addFlashAttribute("success", "Venta eliminada exitosamente.");
+    public String delete(@PathVariable("id") Long id, RedirectAttributes ra) {
+        saleRepository.deleteById(id);
+        ra.addFlashAttribute("success", "Venta eliminada exitosamente");
         return "redirect:/sales";
     }
 

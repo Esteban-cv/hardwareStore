@@ -3,9 +3,9 @@ package co.edu.sena.HardwareStore.controller;
 
 import co.edu.sena.HardwareStore.model.Article;
 import co.edu.sena.HardwareStore.model.Category;
-import co.edu.sena.HardwareStore.model.Unit;
 import co.edu.sena.HardwareStore.repository.ArticleRepository;
 import co.edu.sena.HardwareStore.repository.CategoryRepository;
+import co.edu.sena.HardwareStore.repository.SupplierRepository;
 import co.edu.sena.HardwareStore.repository.UnitRepository;
 import co.edu.sena.HardwareStore.services.ExcelReportService;
 import co.edu.sena.HardwareStore.services.PdfReportService;
@@ -24,12 +24,13 @@ import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.Collections;
 
 @Controller
 @RequestMapping("/catalog")
 public class CatalogController {
 
+    @Autowired
+    private SupplierRepository supplierRepository;
     @Autowired
     private ArticleRepository articleRepository;
     @Autowired
@@ -43,9 +44,9 @@ public class CatalogController {
 
 
     @GetMapping("/articles")
-    public String listArticles(@RequestParam(defaultValue = "0") int page, Model model){
-        Page<Article> articles = articleRepository.findAll(PageRequest.of(page,10, Sort.by("idArticle").ascending()));
-        articles.forEach(p ->{
+    public String listArticles(@RequestParam(defaultValue = "0") int page, Model model) {
+        Page<Article> articles = articleRepository.findAll(PageRequest.of(page, 10, Sort.by("idArticle").ascending()));
+        articles.forEach(p -> {
             if (p.getPrice() != null) {
                 p.setPrice(p.getPrice().setScale(2, RoundingMode.HALF_UP));
             }
@@ -54,77 +55,49 @@ public class CatalogController {
         return "catalog/articles";
     }
 
-    @GetMapping("/categories")
-    public String listCategories(@RequestParam(defaultValue = "0") int page,Model model){
-        Page<Category> categories = categoryRepository.findAll(PageRequest.of(page,10,Sort.by("idCategory").ascending()));
-        model.addAttribute("categories", categories);
-        return "catalog/categories";
-    }
-
     @GetMapping("/article/form")
-    public String formArticle(Model model){
+    public String formArticle(Model model) {
         model.addAttribute("article", new Article());
-        model.addAttribute("category", new Category());
-        model.addAttribute("unit", new Unit());
+        model.addAttribute("categories", categoryRepository.findAll());
+        model.addAttribute("units", unitRepository.findAll());
+        model.addAttribute("suppliers", supplierRepository.findAll());
         return "catalog/article_form";
     }
 
-    @GetMapping("/category/form")
-    public String formCategory(Model model){
-        model.addAttribute("category", new Category());
-        return "catalog/category_form";
-    }
-
-    @PostMapping("/save/article")
-    public String saveArticle(@ModelAttribute Article article, RedirectAttributes ra){
-        articleRepository.save(article);
-        ra.addFlashAttribute("success", "Artículo guardado exitosamente");
-        return "redirect:/articles";
-    }
-
-    @PostMapping("/save/category")
-    public String saveCategory(@ModelAttribute Category category, RedirectAttributes ra){
-        categoryRepository.save(category);
-        ra.addFlashAttribute("success", "Categoria guardada exitosamente");
-        return "redirect:/categories";
+    @PostMapping("/article/save")
+    public String saveArticle(@ModelAttribute Article article, RedirectAttributes ra) {
+        try {
+            articleRepository.save(article);
+            ra.addFlashAttribute("success", "Artículo guardado correctamente.");
+        } catch (Exception e) {
+            ra.addFlashAttribute("error", "Hubo un error al guardar el artículo.");
+        }
+        return "redirect:/catalog/articles";
     }
 
     @GetMapping("/editArticle/{id}")
-    public String editArticle(@PathVariable("id") Integer idArticle, Model model, RedirectAttributes ra){
+    public String editArticle(@PathVariable("id") Integer idArticle, Model model, RedirectAttributes ra) {
         Article article = articleRepository.findById(idArticle).orElse(null);
-        if (article == null){
+        if (article == null) {
             ra.addFlashAttribute("error", "Artículo no encontrado");
-            return "redirect:/articles";
+            return "redirect:/catalog/articles";
         }
         model.addAttribute("article", article);
         model.addAttribute("categories", categoryRepository.findAll());
         model.addAttribute("units", unitRepository.findAll());
+        model.addAttribute("suppliers", supplierRepository.findAll());
         return "catalog/article_form";
     }
 
-    @GetMapping("/editCategory/{id}")
-    public String edit(@PathVariable Integer idCategory, Model model, RedirectAttributes ra){
-        Category category = categoryRepository.findById(idCategory).orElse(null);
-        if(category == null){
-            ra.addFlashAttribute("error", "Categoria no encontrada");
-            return "redirect:/categories";
-        }
-        model.addAttribute("category", category);
-        return "catalog/category_form";
-    }
-
     @PostMapping("/deleteArticle/{id}")
-    public String deleteArticle(@PathVariable("id") Integer idArticle, RedirectAttributes ra){
-        articleRepository.deleteById(idArticle);
-        ra.addFlashAttribute("success", "Artículo eliminado exitosamente");
-        return "redirect:/articles";
-    }
-
-    @PostMapping("/deleteCategory/{id}")
-    public String deleteCategories(@PathVariable("id") Integer idCategory, RedirectAttributes ra){
-        categoryRepository.deleteById(idCategory);
-        ra.addFlashAttribute("success", "Categoria eliminada exitosamente");
-        return "redirect:/categories";
+    public String deleteArticle(@PathVariable("id") Integer idArticle, RedirectAttributes ra) {
+        try {
+            articleRepository.deleteById(idArticle);
+            ra.addFlashAttribute("success", "Artículo guardado correctamente.");
+        } catch (Exception e) {
+            ra.addFlashAttribute("error", "Hubo un error al guardar el artículo.");
+        }
+        return "redirect:/catalog/articles";
     }
 
     @GetMapping("/articlereport")
@@ -149,17 +122,55 @@ public class CatalogController {
                     })
                     .collect(Collectors.toList());
 
-            // Configurar respuesta HTTP
             response.setContentType("application/pdf");
             response.setHeader("Content-Disposition", "attachment; filename=reporte_articulos.pdf");
-
-            // Generar PDF
             pdfReportService.generatePdf(response, "Reporte de Artículos", headers, rows);
 
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             response.getWriter().println("Error al generar el reporte: " + e.getMessage());
         }
+    }
+
+    // ---------- CATEGORIES ------------------
+
+    @GetMapping("/categories")
+    public String listCategories(@RequestParam(defaultValue = "0") int page, Model model) {
+        Page<Category> categories = categoryRepository.findAll(
+                PageRequest.of(page, 10, Sort.by("idCategory").ascending()));
+        model.addAttribute("categories", categories);
+        return "catalog/categories";
+    }
+
+    @GetMapping("/category/form")
+    public String formCategory(Model model) {
+        model.addAttribute("category", new Category());
+        return "catalog/category_form";
+    }
+
+    @PostMapping("/save/category")
+    public String saveCategory(@ModelAttribute Category category, RedirectAttributes ra) {
+        categoryRepository.save(category);
+        ra.addFlashAttribute("success", "Categoría guardada exitosamente");
+        return "redirect:/catalog/categories";
+    }
+
+    @GetMapping("/editCategory/{idCategory}")
+    public String editCategory(@PathVariable("idCategory") Integer id, Model model, RedirectAttributes ra) {
+        Category category = categoryRepository.findById(id).orElse(null);
+        if (category == null) {
+            ra.addFlashAttribute("error", "Categoría no encontrada");
+            return "redirect:/catalog/categories";
+        }
+        model.addAttribute("category", category);
+        return "catalog/category_form";
+    }
+
+    @PostMapping("/deleteCategory/{idCategory}")
+    public String deleteCategory(@PathVariable("idCategory") Integer id, RedirectAttributes ra) {
+        categoryRepository.deleteById(id);
+        ra.addFlashAttribute("success", "Categoría eliminada exitosamente");
+        return "redirect:/catalog/categories";
     }
 
     @GetMapping("/categoryreport")
@@ -173,6 +184,7 @@ public class CatalogController {
                             category.getName() != null ? category.getName() : "N/A"
                     ))
                     .collect(Collectors.toList());
+
             response.setContentType("application/pdf");
             response.setHeader("Content-Disposition", "attachment; filename=reporte_categorias.pdf");
             pdfReportService.generatePdf(response, "Reporte de Categorías", headers, rows);
@@ -239,3 +251,4 @@ public class CatalogController {
         }
     }
 }
+

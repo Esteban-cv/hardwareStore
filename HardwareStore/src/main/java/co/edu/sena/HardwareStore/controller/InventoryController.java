@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
-import java.math.RoundingMode;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
@@ -44,8 +43,8 @@ public class InventoryController {
 
     @GetMapping
     public String listInventory(@RequestParam(defaultValue = "0") int page, Model model) {
-        Page<Inventory> all_inventory = inventoryRepository.findAll(PageRequest.of(page, 10, Sort.by("updatedAt").descending()));
-        model.addAttribute("all_inventory", all_inventory);
+        Page<Inventory> inventories = inventoryRepository.findAll(PageRequest.of(page, 10, Sort.by("updatedAt").descending()));
+        model.addAttribute("inventories", inventories);
         return "inventory/all_inventory";
     }
 
