@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,161 +9,197 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
 </head>
+
 <body>
-<div class="container">
-    <!-- Sidebar -->
-    <nav class="sidebar">
-        <div class="logo">
-            <i class="fas fa-tools"></i>
-            <h2>Ferretería Store</h2>
-        </div>
+    <div class="container">
+        <!-- Sidebar Mejorado -->
+        <nav class="sidebar">
+            <div class="sidebar-inner">
+                <!-- Logo -->
+                <div class="logo">
+                    <i class="fas fa-tools"></i>
+                    <h2>Ferretería Store</h2>
+                </div>
 
-        <div class="search-box">
-            <input type="text" placeholder="Search">
-        </div>
+                <!-- Buscador -->
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Buscar módulo..." id="sidebarSearch">
+                </div>
 
-        <ul class="nav-menu">
-            <li class="nav-item">
-                <a th:href="@{/home}" class="nav-link active">
-                    <span><i class="fas fa-chart-bar"></i> Dashboard</span>
-                </a>
-            </li>
-
-            <li class="nav-item">
-                <a th:href="@{/sales}" class="nav-link">
-                    <span><i class="fas fa-shopping-cart"></i> Ventas</span>
-                    <i class="fas fa-chevron-down"></i>
-                </a>
-                <ul class="sub-menu">
-                    <li><a th:href="@{/sales/form}" class="nav-link">Nueva Venta</a></li>
-                    <li><a th:href="@{/productreturns}" class="nav-link">Devoluciones</a></li>
-                    <li><a th:href="@{/productreturns/form}" class="nav-link">Nueva devolucion</a></li>
-                </ul>
-            </li>
-
-            <li class="nav-item">
-                <a th:href="@{/purchases}" class="nav-link">
-                    <span><i class="fas fa-truck"></i> Compras</span>
-                    <i class="fas fa-chevron-down"></i>
-                </a>
-                <ul class="sub-menu">
-                    <li><a th:href="@{/purchases/form}" class="nav-link">Nueva Compra</a></li>
-                </ul>
-            </li>
-
-            <li class="nav-item">
-                <a th:href="@{/inventory}" class="nav-link">
-                    <span><i class="fas fa-boxes"></i> Inventario</span>
-                    <i class="fas fa-chevron-down"></i>
-                </a>
-                <ul class="sub-menu">
-                    <li><a th:href="@{/inventory/form}" class="nav-link">Nuevo Inventario</a></li>
-                    <li><a th:href="@{/entries}" class="nav-link">Entradas <span class="badge">10</span></a></li>
-                    <li><a th:href="@{/locations}" class="nav-link">Ubicaciones</a></li>
-                </ul>
-            </li>
-
-            <li class="nav-item">
-                <a th:href="@{/catalog}" class="nav-link">
-                    <span><i class="fas fa-list"></i> Catálogo</span>
-                    <i class="fas fa-chevron-down"></i>
-                </a>
-                <ul class="sub-menu">
-                    <li><a th:href="@{/catalog/articles}" class="nav-link">Artículos</a></li>
-                    <li><a th:href="@{/catalog/categories}" class="nav-link">Categorías</a></li>
-                </ul>
-            </li>
-        </ul>
-
-        <!-- Botón de Logout -->
-        <div class="logout-section" style="margin-top: auto; padding: 20px;">
-            <a th:href="@{/logout}" class="nav-link" style="color: #ef4444;">
-                <span><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</span>
-            </a>
-        </div>
-    </nav>
-
-
-    <!-- Main Content -->
-    <main class="main-content">
-        <div class="dashboard-header">
-            <h1>Gestíon de Ubicaciones</h1>
-        </div>
-        <h4>Gestiona fácilmente las ubicaciones registradas: consulta, edita o elimina según sea necesario.</h4>
-        <br>
-        <div class="action-buttons" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px;">
-            <a th:href="@{/locations/form}" class="btn-add" style="display: flex; align-items: center; gap: 5px;">
-                <i class="fas fa-plus-circle"></i> Nueva Ubicación
-            </a>
-            <a th:href="@{/locations/locationreport}" class="btn-pdf" style="display: flex; align-items: center; gap: 5px;">
-                <i class="fas fa-file-export"></i>PDF
-            </a>
-            <a th:href="@{/locations/locationreport/excel}" class="btn-excel" style="display: flex; align-items: center; gap: 5px;">
-                <i class="fas fa-file-export"></i>EXCEL
-            </a>
-        </div>
-
-        <!-- Clients Table -->
-        <div class="section-for-all">
-            <table class="tables-for-all">
-                <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>NOMBRE</th>
-                    <th>CODE</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="location : ${locations}">
-                    <td th:text="${location.idLocation}"></td>
-                    <td th:text="${location.name}"></td>
-                    <td th:text="${location.code}"></td>
-                    <td>
-                        <a th:href="@{'/locations/edit/' + ${location.idLocation}}" class="btn-edit">
-                            <i class="fas fa-pencil-alt"></i>
+                <!-- Menú Principal -->
+                <ul class="nav-menu">
+                    <!-- Dashboard -->
+                    <li class="nav-item">
+                        <a th:href="@{/home}" class="nav-link">
+                            <i class="fas fa-chart-bar"></i>
+                            <span>Dashboard</span>
                         </a>
-                        <form th:action="@{'/locations/delete/' + ${location.idLocation}}" method="post" style="display:inline;">
-                            <button type="submit" class="btn-delete">
-                                <i class="fas fa-trash-alt"></i>
-                            </button>
-                        </form>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-            <nav class="pagination-nav">
-                <ul class="pagination-list">
-
-                    <!-- back -->
-                    <li th:classappend="${!locations.hasPrevious()} ? 'disabled'">
-                        <a th:href="@{/locations(page=${locations.number - 1})}">Anterior</a>
                     </li>
 
-                    <!-- numbers -->
-                    <li th:each="i : ${#numbers.sequence(0, locations.totalPages - 1)}"
-                        th:classappend="${i == locations.number} ? 'active'">
-                        <a th:href="@{/locations(page=${i})}" th:text="${i + 1}"></a>
+                    <!-- Ventas (con submenú) -->
+                    <li class="nav-item has-submenu">
+                        <a class="nav-link">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span>Ventas</span>
+                            <i class="fas fa-chevron-down dropdown-icon"></i>
+                        </a>
+                        <ul class="sub-menu">
+                            <li><a th:href="@{/sales}" class="nav-link">Consultar</a></li>
+                            <li><a th:href="@{/sales/form}" class="nav-link">Nueva Venta</a></li>
+                        </ul>
                     </li>
 
-                    <!-- next -->
-                    <li th:classappend="${!locations.hasNext()} ? 'disabled'">
-                        <a th:href="@{/locations(page=${locations.number + 1})}">Siguiente</a>
+                    <!-- Devoluciones (con submenú) -->
+                    <li class="nav-item has-submenu">
+                        <a class="nav-link">
+                            <i class="fas fa-undo-alt"></i>
+                            <span>Devoluciones</span>
+                            <i class="fas fa-chevron-down dropdown-icon"></i>
+                        </a>
+                        <ul class="sub-menu">
+                            <li><a th:href="@{/productreturns}" class="nav-link">Consultar</a></li>
+                            <li><a th:href="@{/productreturns/form}" class="nav-link">Nueva Devolucion</a></li>
+                        </ul>
                     </li>
 
+                    <!-- Compras (con submenú) -->
+                    <li class="nav-item has-submenu">
+                        <a class="nav-link">
+                            <i class="fas fa-truck"></i>
+                            <span>Compras</span>
+                            <i class="fas fa-chevron-down dropdown-icon"></i>
+                        </a>
+                        <ul class="sub-menu">
+                            <li><a th:href="@{/purchases}" class="nav-link">Consultar</a></li>
+                            <li><a th:href="@{/purchases/form}" class="nav-link">Nueva Compra</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Inventario (con submenú) -->
+                    <li class="nav-item has-submenu">
+                        <a class="nav-link">
+                            <i class="fas fa-boxes"></i>
+                            <span>Inventario</span>
+                            <i class="fas fa-chevron-down dropdown-icon"></i>
+                        </a>
+                        <ul class="sub-menu">
+                            <li><a th:href="@{/inventory}" class="nav-link">Consultar</a></li>
+                            <li><a th:href="@{/purchases/form}" class="nav-link">Nuevo Inventario</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Catálogo -->
+                    <li class="nav-item has-submenu">
+                        <a class="nav-link">
+                            <i class="fas fa-list"></i>
+                            <span>Catálogo</span>
+                            <i class="fas fa-chevron-down dropdown-icon"></i>
+                        </a>
+                        <ul class="sub-menu">
+                            <li><a th:href="@{/catalog/articles}" class="nav-link">Artículos</a></li>
+                            <li><a th:href="@{/catalog/categories}" class="nav-link">Categorías</a></li>
+                        </ul>
+                    </li>
                 </ul>
-            </nav>
-        </div>
-    </main>
-</div>
 
-<!-- Footer -->
-<footer class="footer">
-    <div class="footer-left">
-        <span>© 2025 Ferretería Store. Todos los derechos reservados.</span>
+                <!-- Logout -->
+                <div class="logout-section">
+                    <a th:href="@{/logout}" class="nav-link logout-link">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Cerrar Sesión</span>
+                    </a>
+                </div>
+            </div>
+        </nav>
+
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="dashboard-header">
+                <h1>Gestíon de Ubicaciones</h1>
+            </div>
+            <h4>Gestiona fácilmente las ubicaciones registradas: consulta, edita o elimina según sea necesario.</h4>
+            <br>
+            <div class="action-buttons" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px;">
+                <a th:href="@{/locations/form}" class="btn-add" style="display: flex; align-items: center; gap: 5px;">
+                    <i class="fas fa-plus-circle"></i> Nueva Ubicación
+                </a>
+                <a th:href="@{/locations/locationreport}" class="btn-pdf"
+                    style="display: flex; align-items: center; gap: 5px;">
+                    <i class="fas fa-file-export"></i>PDF
+                </a>
+                <a th:href="@{/locations/locationreport/excel}" class="btn-excel"
+                    style="display: flex; align-items: center; gap: 5px;">
+                    <i class="fas fa-file-export"></i>EXCEL
+                </a>
+            </div>
+
+            <!-- Clients Table -->
+            <div class="section-for-all">
+                <table class="tables-for-all">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>NOMBRE</th>
+                            <th>CODE</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="location : ${locations}">
+                            <td th:text="${location.idLocation}"></td>
+                            <td th:text="${location.name}"></td>
+                            <td th:text="${location.code}"></td>
+                            <td>
+                                <a th:href="@{'/locations/edit/' + ${location.idLocation}}" class="btn-edit">
+                                    <i class="fas fa-pencil-alt"></i>
+                                </a>
+                                <form th:action="@{'/locations/delete/' + ${location.idLocation}}" method="post"
+                                    style="display:inline;">
+                                    <button type="submit" class="btn-delete">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <nav class="pagination-nav">
+                    <ul class="pagination-list">
+
+                        <!-- back -->
+                        <li th:classappend="${!locations.hasPrevious()} ? 'disabled'">
+                            <a th:href="@{/locations(page=${locations.number - 1})}">Anterior</a>
+                        </li>
+
+                        <!-- numbers -->
+                        <li th:each="i : ${#numbers.sequence(0, locations.totalPages - 1)}"
+                            th:classappend="${i == locations.number} ? 'active'">
+                            <a th:href="@{/locations(page=${i})}" th:text="${i + 1}"></a>
+                        </li>
+
+                        <!-- next -->
+                        <li th:classappend="${!locations.hasNext()} ? 'disabled'">
+                            <a th:href="@{/locations(page=${locations.number + 1})}">Siguiente</a>
+                        </li>
+
+                    </ul>
+                </nav>
+            </div>
+        </main>
     </div>
-    <div class="footer-right">
-        <span>Hecho con <i class="fas fa-heart"></i> por Aprendices SENA</span>
-    </div>
-</footer>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-left">
+            <span>© 2025 Ferretería Store. Todos los derechos reservados.</span>
+        </div>
+        <div class="footer-right">
+            <span>Hecho con <i class="fas fa-heart"></i> por Aprendices SENA</span>
+        </div>
+    </footer>
+    <!-- Scripts -->
+    <script th:src="@{/js/sales-module.js}"></script>
 </body>
+
 </html>

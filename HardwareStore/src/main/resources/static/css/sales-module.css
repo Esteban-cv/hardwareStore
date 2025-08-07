@@ -144,7 +144,11 @@
 }
 
 .btn-add-product {
+<<<<<<< HEAD
+    background: #2563eb;
+=======
     background: var(--current-accent);
+>>>>>>> b0d7b5d149e29323e61a434fc4ee1eeb25761e07
     color: white;
     border: none;
     padding: 8px 12px;
@@ -160,7 +164,11 @@
 }
 
 .btn-add-product:hover:not(:disabled) {
+<<<<<<< HEAD
+    background: #1d4ed8;
+=======
     background: color-mix(in srgb, var(--current-accent) 85%, black);
+>>>>>>> b0d7b5d149e29323e61a434fc4ee1eeb25761e07
     transform: scale(1.05);
 }
 
