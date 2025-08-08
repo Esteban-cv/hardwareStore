@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ferretería Store - Ventas</title>
+    <title>Ferretería Store - Dashboard</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
@@ -104,7 +104,7 @@
 
                     <!-- Entradas -->
                     <li class="nav-item">
-                        <a th:href="@{/entries}" class="nav-link">
+                       <a th:href="@{/entries}" class="nav-link">
                             <i class="fas fa-chart-bar"></i>
                             <span>Entradas</span>
                         </a>
@@ -112,12 +112,11 @@
 
                     <!-- Salidas -->
                     <li class="nav-item">
-                        <a th:href="@{/exits}" class="nav-link">
+                       <a th:href="@{/exits}" class="nav-link">
                             <i class="fas fa-chart-line"></i>
                             <span>Salidas</span>
                         </a>
                     </li>
-
                 </ul>
 
                 <!-- Logout -->
@@ -132,82 +131,81 @@
 
         <!-- Main Content -->
         <main class="main-content">
-            <div class="dashboard-header">
-                <h1>Gestíon de Ventas</h1>
-            </div>
-            <h4>Gestiona fácilmente las ventas registradas: consulta, edita o elimina según sea necesario.</h4>
-            <br>
-            <div class="action-buttons" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px;">
-                <a th:href="@{/sales/form}" class="btn-add" style="display: flex; align-items: center; gap: 5px;">
-                    <i class="fas fa-plus-circle"></i> Nueva Venta
-                </a>
-                <a th:href="@{/sales/salereport}" class="btn-pdf" style="display: flex; align-items: center; gap: 5px;">
-                    <i class="fas fa-file-export"></i>PDF
-                </a>
-                <a th:href="@{/sales/salereport/excel}" class="btn-excel"
-                    style="display: flex; align-items: center; gap: 5px;">
-                    <i class="fas fa-file-export"></i>EXCEL
-                </a>
-            </div>
+    <div class="dashboard-header">
+        <h1>Gestíon de Salidas</h1> <!-- Cambiado de Entradas a Salidas -->
+    </div>
+    <h4>Gestiona fácilmente las salidas registradas: consulta, edita o elimina según sea necesario.</h4>
+    <br>
+    <div class="action-buttons" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px;">
+        <a th:href="@{/exits/form}" class="btn-add" style="display: flex; align-items: center; gap: 5px;">
+            <i class="fas fa-plus-circle"></i> Nueva Salida
+        </a>
+        <a th:href="@{/exits/issuereport}" class="btn-pdf" style="display: flex; align-items: center; gap: 5px;">
+            <i class="fas fa-file-export"></i>PDF
+        </a>
+        <a th:href="@{/exits/issuereport/excel}" class="btn-excel" style="display: flex; align-items: center; gap: 5px;">
+            <i class="fas fa-file-export"></i>EXCEL
+        </a>
+    </div>
 
+    <!-- Issues Table -->
+    <div class="section-for-all">
+        <table class="tables-for-all">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>FECHA</th>
+                    <th>CANTIDAD</th>
+                    <th>OBSERVACIONES</th>
+                    <th>ARTICULO</th>
+                    <th>CLIENTE</th>
+                    <th>EMPLEADO</th>
+                    <th>ACCIONES</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="issue : ${issues}">
+                    <td th:text="${issue.idIssue}"></td>
+                    <td th:text="${issue.dateIssue}"></td>
+                    <td th:text="${issue.quantity}"></td>
+                    <td th:text="${issue.observations}"></td>
+                    <td th:text="${issue.article.name}"></td>
+                    <td th:text="${issue.client.name}"></td>
+                    <td th:text="${issue.employee.name}"></td>
+                    <td>
+                        <a th:href="@{'/exits/edit/' + ${issue.idIssue}}" class="btn-edit">
+                            <i class="fas fa-pencil-alt"></i>
+                        </a>
+                        <form th:action="@{'/exits/delete/' + ${issue.idIssue}}" method="post" style="display:inline;">
+                            <button type="submit" class="btn-delete">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <nav class="pagination-nav">
+            <ul class="pagination-list">
+                <!-- back -->
+                <li th:classappend="${!issues.hasPrevious()} ? 'disabled'">
+                    <a th:href="@{/exits(page=${issues.number - 1})}">Anterior</a>
+                </li>
 
-            <!-- sales Table -->
-            <div class="section-for-all">
-                <table class="tables-for-all">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>FECHA</th>
-                            <th>TOTAL</th>
-                            <th>CLIENTE</th>
-                            <th>EMPLEADO</th>
-                            <th>ACCIONES</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr th:each="sale : ${sales}">
-                            <td th:text="${sale.idSale}"></td>
-                            <td th:text="${sale.date}"></td>
-                            <td th:text="${#numbers.formatDecimal(sale.total, 1, 2, 'COMMA')}"></td>
-                            <td th:text="${sale.client.name}"></td>
-                            <td th:text="${sale.employee.name}"></td>
-                            <td>
-                                <a th:href="@{'/sales/edit/' + ${sale.idSale}}" class="btn-edit">
-                                    <i class="fas fa-pencil-alt"></i>
-                                </a>
-                                <form th:action="@{'/sales/delete/' + ${sale.idSale}}" method="post"
-                                    style="display:inline;">
-                                    <button type="submit" class="btn-delete">
-                                        <i class="fas fa-trash-alt"></i>
-                                    </button>
-                                </form>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-                <nav class="pagination-nav">
-                    <ul class="pagination-list">
+                <!-- numbers -->
+                <li th:each="i : ${#numbers.sequence(0, issues.totalPages - 1)}"
+                    th:classappend="${i == issues.number} ? 'active'">
+                    <a th:href="@{/exits(page=${i})}" th:text="${i + 1}"></a>
+                </li>
 
-                        <!-- back -->
-                        <li th:classappend="${!sales.hasPrevious()} ? 'disabled'">
-                            <a th:href="@{/sales(page=${sales.number - 1})}">Anterior</a>
-                        </li>
-
-                        <!-- numbers -->
-                        <li th:each="i : ${#numbers.sequence(0, sales.totalPages - 1)}"
-                            th:classappend="${i == sales.number} ? 'active'">
-                            <a th:href="@{/sales(page=${i})}" th:text="${i + 1}"></a>
-                        </li>
-
-                        <!-- next -->
-                        <li th:classappend="${!sales.hasNext()} ? 'disabled'">
-                            <a th:href="@{/sales(page=${sales.number + 1})}">Siguiente</a>
-                        </li>
-
-                    </ul>
-                </nav>
-            </div>
-        </main>
+                <!-- next -->
+                <li th:classappend="${!issues.hasNext()} ? 'disabled'">
+                    <a th:href="@{/exits(page=${issues.number + 1})}">Siguiente</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</main>
     </div>
 
     <!-- Footer -->

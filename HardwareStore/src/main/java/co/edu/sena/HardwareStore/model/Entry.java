@@ -3,6 +3,7 @@ package co.edu.sena.HardwareStore.model;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -15,6 +16,7 @@ public class Entry {
     @Column(name = "id_entry")
     private Integer idEntry;
     @Column(name = "date_entry", nullable = false)
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate dateEntry;
     private Integer quantity;
     @Column(length = 100)

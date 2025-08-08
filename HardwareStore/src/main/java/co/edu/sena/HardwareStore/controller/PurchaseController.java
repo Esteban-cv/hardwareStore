@@ -1,6 +1,5 @@
 package co.edu.sena.HardwareStore.controller;
 
-
 import co.edu.sena.HardwareStore.model.Purchase;
 import co.edu.sena.HardwareStore.repository.ArticleRepository;
 import co.edu.sena.HardwareStore.repository.EmployeeRepository;
@@ -25,7 +24,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
 @Controller
 @RequestMapping("/purchases")
 public class PurchaseController {
@@ -42,10 +40,11 @@ public class PurchaseController {
     private PdfReportService pdfReportService;
     @Autowired
     private ExcelReportService excelReportService;
+
     @GetMapping
     public String listPurchases(@RequestParam(defaultValue = "0") int page, Model model) {
         Page<Purchase> purchases = purchaseRepository.findAll(PageRequest.of(page, 10, Sort.by("date").descending()));
-        purchases.forEach(s ->{
+        purchases.forEach(s -> {
             if (s.getTotal() != null) {
                 s.setTotal(s.getTotal().setScale(2, RoundingMode.HALF_UP));
             }
@@ -57,7 +56,7 @@ public class PurchaseController {
     @GetMapping("/form")
     public String form(Model model) {
         model.addAttribute("purchase", new Purchase());
-        model.addAttribute("articles", articleRepository.findAll());   //  Para la FK
+        model.addAttribute("articles", articleRepository.findAll()); // Para la FK
         model.addAttribute("suppliers", supplierRepository.findAll()); // Para la FK
         model.addAttribute("employees", employeeRepository.findAll()); // Para laFK
         return "/purchases/purchase_form";
@@ -72,16 +71,32 @@ public class PurchaseController {
 
     @GetMapping("/edit/{id}")
     public String edit(@PathVariable("id") Long idPurchase, Model model, RedirectAttributes ra) {
-        Purchase purchase = purchaseRepository.findById(idPurchase).orElse(null);
-        if (purchase == null) {
-            ra.addFlashAttribute("error", "Compra no encontrada.");
+        try {
+            // Carga la compra con las relaciones inicializadas
+            Purchase purchase = purchaseRepository.findById(idPurchase)
+                    .orElseThrow(() -> new IllegalArgumentException("Compra no encontrada"));
+
+            // Verifica y carga las relaciones
+            if (purchase.getArticle() != null) {
+                purchase.setArticle(articleRepository.findById(purchase.getArticle().getIdArticle()).orElse(null));
+            }
+            if (purchase.getSupplier() != null) {
+                purchase.setSupplier(supplierRepository.findById(purchase.getSupplier().getIdSupplier()).orElse(null));
+            }
+            if (purchase.getEmployee() != null) {
+                purchase.setEmployee(employeeRepository.findById(purchase.getEmployee().getIdEmployee()).orElse(null));
+            }
+
+            model.addAttribute("purchase", purchase);
+            model.addAttribute("articles", articleRepository.findAll());
+            model.addAttribute("suppliers", supplierRepository.findAll());
+            model.addAttribute("employees", employeeRepository.findAll());
+
+            return "purchases/purchase_form"; // Quita la barra inicial para consistencia
+        } catch (Exception e) {
+            ra.addFlashAttribute("error", "Error al cargar la compra: " + e.getMessage());
             return "redirect:/purchases";
         }
-        model.addAttribute("purchase", purchase);
-        model.addAttribute("articles", articleRepository.findAll());   // FK
-        model.addAttribute("suppliers", supplierRepository.findAll()); // FK
-        model.addAttribute("employees", employeeRepository.findAll()); // FK
-        return "/purchases/purchase_form";
     }
 
     @PostMapping("/delete/{id}")
@@ -95,7 +110,8 @@ public class PurchaseController {
     public void generatepurchaseReport(HttpServletResponse response) throws IOException {
         try {
             List<Purchase> purchases = purchaseRepository.findAll();
-            List<String> headers = Arrays.asList("ID", "Fecha", "Cantidad", "Total", "Estado", "Proveedor", "Empleado", "Articulo");
+            List<String> headers = Arrays.asList("ID", "Fecha", "Cantidad", "Total", "Estado", "Proveedor", "Empleado",
+                    "Articulo");
             List<List<String>> rows = purchases.stream()
                     .map(s -> {
                         // Formatear fecha (ejemplo para java.util.Date)
@@ -108,8 +124,7 @@ public class PurchaseController {
                                 String.valueOf(s.getStatus()),
                                 s.getSupplier() != null ? s.getSupplier().getName() : "N/A",
                                 s.getEmployee() != null ? s.getEmployee().getName() : "N/A",
-                                s.getArticle() != null ? s.getArticle().getName() : "N/A"
-                        );
+                                s.getArticle() != null ? s.getArticle().getName() : "N/A");
                     })
                     .collect(Collectors.toList());
 
@@ -127,7 +142,8 @@ public class PurchaseController {
     public void generatePurchaseExcelReport(HttpServletResponse response) throws IOException {
         try {
             List<Purchase> purchases = purchaseRepository.findAll();
-            List<String> headers = Arrays.asList("ID", "Fecha", "Cantidad", "Total", "Estado", "Proveedor", "Empleado", "Articulo");
+            List<String> headers = Arrays.asList("ID", "Fecha", "Cantidad", "Total", "Estado", "Proveedor", "Empleado",
+                    "Articulo");
             List<List<String>> rows = purchases.stream()
                     .map(s -> {
                         String fechaFormateada = s.getDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
@@ -139,8 +155,7 @@ public class PurchaseController {
                                 String.valueOf(s.getStatus()),
                                 s.getSupplier() != null ? s.getSupplier().getName() : "N/A",
                                 s.getEmployee() != null ? s.getEmployee().getName() : "N/A",
-                                s.getArticle() != null ? s.getArticle().getName() : "N/A"
-                        );
+                                s.getArticle() != null ? s.getArticle().getName() : "N/A");
                     })
                     .collect(Collectors.toList());
 
@@ -154,4 +169,3 @@ public class PurchaseController {
         }
     }
 }
-
