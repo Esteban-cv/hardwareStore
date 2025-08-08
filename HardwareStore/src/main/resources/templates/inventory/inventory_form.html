@@ -102,6 +102,22 @@
               <li><a th:href="@{/catalog/categories}" class="nav-link">Categorías</a></li>
             </ul>
           </li>
+
+          <!-- Entradas -->
+          <li class="nav-item">
+            <a th:href="@{/entries}" class="nav-link">
+              <i class="fas fa-chart-bar"></i>
+              <span>Entradas</span>
+            </a>
+          </li>
+
+          <!-- Salidas -->
+          <li class="nav-item">
+            <a th:href="@{/exits}" class="nav-link">
+              <i class="fas fa-chart-line"></i>
+              <span>Salidas</span>
+            </a>
+          </li>
         </ul>
 
         <!-- Logout -->
@@ -114,14 +130,15 @@
       </div>
     </nav>
 
-    <main class="form-main-container main-content">
+    <main class="main-content">
       <div class="form-header">
         <div class="form-title-section">
           <h1 class="form-title">
             <i class="fas fa-boxes"></i>
-            Nuevo inventario
+            <span th:text="${inventory.idInventory != null} ? 'Editar Inventario' : 'Nuevo Inventario'"></span>
           </h1>
-          <p class="form-subtitle">Registra un nuevo inventarío de productos</p>
+          <p class="form-subtitle" th:text="${inventory.idInventory != null} ? 
+                'Actualiza los datos del Inventario' : 'Registra un nuevo Inventario'"></p>
         </div>
         <div class="form-header-actions">
           <a th:href="@{/inventory}" class="btn-pdf">
@@ -132,7 +149,8 @@
       </div>
 
       <div class="form-container">
-        <form class="form-content" th:action="@{/inventory/save}" method="post">
+        <form class="form-content" th:action="@{/inventory/save}" method="post" th:object="${inventory}">
+          <input type="hidden" th:field="*{idInventory}" />
 
           <!-- Información General -->
           <div class="form-section">
@@ -145,81 +163,72 @@
 
             <div class="form-grid">
               <div class="form-input-group">
-                <label for="date" class="form-label">
+                <label for="article" class="form-label">
+                  <i class="fas fa-box"></i>
+                  Artículo
+                </label>
+                <select id="article" th:field="*{article.idArticle}" class="form-select" required>
+                  <option value="">Selecciona un Artículo</option>
+                  <option th:each="article : ${articles}" th:value="${article.idArticle}" th:text="${article.name}">
+                  </option>
+                </select>
+                <span class="form-field-hint">Artículo a inventariar</span>
+              </div>
+
+              <div class="form-input-group">
+                <label for="location" class="form-label">
+                  <i class="fas fa-map-marker-alt"></i>
+                  Ubicación
+                </label>
+                <select id="location" th:field="*{location.idLocation}" class="form-select" required>
+                  <option value="">Selecciona una Ubicación</option>
+                  <option th:each="location : ${locations}" th:value="${location.idLocation}"
+                    th:text="${location.name}"></option>
+                </select>
+                <span class="form-field-hint">Ubicación del artículo</span>
+              </div>
+
+              <div class="form-input-group">
+                <label for="currentStock" class="form-label">
+                  <i class="fas fa-layer-group"></i>
+                  Stock Actual
+                </label>
+                <input type="number" id="currentStock" th:field="*{currentStock}" class="form-input" min="0" required>
+                <span class="form-field-hint">Cantidad actual en inventario</span>
+              </div>
+
+              <div class="form-input-group">
+                <label for="minimumStock" class="form-label">
+                  <i class="fas fa-exclamation-triangle"></i>
+                  Stock Mínimo
+                </label>
+                <input type="number" id="minimumStock" th:field="*{minimumStock}" class="form-input" min="0" required>
+                <span class="form-field-hint">Cantidad mínima permitida</span>
+              </div>
+
+              <div class="form-input-group">
+                <label for="updatedAt" class="form-label">
                   <i class="fas fa-calendar-alt"></i>
-                  Fecha de Devolución
+                  Fecha Actualización
                 </label>
-                <input type="date" id="date" name="date" class="form-input" required>
-                <span class="form-field-hint">Selecciona la fecha de la devolución</span>
-              </div>
-
-              <div class="form-input-group">
-                <label for="total" class="form-label">
-                  <i class="fas fa-dollar-sign"></i>
-                  Total de la Devolución
-                </label>
-                <input type="number" id="total" name="total" class="form-input" step="0.01" min="0" placeholder="0.00"
+                <input type="date" id="updatedAt" class="form-input" th:field="*{updatedAt}"
+                  th:value="${inventory.updatedAt != null} ? ${#temporals.format(inventory.updatedAt, 'yyyy-MM-dd')} : ''"
                   required>
-                <span class="form-field-hint">Monto total de la devolución</span>
+                <span class="form-field-hint">Fecha de actualización del inventario</span>
               </div>
             </div>
           </div>
 
-          <!-- Información del Cliente y Empleado -->
-          <div class="form-section">
-            <div class="form-section-header">
-              <h2 class="form-section-title">
-                <i class="fas fa-users"></i>
-                Cliente y Empleado
-              </h2>
-            </div>
-
-            <div class="form-grid">
-              <div class="form-input-group">
-                <label for="id_client" class="form-label">
-                  <i class="fas fa-user"></i>
-                  Cliente
-                </label>
-                <select id="id_client" name="id_client" class="form-select" required>
-                  <option value="">Selecciona un cliente</option>
-                  <option value="1">Juan Pérez - CC: 12345678</option>
-                  <option value="2">María García - CC: 87654321</option>
-                  <option value="3">Carlos López - CC: 11223344</option>
-                  <option value="4">Ana Martínez - CC: 44332211</option>
-                  <option value="5">Luis Rodríguez - CC: 55667788</option>
-                </select>
-                <span class="form-field-hint">Cliente que realiza la devolución</span>
-              </div>
-
-              <div class="form-input-group">
-                <label for="id_employee" class="form-label">
-                  <i class="fas fa-user-tie"></i>
-                  Empleado
-                </label>
-                <select id="id_employee" name="id_employee" class="form-select" required>
-                  <option value="">Selecciona un empleado</option>
-                  <option value="1">Roberto Silva - Vendedor</option>
-                  <option value="2">Patricia Morales - Cajera</option>
-                  <option value="3">Diego Herrera - Supervisor</option>
-                  <option value="4">Carmen Jiménez - Vendedora</option>
-                  <option value="5">Felipe Castro - Gerente</option>
-                </select>
-                <span class="form-field-hint">Empleado que procesa la devolución</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Botones de Acción -->
           <div class="form-actions-container">
             <button type="submit" class="btn-add">
               <i class="fas fa-save"></i>
-              Guardar Devolución
+              <span th:text="${inventory.idInventory != null} ? 'Actualizar' : 'Guardar'"></span>
             </button>
             <button type="reset" class="btn-excel">
               <i class="fas fa-eraser"></i>
-              Limpiar Formulario
+              Limpiar
             </button>
-            <a th:href="@{/productreturns}" class="btn-pdf">
+            <a th:href="@{/inventory}" class="btn-pdf">
               <i class="fas fa-times"></i>
               Cancelar
             </a>
