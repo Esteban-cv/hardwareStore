@@ -3,7 +3,7 @@ package co.edu.sena.HardwareStore.model;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-
+import org.springframework.format.annotation.DateTimeFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -15,6 +15,7 @@ public class Issue {
     @Column(name = "id_issue")
     private Long idIssue;
     @Column(name = "date_issue", nullable = false)
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate dateIssue;
     private Integer quantity;
     @Column(length = 100)
