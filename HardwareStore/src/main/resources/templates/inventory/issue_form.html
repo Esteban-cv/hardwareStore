@@ -104,19 +104,16 @@
                     </li>
 
                     <!-- Entradas -->
-                    <li class="nav-item">
-                        <a th:href="@{/entries}" class="nav-link">
+                    <li class="nav-item has-submenu">
+                        <a class="nav-link">
                             <i class="fas fa-chart-bar"></i>
                             <span>Entradas</span>
+                            <i class="fas fa-chevron-down dropdown-icon"></i>
                         </a>
-                    </li>
-
-                    <!-- Salidas -->
-                    <li class="nav-item">
-                        <a th:href="@{/exits}" class="nav-link">
-                            <i class="fas fa-chart-line"></i>
-                            <span>Salidas</span>
-                        </a>
+                        <ul class="sub-menu">
+                            <li><a th:href="@{/entries}" class="nav-link">Consultar</a></li>
+                            <li><a th:href="@{/entries/form}" class="nav-link">Nueva Entrada</a></li>
+                        </ul>
                     </li>
                 </ul>
 
@@ -141,7 +138,7 @@
                 'Actualiza los datos de la Salida' : 'Registra una nueva Salida'"></p>
                 </div>
                 <div class="form-header-actions">
-                    <a th:href="@{/exits}" class="btn-pdf">
+                    <a th:href="@{/issue}" class="btn-pdf">
                         <i class="fas fa-arrow-left"></i>
                         Volver al listado
                     </a>
@@ -149,7 +146,7 @@
             </div>
 
             <div class="form-container">
-                <form class="form-content" th:action="@{/exits/save}" method="post" th:object="${issue}">
+                <form class="form-content" th:action="@{/issue/save}" method="post" th:object="${issue}">
                     <input type="hidden" th:field="*{idIssue}" />
                     <!-- Información General -->
                     <div class="form-section">
@@ -257,7 +254,7 @@
                             <i class="fas fa-eraser"></i>
                             Limpiar
                         </button>
-                        <a th:href="@{/exits}" class="btn-pdf">
+                        <a th:href="@{/issue}" class="btn-pdf">
                             <i class="fas fa-times"></i>
                             Cancelar
                         </a>

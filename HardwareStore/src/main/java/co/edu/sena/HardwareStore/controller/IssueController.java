@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Controller
-@RequestMapping("/exits")
+@RequestMapping("/issue")
 public class IssueController {
 
     @Autowired
@@ -60,7 +60,7 @@ public class IssueController {
     public String save(@ModelAttribute Issue issue, RedirectAttributes ra) {
         issueRepository.save(issue);
         ra.addFlashAttribute("success", "Salida guardada exitosamente");
-        return "redirect:/exits";
+        return "redirect:/issue";
     }
 
     @GetMapping("/edit/{id}")
@@ -68,7 +68,7 @@ public class IssueController {
         Issue issue = issueRepository.findById(idIssue).orElse(null);
         if (issue == null) {
             ra.addFlashAttribute("error", "Salida no encontrada");
-            return "redirect:/exits";
+            return "redirect:/issue";
         }
 
         
@@ -83,7 +83,7 @@ public class IssueController {
     public String delete(@PathVariable("id") Long idIssue, RedirectAttributes ra) {
         issueRepository.deleteById(idIssue);
         ra.addFlashAttribute("success", "Salida eliminada exitosamente");
-        return "redirect:/exits";
+        return "redirect:/issue";
     }
 
     @GetMapping("/issuereport")
