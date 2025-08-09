@@ -102,6 +102,22 @@
                             <li><a th:href="@{/catalog/categories}" class="nav-link">Categorías</a></li>
                         </ul>
                     </li>
+
+                    <!-- Entradas -->
+                    <li class="nav-item">
+                        <a th:href="@{/entries}" class="nav-link">
+                            <i class="fas fa-chart-bar"></i>
+                            <span>Entradas</span>
+                        </a>
+                    </li>
+
+                    <!-- Salidas -->
+                    <li class="nav-item">
+                        <a th:href="@{/exits}" class="nav-link">
+                            <i class="fas fa-chart-line"></i>
+                            <span>Salidas</span>
+                        </a>
+                    </li>
                 </ul>
 
                 <!-- Logout -->
@@ -118,13 +134,14 @@
             <div class="form-header">
                 <div class="form-title-section">
                     <h1 class="form-title">
-                        <i class="fa-solid fa-box-open"></i>
-                        Nueva Compra
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span th:text="${issue.idIssue != null} ? 'Editar Salida' : 'Nueva Salida'"></span>
                     </h1>
-                    <p class="form-subtitle">Registra una nueva compra</p>
+                    <p class="form-subtitle" th:text="${issue.idIssue != null} ? 
+                'Actualiza los datos de la Salida' : 'Registra una nueva Salida'"></p>
                 </div>
                 <div class="form-header-actions">
-                    <a th:href="@{/purchases}" class="btn-pdf">
+                    <a th:href="@{/exits}" class="btn-pdf">
                         <i class="fas fa-arrow-left"></i>
                         Volver al listado
                     </a>
@@ -132,8 +149,8 @@
             </div>
 
             <div class="form-container">
-                <form class="form-content" th:action="@{/purchases/save}" method="post">
-
+                <form class="form-content" th:action="@{/exits/save}" method="post" th:object="${issue}">
+                    <input type="hidden" th:field="*{idIssue}" />
                     <!-- Información General -->
                     <div class="form-section">
                         <div class="form-section-header">
@@ -147,119 +164,100 @@
                             <div class="form-input-group">
                                 <label for="date" class="form-label">
                                     <i class="fas fa-calendar-alt"></i>
-                                    Fecha de Compra
+                                    Fecha de Salida
                                 </label>
-                                <input type="date" id="date" name="date" class="form-input" required>
-                                <span class="form-field-hint">Selecciona la fecha de la Compra</span>
-                            </div>
-
-                            <div class="form-input-group">
-                                <label for="total" class="form-label">
-                                    <i class="fas fa-dollar-sign"></i>
-                                    Total de la Compra
-                                </label>
-                                <input type="number" id="total" name="total" class="form-input" placeholder="0.00"
+                                <input type="date" id="dateIssue" class="form-input" th:field="*{dateIssue}"
+                                    th:value="${issue.dateIssue != null} ? ${#temporals.format(issue.dateIssue, 'yyyy-MM-dd')} : ''"
                                     required>
-                                <span class="form-field-hint">Monto total de la compra</span>
+                                <span class="form-field-hint">Selecciona la fecha de la salida</span>
                             </div>
 
                             <div class="form-input-group">
-                                <label for="total" class="form-label">
-                                    <i class="fas fa-dollar-sign"></i>
-                                    Cantidad de la Compra
+                                <label for="quantity" class="form-label">
+                                    <i class="fas fa-layer-group"></i>
+                                    Cantidad
                                 </label>
-                                <input type="number" id="total" name="total" class="form-input" step="1" min="0"
-                                    placeholder="0.00" required>
-                                <span class="form-field-hint">Cantidad total de la compra</span>
-                            </div>
-
-
-                            <div class="form-input-group">
-                                <label for="id_client" class="form-label">
-                                    <i class="fas fa-user"></i>
-                                    Estado
-                                </label>
-                                <select id="id_client" name="id_client" class="form-select" required>
-                                    <option value="">Selecciona un estado</option>
-                                    <option value="1">COMPLETADO</option>
-                                    <option value="2">PENDIENTE</option>
-                                </select>
-                                <span class="form-field-hint">Estado de la compra</span>
+                                <input type="number" id="quantity" th:field="*{quantity}" class="form-input" step="1"
+                                    min="0" required>
+                                <span class="form-field-hint">Cantidad de la salida</span>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Información del Cliente y Empleado -->
+                    <!-- Observaciones y Artículo -->
                     <div class="form-section">
                         <div class="form-section-header">
                             <h2 class="form-section-title">
-                                <i class="fas fa-users"></i>
-                                Proveedor, Empleado & Artículo
+                                <i class="fas fa-info-circle"></i>
+                                Observaciones & Artículo
                             </h2>
                         </div>
 
                         <div class="form-grid">
                             <div class="form-input-group">
-                                <label for="id_client" class="form-label">
-                                    <i class="fas fa-user"></i>
-                                    Proveedor
+                                <label for="observations" class="form-label">
+                                    <i class="fas fa-comment"></i>
+                                    Observaciones
                                 </label>
-                                <select id="id_client" name="id_client" class="form-select" required>
-                                    <option value="">Selecciona un Proveedor</option>
-                                    <option value="1">Proveedor Uno</option>
-                                    <option value="2">Proveedor Dos</option>
-                                    <option value="3">Proveedor Tres</option>
-                                    <option value="4">Proveedor Cuatro</option>
-                                    <option value="5">Proveedor Cinco</option>
-                                </select>
-                                <span class="form-field-hint">Proveedor que realiza la compra</span>
+                                <input type="text" id="observations" th:field="*{observations}" class="form-input"
+                                    placeholder="Ej: Salida por inventario" required>
+                                <span class="form-field-hint">Escriba las observaciones correspondientes</span>
                             </div>
 
                             <div class="form-input-group">
-                                <label for="id_employee" class="form-label">
-                                    <i class="fas fa-user-tie"></i>
-                                    Empleado
-                                </label>
-                                <select id="id_employee" name="id_employee" class="form-select" required>
-                                    <option value="">Selecciona un empleado</option>
-                                    <option value="1">Roberto Silva</option>
-                                    <option value="2">Patricia Morales</option>
-                                    <option value="3">Diego Herrera</option>
-                                    <option value="4">Carmen Jiménez</option>
-                                    <option value="5">Felipe Castro</option>
-                                </select>
-                                <span class="form-field-hint">Empleado que realiza la compra</span>
-                            </div>
-
-                            <div class="form-input-group">
-                                <label for="id_employee" class="form-label">
-                                    <i class="fas fa-user-tie"></i>
+                                <label for="article" class="form-label">
+                                    <i class="fas fa-box"></i>
                                     Artículo
                                 </label>
-                                <select id="id_employee" name="id_employee" class="form-select" required>
+                                <select id="article" th:field="*{article.idArticle}" class="form-select" required>
                                     <option value="">Selecciona un Artículo</option>
-                                    <option value="1">Martillo 16oz</option>
-                                    <option value="2">Destornillador Plano</option>
-                                    <option value="3">Pinza de Corte</option>
-                                    <option value="4">Tornillo 3x20mm</option>
-                                    <option value="5">Tuerca 1/4"</option>
+                                    <option th:each="article : ${articles}" th:value="${article.idArticle}"
+                                        th:text="${article.name}"></option>
                                 </select>
-                                <span class="form-field-hint">Artículo a vender</span>
+
+                                <span class="form-field-hint">Artículo de Salida</span>
+                            </div>
+
+                            <div class="form-input-group">
+                                <label for="client" class="form-label">
+                                    <i class="fas fa-user"></i>
+                                    Cliente
+                                </label>
+                                <select id="client" th:field="*{client.idClient}" class="form-select" required>
+                                    <option value="">Seleccione cliente</option>
+                                    <option th:each="client : ${clients}" th:value="${client.idClient}"
+                                        th:text="${client.name}"></option>
+                                </select>
+
+                                <span class="form-field-hint">Cliente de Salida</span>
+                            </div>
+
+                            <div class="form-input-group">
+                                <label for="employee" class="form-label">
+                                    <i class="fas fa-user"></i>
+                                    Empleado
+                                </label>
+                                <select id="employee" th:field="*{employee.idEmployee}" class="form-select" required>
+                                    <option value="">Seleccione empleado</option>
+                                    <option th:each="employee : ${employees}" th:value="${employee.idEmployee}"
+                                        th:text="${employee.name}"></option>
+                                </select>
+
+                                <span class="form-field-hint">Empleado de Salida</span>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Botones de Acción -->
                     <div class="form-actions-container">
                         <button type="submit" class="btn-add">
                             <i class="fas fa-save"></i>
-                            Guardar Compra
+                            <span th:text="${issue.idIssue != null} ? 'Actualizar' : 'Guardar'"></span>
                         </button>
                         <button type="reset" class="btn-excel">
                             <i class="fas fa-eraser"></i>
-                            Limpiar Formulario
+                            Limpiar
                         </button>
-                        <a th:href="@{/sales}" class="btn-pdf">
+                        <a th:href="@{/exits}" class="btn-pdf">
                             <i class="fas fa-times"></i>
                             Cancelar
                         </a>
@@ -267,7 +265,6 @@
                 </form>
             </div>
         </main>
-
         <!-- EJEMPLO: Formulario de Devoluciones con las mismas clases -->
         <main class="form-main-container form-accent-returns" style="display: none;">
             <div class="form-header">
@@ -335,6 +332,7 @@
                 </form>
             </div>
         </main>
+
     </div>
 
     <!-- Footer -->

@@ -3,6 +3,7 @@ package co.edu.sena.HardwareStore.model;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -16,6 +17,7 @@ public class Purchase {
     @Column(name = "id_purchase")
     private Long idPurchase;
     private Integer quantity;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate date;
     @Column(precision = 10, scale = 2, nullable = false)
     private BigDecimal total;

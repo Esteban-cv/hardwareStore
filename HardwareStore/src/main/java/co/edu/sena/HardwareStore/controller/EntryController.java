@@ -2,9 +2,9 @@ package co.edu.sena.HardwareStore.controller;
 
 
 import co.edu.sena.HardwareStore.model.Entry;
-import co.edu.sena.HardwareStore.model.Purchase;
 import co.edu.sena.HardwareStore.repository.ArticleRepository;
 import co.edu.sena.HardwareStore.repository.EntryRepository;
+import co.edu.sena.HardwareStore.services.ExcelReportService;
 import co.edu.sena.HardwareStore.services.PdfReportService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
-import java.math.RoundingMode;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
@@ -32,6 +31,9 @@ public class EntryController {
     private ArticleRepository articleRepository;
     @Autowired
     private PdfReportService pdfReportService;
+    @Autowired
+    private ExcelReportService excelReportService;
+
     @GetMapping
     public String listEntry(@RequestParam(defaultValue = "0") int page, Model model) {
         Page<Entry> entries = entryRepository.findAll(PageRequest.of(page, 10, Sort.by("dateEntry").descending()));
@@ -99,6 +101,35 @@ public class EntryController {
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             response.getWriter().println("Error al generar el reporte: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/entryreport/excel")
+    public void generateEntryExcelReport(HttpServletResponse response) throws IOException {
+        try {
+            List<Entry> entries = entryRepository.findAll();
+            List<String> headers = Arrays.asList("ID", "Fecha", "Cantidad", "Observaciones", "Artículo");
+            List<List<String>> rows = entries.stream()
+                    .map(s -> {
+                        String fechaFormateada = s.getDateEntry().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+                        return Arrays.asList(
+                                String.valueOf(s.getIdEntry()),
+                                fechaFormateada,
+                                String.valueOf(s.getQuantity()),
+                                s.getObservations() != null ? s.getObservations() : "",
+                                s.getArticle() != null ? s.getArticle().getName() : "N/A"
+                        );
+                    })
+                    .collect(Collectors.toList());
+
+            response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+            response.setHeader("Content-Disposition", "attachment; filename=reporte_entradas.xlsx");
+
+            excelReportService.generateExcel(response, "Entradas", headers, rows);
+
+        } catch (Exception e) {
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.getWriter().println("Error al generar el reporte Excel: " + e.getMessage());
         }
     }
 
