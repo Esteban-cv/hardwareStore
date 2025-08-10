@@ -4,10 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ferretería Store - Dashboard</title>
+    <title>Ferretería Store - Proveedores</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
 </head>
 
 <body>
@@ -37,7 +36,7 @@
                         </a>
                     </li>
 
-                    <!-- Ventas (con submenú) -->
+                    <!-- Ventas -->
                     <li class="nav-item has-submenu">
                         <a class="nav-link">
                             <i class="fas fa-shopping-cart"></i>
@@ -50,7 +49,7 @@
                         </ul>
                     </li>
 
-                    <!-- Devoluciones (con submenú) -->
+                    <!-- Devoluciones -->
                     <li class="nav-item has-submenu">
                         <a class="nav-link">
                             <i class="fas fa-undo-alt"></i>
@@ -59,11 +58,11 @@
                         </a>
                         <ul class="sub-menu">
                             <li><a th:href="@{/productreturns}" class="nav-link">Consultar</a></li>
-                            <li><a th:href="@{/productreturns/form}" class="nav-link">Nueva Devolucion</a></li>
+                            <li><a th:href="@{/productreturns/form}" class="nav-link">Nueva Devolución</a></li>
                         </ul>
                     </li>
 
-                    <!-- Compras (con submenú) -->
+                    <!-- Compras -->
                     <li class="nav-item has-submenu">
                         <a class="nav-link">
                             <i class="fas fa-truck"></i>
@@ -129,7 +128,7 @@
                     </li>
 
                     <!-- Proveedores -->
-                     <li class="nav-item has-submenu">
+                    <li class="nav-item has-submenu">
                         <a class="nav-link">
                             <i class="fas fa-users"></i>
                             <span>Proveedores</span>
@@ -138,7 +137,6 @@
                         <ul class="sub-menu">
                             <li><a th:href="@{/suppliers}" class="nav-link">Consultar</a></li>
                             <li><a th:href="@{/suppliers/form}" class="nav-link">Nuevo Proveedor</a></li>
-
                         </ul>
                     </li>
                 </ul>
@@ -153,50 +151,49 @@
             </div>
         </nav>
 
-
         <!-- Main Content -->
         <main class="main-content">
             <div class="dashboard-header">
-                <h1>Gestíon de Ubicaciones</h1>
+                <h1>Gestión de Proveedores</h1>
             </div>
-            <h4>Gestiona fácilmente las ubicaciones registradas: consulta, edita o elimina según sea necesario.</h4>
+            <h4>Gestiona fácilmente los proveedores registrados: consulta, edita o elimina según sea necesario.</h4>
             <br>
             <div class="action-buttons" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px;">
-                <a th:href="@{/locations/form}" class="btn-add" style="display: flex; align-items: center; gap: 5px;">
-                    <i class="fas fa-plus-circle"></i> Nueva Ubicación
+                <a th:href="@{/suppliers/form}" class="btn-add" style="display: flex; align-items: center; gap: 5px;">
+                    <i class="fas fa-plus-circle"></i> Nuevo Proveedor
                 </a>
-                <a th:href="@{/locations/locationreport}" class="btn-pdf"
-                    style="display: flex; align-items: center; gap: 5px;">
+                <a th:href="@{/supplier/supplierreport}" class="btn-pdf" style="display: flex; align-items: center; gap: 5px;">
                     <i class="fas fa-file-export"></i>PDF
                 </a>
-                <a th:href="@{/locations/locationreport/excel}" class="btn-excel"
-                    style="display: flex; align-items: center; gap: 5px;">
+                <a th:href="@{/supplier/supplierreport/excel}" class="btn-excel" style="display: flex; align-items: center; gap: 5px;">
                     <i class="fas fa-file-export"></i>EXCEL
                 </a>
             </div>
 
-            <!-- Clients Table -->
+            <!-- Suppliers Table -->
             <div class="section-for-all">
                 <table class="tables-for-all">
                     <thead>
                         <tr>
                             <th>ID</th>
                             <th>NOMBRE</th>
-                            <th>CODE</th>
+                            <th>DOCUMENTO</th>
+                            <th>TELÉFONO</th>
+                            <th>ACCIONES</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr th:each="location : ${locations}">
-                            <td th:text="${location.idLocation}"></td>
-                            <td th:text="${location.name}"></td>
-                            <td th:text="${location.code}"></td>
+                        <tr th:each="supplier : ${suppliers}">
+                            <td th:text="${supplier.idSupplier}"></td>
+                            <td th:text="${supplier.name}"></td>
+                            <td th:text="${supplier.document}"></td>
+                            <td th:text="${supplier.phone}"></td>
                             <td>
-                                <a th:href="@{'/locations/edit/' + ${location.idLocation}}" class="btn-edit">
+                                <a th:href="@{'/suppliers/edit/' + ${supplier.idSupplier}}" class="btn-edit">
                                     <i class="fas fa-pencil-alt"></i>
                                 </a>
-                                <form th:action="@{'/locations/delete/' + ${location.idLocation}}" method="post"
-                                    style="display:inline;">
-                                    <button type="submit" class="btn-delete">
+                                <form th:action="@{'/suppliers/delete/' + ${supplier.idSupplier}}" method="post" style="display:inline;">
+                                    <button type="submit" class="btn-delete" id="btnDelete">
                                         <i class="fas fa-trash-alt"></i>
                                     </button>
                                 </form>
@@ -204,25 +201,21 @@
                         </tr>
                     </tbody>
                 </table>
+
+                <!-- Pagination -->
                 <nav class="pagination-nav">
                     <ul class="pagination-list">
-
-                        <!-- back -->
-                        <li th:classappend="${!locations.hasPrevious()} ? 'disabled'">
-                            <a th:href="@{/locations(page=${locations.number - 1})}">Anterior</a>
+                        <li th:classappend="${!suppliers.hasPrevious()} ? 'disabled'">
+                            <a th:href="@{/suppliers(page=${suppliers.number - 1})}">Anterior</a>
                         </li>
 
-                        <!-- numbers -->
-                        <li th:each="i : ${#numbers.sequence(0, locations.totalPages - 1)}"
-                            th:classappend="${i == locations.number} ? 'active'">
-                            <a th:href="@{/locations(page=${i})}" th:text="${i + 1}"></a>
+                        <li th:each="i : ${#numbers.sequence(0, suppliers.totalPages - 1)}" th:classappend="${i == suppliers.number} ? 'active'">
+                            <a th:href="@{/suppliers(page=${i})}" th:text="${i + 1}"></a>
                         </li>
 
-                        <!-- next -->
-                        <li th:classappend="${!locations.hasNext()} ? 'disabled'">
-                            <a th:href="@{/locations(page=${locations.number + 1})}">Siguiente</a>
+                        <li th:classappend="${!suppliers.hasNext()} ? 'disabled'">
+                            <a th:href="@{/suppliers(page=${suppliers.number + 1})}">Siguiente</a>
                         </li>
-
                     </ul>
                 </nav>
             </div>
@@ -238,8 +231,10 @@
             <span>Hecho con <i class="fas fa-heart"></i> por Aprendices SENA</span>
         </div>
     </footer>
+
     <!-- Scripts -->
-    <script th:src="@{/js/sales-module.js}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script th:src="@{/js/swing-alert.js}"></script>
 </body>
 
 </html>
