@@ -72,11 +72,9 @@ public class PurchaseController {
     @GetMapping("/edit/{id}")
     public String edit(@PathVariable("id") Long idPurchase, Model model, RedirectAttributes ra) {
         try {
-            // Carga la compra con las relaciones inicializadas
+            
             Purchase purchase = purchaseRepository.findById(idPurchase)
                     .orElseThrow(() -> new IllegalArgumentException("Compra no encontrada"));
-
-            // Verifica y carga las relaciones
             if (purchase.getArticle() != null) {
                 purchase.setArticle(articleRepository.findById(purchase.getArticle().getIdArticle()).orElse(null));
             }
