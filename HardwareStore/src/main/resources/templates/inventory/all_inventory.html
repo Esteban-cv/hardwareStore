@@ -7,7 +7,6 @@
     <title>Ferretería Store - Dashboard</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
 </head>
 
 <body>
@@ -196,14 +195,14 @@
                             <td th:text="${inventory.location.name}"></td>
                             <td th:text="${inventory.currentStock}"></td>
                             <td th:text="${inventory.minimumStock}"></td>
-                            <td th:text="${inventory.updatedAt}"></td>
+                            <td th:text="${inventory.updatingDate}"></td>
                             <td>
                                 <a th:href="@{'/inventory/edit/' + ${inventory.idInventory}}" class="btn-edit">
                                     <i class="fas fa-pencil-alt"></i>
                                 </a>
                                 <form th:action="@{'/inventory/delete/' + ${inventory.idInventory}}" method="post"
                                     style="display:inline;">
-                                    <button type="submit" class="btn-delete" id="btnDelete">
+                                    <button type="submit" class="btn btn-delete btn-danger">
                                         <i class="fas fa-trash-alt"></i>
                                     </button>
                                 </form>
@@ -248,7 +247,7 @@
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script th:src="@{/js/swing-alert.js}"></script>
-    <script th:src="@{/js/sales-module.js}"></script>
+    <script th:src="@{/js/navigation.js}"></script>
 </body>
 
 </html>

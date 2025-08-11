@@ -3,7 +3,9 @@ package co.edu.sena.HardwareStore.model;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -23,11 +25,15 @@ public class Inventory {
     @ManyToOne
     @JoinColumn(name = "id_location", nullable = false)
     private Location location;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @Column(name = "updating_date")
+    private LocalDate updatingDate;
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
     @UpdateTimestamp
     @Column(name = "updated_at")
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private LocalDateTime updatedAt;
 
     public Integer getIdInventory() {
@@ -68,6 +74,14 @@ public class Inventory {
 
     public void setLocation(Location location) {
         this.location = location;
+    }
+
+    public LocalDate getUpdatingDate() {
+        return updatingDate;
+    }
+
+    public void setUpdatingDate(LocalDate updatingDate) {
+        this.updatingDate = updatingDate;
     }
 
     public LocalDateTime getCreatedAt() {

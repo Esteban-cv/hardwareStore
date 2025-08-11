@@ -33,15 +33,15 @@ public class SupplierController {
     @GetMapping
     public String listSuppliers(@RequestParam(defaultValue = "0") int page, Model model) {
         Page<Supplier> suppliers = supplierRepository.findAll(
-            PageRequest.of(page, 10, Sort.by("idSupplier").descending()));
+            PageRequest.of(page, 10, Sort.by("idSupplier").ascending()));
         model.addAttribute("suppliers", suppliers);
-        return "suppliers/supplier"; // Corregida la ruta de la vista
+        return "suppliers/supplier"; 
     }
 
     @GetMapping("/form")
     public String form(Model model) {
         model.addAttribute("supplier", new Supplier());
-        return "suppliers/supplier_form"; // Corregida la ruta de la vista
+        return "suppliers/supplier_form"; 
     }
 
     @PostMapping("/save")
@@ -52,7 +52,7 @@ public class SupplierController {
         } catch (Exception e) {
             ra.addFlashAttribute("error", "Error al guardar el proveedor");
         }
-        return "redirect:/suppliers"; // Corregida la ruta de redirección
+        return "redirect:/suppliers"; 
     }
 
     @GetMapping("/edit/{id}")
@@ -64,7 +64,7 @@ public class SupplierController {
             return "suppliers/supplier_form";
         } catch (Exception e) {
             ra.addFlashAttribute("error", "Proveedor no encontrado");
-            return "redirect:/suppliers"; // plural
+            return "redirect:/suppliers"; 
         }
     }
 
@@ -76,7 +76,7 @@ public class SupplierController {
         } catch (Exception e) {
             ra.addFlashAttribute("error", "Error al eliminar el proveedor");
         }
-        return "redirect:/suppliers"; // Corregida la ruta de redirección
+        return "redirect:/suppliers"; 
     }
 
    @GetMapping("/supplierreport")

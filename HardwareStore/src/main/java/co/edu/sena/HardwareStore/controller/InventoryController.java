@@ -15,10 +15,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
@@ -43,30 +45,70 @@ public class InventoryController {
 
     @GetMapping
     public String listInventory(@RequestParam(defaultValue = "0") int page, Model model) {
-        Page<Inventory> inventories = inventoryRepository.findAll(PageRequest.of(page, 10, Sort.by("updatedAt").descending()));
+        Page<Inventory> inventories = inventoryRepository
+                .findAll(PageRequest.of(page, 10, Sort.by("updatedAt").descending()));
         model.addAttribute("inventories", inventories);
         return "inventory/all_inventory";
     }
 
     @GetMapping("/form")
-    public String form(Model model){
+    public String form(Model model) {
         model.addAttribute("inventory", new Inventory());
-        model.addAttribute("article", new Article());
-        model.addAttribute("locations", new Location());
+        model.addAttribute("articles", articleRepository.findAll());
+        model.addAttribute("locations", locationRepository.findAll());
         return "inventory/inventory_form";
     }
 
     @PostMapping("/save")
-    public String save(@ModelAttribute Inventory inventory, RedirectAttributes ra){
+    public String save(@ModelAttribute Inventory inventory,
+            RedirectAttributes ra) {
+
+        // Validar artículo
+        if (inventory.getArticle() == null || inventory.getArticle().getIdArticle() == null) {
+            ra.addFlashAttribute("error", "Debe seleccionar un artículo");
+            return "redirect:/inventory/form";
+        }
+
+        // Validar ubicación
+        if (inventory.getLocation() == null || inventory.getLocation().getIdLocation() == null) {
+            ra.addFlashAttribute("error", "Debe seleccionar una ubicación");
+            return "redirect:/inventory/form";
+        }
+
+        // Cargar entidades completas desde la BD
+        Article article = articleRepository.findById(inventory.getArticle().getIdArticle())
+                .orElse(null);
+        Location location = locationRepository.findById(inventory.getLocation().getIdLocation())
+                .orElse(null);
+
+        if (article == null) {
+            ra.addFlashAttribute("error", "Artículo no encontrado");
+            return "redirect:/inventory/form";
+        }
+
+        if (location == null) {
+            ra.addFlashAttribute("error", "Ubicación no encontrada");
+            return "redirect:/inventory/form";
+        }
+
+        // Asignar entidades gestionadas por JPA
+        inventory.setArticle(article);
+        inventory.setLocation(location);
+
+        // Fecha de actualización para nuevos registros
+        if (inventory.getIdInventory() == null) {
+            inventory.setUpdatingDate(LocalDate.now());
+        }
+
         inventoryRepository.save(inventory);
         ra.addFlashAttribute("success", "Inventario guardado exitosamente.");
         return "redirect:/inventory";
     }
 
     @GetMapping("/edit/{id}")
-    public String edit(@PathVariable("id") Integer idInventory, Model model, RedirectAttributes ra){
+    public String edit(@PathVariable("id") Integer idInventory, Model model, RedirectAttributes ra) {
         Inventory inventory = inventoryRepository.findById(idInventory).orElse(null);
-        if (inventory == null){
+        if (inventory == null) {
             ra.addFlashAttribute("error", "Inventario no encontrado.");
             return "redirect:/inventory";
         }
@@ -77,7 +119,7 @@ public class InventoryController {
     }
 
     @PostMapping("/delete/{id}")
-    public String delete(@PathVariable("id") Integer idInventory, RedirectAttributes ra){
+    public String delete(@PathVariable("id") Integer idInventory, RedirectAttributes ra) {
         inventoryRepository.deleteById(idInventory);
         ra.addFlashAttribute("success", "Inventario eliminado exitosamente");
         return "redirect:/inventory";
@@ -87,8 +129,9 @@ public class InventoryController {
     public void generateInventoryReport(HttpServletResponse response) throws IOException {
         try {
             List<Inventory> all_inventory = inventoryRepository.findAll();
-            List<String> headers = Arrays.asList("ID", "Stock Actual", "Stock Mínimo", "Fecha Actualización", "Articulo", "Ubicación");
-            List<List<String>> rows = all_inventory .stream()
+            List<String> headers = Arrays.asList("ID", "Stock Actual", "Stock Mínimo", "Fecha Actualización",
+                    "Articulo", "Ubicación");
+            List<List<String>> rows = all_inventory.stream()
                     .map(s -> {
                         // Formatear fecha (ejemplo para java.util.Date)
                         String fechaFormateada = s.getUpdatedAt().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
@@ -98,8 +141,7 @@ public class InventoryController {
                                 String.valueOf(s.getMinimumStock()),
                                 fechaFormateada, // ✅ Aquí va la fecha correctamente
                                 s.getArticle() != null ? s.getArticle().getName() : "N/A",
-                                s.getLocation() != null ? s.getLocation().getName() : "N/A"
-                        );
+                                s.getLocation() != null ? s.getLocation().getName() : "N/A");
                     })
                     .collect(Collectors.toList());
 
@@ -117,7 +159,8 @@ public class InventoryController {
     public void generateInventoryExcelReport(HttpServletResponse response) throws IOException {
         try {
             List<Inventory> all_inventory = inventoryRepository.findAll();
-            List<String> headers = Arrays.asList("ID", "Stock Actual", "Stock Mínimo", "Fecha Actualización", "Articulo", "Ubicación");
+            List<String> headers = Arrays.asList("ID", "Stock Actual", "Stock Mínimo", "Fecha Actualización",
+                    "Articulo", "Ubicación");
             List<List<String>> rows = all_inventory.stream()
                     .map(s -> {
                         String fechaFormateada = s.getUpdatedAt().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
@@ -127,8 +170,7 @@ public class InventoryController {
                                 String.valueOf(s.getMinimumStock()),
                                 fechaFormateada,
                                 s.getArticle() != null ? s.getArticle().getName() : "N/A",
-                                s.getLocation() != null ? s.getLocation().getName() : "N/A"
-                        );
+                                s.getLocation() != null ? s.getLocation().getName() : "N/A");
                     })
                     .collect(Collectors.toList());
 

@@ -1,40 +1,48 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const btnActualizar = document.getElementById('btnActualizar');
+    // Función para manejar el botón de actualizar/guardar
+    const btnUpdate = document.getElementById('btnUpdate');
     
-    if (btnActualizar) {
-        btnActualizar.addEventListener('click', function(e) {
+    if (btnUpdate) {
+        btnUpdate.addEventListener('click', function(e) {
             e.preventDefault();
-    
+            
+            const btnText = this.querySelector('span')?.textContent.trim() || '';
+            const isUpdate = btnText === 'Actualizar';
+
             Swal.fire({
-                title: '¿Estás seguro?',
-                text: "Se actualizará la información",
-                icon: 'warning',
+                title: isUpdate ? '¿Estás seguro?' : '¿Guardar cambios?',
+                text: isUpdate ? "Se actualizará la información" : "Se guardará la información",
+                icon: isUpdate ? 'warning' : 'question',
                 showCancelButton: true,
-                confirmButtonColor: '#3085d6',
+                confirmButtonColor: isUpdate ? '#3085d6' : '#28a745',
                 cancelButtonColor: '#d33',
-                confirmButtonText: 'Sí, actualizar',
+                confirmButtonText: isUpdate ? 'Sí, actualizar' : 'Sí, guardar',
                 cancelButtonText: 'Cancelar'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    // Enviar formulario
                     this.closest('form').submit();
                 }
             });
         });
     }
+
+    // Función para manejar los botones de eliminar
     const deleteButtons = document.querySelectorAll('.btn-delete');
+    
     deleteButtons.forEach(button => {
         button.addEventListener('click', function(e) {
             e.preventDefault();
+            
             Swal.fire({
                 title: '¿Estás seguro?',
                 text: "Esta acción no se puede deshacer",
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
                 confirmButtonText: 'Sí, eliminar',
-                cancelButtonText: 'Cancelar'
+                cancelButtonText: 'Cancelar',
+                reverseButtons: true
             }).then((result) => {
                 if (result.isConfirmed) {
                     this.closest('form').submit();
@@ -42,5 +50,4 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
     });
-
 });
