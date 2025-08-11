@@ -7,8 +7,6 @@
     <title>Ferretería Store - Dashboard</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
-    
 </head>
 
 <body>
@@ -181,12 +179,9 @@
                     <thead>
                         <tr>
                             <th>ID</th>
-                            <th>FECHA</th>
                             <th>CANTIDAD</th>
                             <th>TOTAL</th>
                             <th>ESTADO</th>
-                            <th>PROVEEDOR</th>
-                            <th>EMPLEADO</th>
                             <th>NOMBRE ARTICULO</th>
                             <th>ACCIONES</th>
                         </tr>
@@ -194,12 +189,9 @@
                     <tbody>
                         <tr th:each="purchase : ${purchases}">
                             <td th:text="${purchase.idPurchase}"></td>
-                            <td th:text="${purchase.date}"></td>
                             <td th:text="${purchase.quantity}"></td>
                             <td th:text="${purchase.total}"></td>
                             <td th:text="${purchase.status}"></td>
-                            <td th:text="${purchase.supplier.name}"></td>
-                            <td th:text="${purchase.employee.name}"></td>
                             <td th:text="${purchase.article.name}"></td>
                             <td>
                                 <a th:href="@{'/purchases/edit/' + ${purchase.idPurchase}}" class="btn-edit">
@@ -207,7 +199,7 @@
                                 </a>
                                 <form th:action="@{'/purchases/delete/' + ${purchase.idPurchase}}" method="post"
                                     style="display:inline;">
-                                    <button type="submit" class="btn-delete" id="btnDelete">
+                                    <button type="submit" class="btn btn-delete btn-danger">
                                         <i class="fas fa-trash-alt"></i>
                                     </button>
                                 </form>
@@ -252,7 +244,7 @@
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script th:src="@{/js/swing-alert.js}"></script>
-    <script th:src="@{/js/sales-module.js}"></script>
+    <script th:src="@{/js/navigation.js}"></script>
 </body>
 
 </html>

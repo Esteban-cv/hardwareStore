@@ -7,7 +7,6 @@
     <title>Ferretería Store - Dashboard</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
 </head>
 
 <body>
@@ -196,7 +195,7 @@
                                 </a>
                                 <form th:action="@{'/locations/delete/' + ${location.idLocation}}" method="post"
                                     style="display:inline;">
-                                    <button type="submit" class="btn-delete">
+                                    <button type="submit" class="btn btn-delete btn-danger">
                                         <i class="fas fa-trash-alt"></i>
                                     </button>
                                 </form>
@@ -239,7 +238,9 @@
         </div>
     </footer>
     <!-- Scripts -->
-    <script th:src="@{/js/sales-module.js}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script th:src="@{/js/swing-alert.js}"></script>
+    <script th:src="@{/js/navigation.js}"></script>
 </body>
 
 </html>

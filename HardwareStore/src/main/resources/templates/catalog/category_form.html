@@ -8,7 +8,6 @@
     <link rel="stylesheet" th:href="@{/css/form_stylesheet.css}">
     <link rel="stylesheet" th:href="@{/css/style.css}">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
 </head>
 
 <body>
@@ -195,7 +194,7 @@
                                     Nombre
                                 </label>
                                 <input type="text" id="name" name="name" class="form-input" th:value="${category.name}"
-                                    placeholder="Ej: Herramientas eléctricas" required>
+                                    placeholder="Ej: Herramientas eléctricas" required oninput="this.value = this.value.toUpperCase()">
                                 <span class="form-field-hint">Nombre de la categoría</span>
                             </div>
                         </div>
@@ -235,6 +234,7 @@
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script th:src="@{/js/swing-alert.js}"></script>
+    <script th:src="@{/js/navigation.js}"></script>
 </body>
 
 </html>
