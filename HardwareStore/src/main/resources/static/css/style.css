@@ -518,6 +518,7 @@ body {
     border-radius: 6px;
     cursor: pointer;
     transition: background 0.3s ease;
+    margin-right: 5px;
 }
 
 .btn-edit i {
@@ -538,6 +539,7 @@ body {
     border-radius: 6px;
     cursor: pointer;
     transition: background 0.3s ease;
+    margin-left: 5px;
 }
 
 .btn-delete i {

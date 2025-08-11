@@ -3,6 +3,7 @@ package co.edu.sena.HardwareStore.model;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -17,6 +18,8 @@ public class ProductReturns {
     private Integer quantity;
     @Column(length = 200)
     private String reason;
+    @Column(name = "date", nullable = false)
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate date;
     @ManyToOne
     @JoinColumn(name = "id_sale", nullable = false)

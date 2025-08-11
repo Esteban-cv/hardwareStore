@@ -8,7 +8,6 @@
   <link rel="stylesheet" th:href="@{/css/form_stylesheet.css}">
   <link rel="stylesheet" th:href="@{/css/style.css}">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
 </head>
 
 <body>
@@ -104,19 +103,43 @@
           </li>
 
           <!-- Entradas -->
-          <li class="nav-item">
-            <a th:href="@{/entries}" class="nav-link">
-              <i class="fas fa-chart-bar"></i>
+          <li class="nav-item has-submenu">
+            <a class="nav-link">
+              <i class="fa-solid fa-right-to-bracket"></i>
               <span>Entradas</span>
+              <i class="fas fa-chevron-down dropdown-icon"></i>
             </a>
+            <ul class="sub-menu">
+              <li><a th:href="@{/entries}" class="nav-link">Consultar</a></li>
+              <li><a th:href="@{/entries/form}" class="nav-link">Nueva Entrada</a></li>
+            </ul>
           </li>
 
           <!-- Salidas -->
-          <li class="nav-item">
-            <a th:href="@{/exits}" class="nav-link">
-              <i class="fas fa-chart-line"></i>
+          <li class="nav-item has-submenu">
+            <a class="nav-link">
+              <i class="fa-solid fa-right-from-bracket"></i>
               <span>Salidas</span>
+              <i class="fas fa-chevron-down dropdown-icon"></i>
             </a>
+            <ul class="sub-menu">
+              <li><a th:href="@{/issue}" class="nav-link">Consultar</a></li>
+              <li><a th:href="@{/issue/form}" class="nav-link">Nueva Salida</a></li>
+            </ul>
+          </li>
+
+          <!-- Proveedores -->
+          <li class="nav-item has-submenu">
+            <a class="nav-link">
+              <i class="fas fa-users"></i>
+              <span>Proveedores</span>
+              <i class="fas fa-chevron-down dropdown-icon"></i>
+            </a>
+            <ul class="sub-menu">
+              <li><a th:href="@{/suppliers}" class="nav-link">Consultar</a></li>
+              <li><a th:href="@{/suppliers/form}" class="nav-link">Nuevo Proveedor</a></li>
+
+            </ul>
           </li>
         </ul>
 
@@ -150,7 +173,7 @@
 
       <div class="form-container">
         <form class="form-content" th:action="@{/inventory/save}" method="post" th:object="${inventory}">
-          <input type="hidden" th:field="*{idInventory}" />
+
 
           <!-- Información General -->
           <div class="form-section">
@@ -163,16 +186,17 @@
 
             <div class="form-grid">
               <div class="form-input-group">
-                <label for="article" class="form-label">
+                <label for="articleSelect" class="form-label">
                   <i class="fas fa-box"></i>
                   Artículo
                 </label>
-                <select id="article" th:field="*{article.idArticle}" class="form-select" required>
+                <select th:field="*{article.idArticle}" class="form-select" required id="articleSelect"
+                  onchange="updateQuantity(this)">
                   <option value="">Selecciona un Artículo</option>
-                  <option th:each="article : ${articles}" th:value="${article.idArticle}" th:text="${article.name}">
+                  <option th:each="art : ${articles}" th:value="${art.idArticle}" th:data-quantity="${art.quantity}"
+                    th:text="${art.name}">
                   </option>
                 </select>
-                <span class="form-field-hint">Artículo a inventariar</span>
               </div>
 
               <div class="form-input-group">
@@ -189,12 +213,12 @@
               </div>
 
               <div class="form-input-group">
-                <label for="currentStock" class="form-label">
+                <label for="currentQuantity" class="form-label">
                   <i class="fas fa-layer-group"></i>
-                  Stock Actual
+                  Cantidad Actual
                 </label>
-                <input type="number" id="currentStock" th:field="*{currentStock}" class="form-input" min="0" required>
-                <span class="form-field-hint">Cantidad actual en inventario</span>
+                <input type="number" id="currentQuantity" name="currentStock" class="form-input" min="0"
+                  th:value="${inventory.currentStock ?: 0}" required>
               </div>
 
               <div class="form-input-group">
@@ -207,20 +231,20 @@
               </div>
 
               <div class="form-input-group">
-                <label for="updatedAt" class="form-label">
-                  <i class="fas fa-calendar-alt"></i>
-                  Fecha Actualización
+                <label for="updatingDate" class="form-label">
+                  <i class="fas fa-calendar-day"></i>
+                  Fecha de Actualización
                 </label>
-                <input type="date" id="updatedAt" class="form-input" th:field="*{updatedAt}"
-                  th:value="${inventory.updatedAt != null} ? ${#temporals.format(inventory.updatedAt, 'yyyy-MM-dd')} : ''"
-                  required>
-                <span class="form-field-hint">Fecha de actualización del inventario</span>
+                <input type="date" id="updatingDate" th:field="*{updatingDate}" class="form-input">
+                <span class="form-field-hint">Fecha de última actualización</span>
               </div>
+
+
             </div>
           </div>
 
           <div class="form-actions-container">
-            <button type="submit" class="btn-add">
+            <button type="submit" class="btn-add" id="btnActualizar">
               <i class="fas fa-save"></i>
               <span th:text="${inventory.idInventory != null} ? 'Actualizar' : 'Guardar'"></span>
             </button>
@@ -248,7 +272,22 @@
     </div>
   </footer>
   <!-- Scripts -->
-  <script th:src="@{/js/sales-module.js}"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script th:src="@{/js/swing-alert.js}"></script>
+  <script th:src="@{/js/navigation.js}"></script>
+  <script>
+    function updateQuantity(select) {
+      const selectedOption = select.options[select.selectedIndex];
+      document.getElementById('currentQuantity').value = selectedOption.getAttribute('data-quantity') || 0;
+    }
+    document.addEventListener('DOMContentLoaded', function () {
+      // Inicializar cantidad si hay artículo seleccionado
+      const articleSelect = document.getElementById('articleSelect');
+      if (articleSelect.value) {
+        updateQuantity(articleSelect);
+      }
+    });
+  </script>
 </body>
 
 </html>

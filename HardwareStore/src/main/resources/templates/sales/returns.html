@@ -7,7 +7,6 @@
     <title>Ferretería Store - Dashboard</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
 </head>
 
 <body>
@@ -103,19 +102,43 @@
                     </li>
 
                     <!-- Entradas -->
-                    <li class="nav-item">
-                        <a th:href="@{/entries}" class="nav-link">
-                            <i class="fas fa-chart-bar"></i>
+                    <li class="nav-item has-submenu">
+                        <a class="nav-link">
+                            <i class="fa-solid fa-right-to-bracket"></i>
                             <span>Entradas</span>
+                            <i class="fas fa-chevron-down dropdown-icon"></i>
                         </a>
+                        <ul class="sub-menu">
+                            <li><a th:href="@{/entries}" class="nav-link">Consultar</a></li>
+                            <li><a th:href="@{/entries/form}" class="nav-link">Nueva Entrada</a></li>
+                        </ul>
                     </li>
 
                     <!-- Salidas -->
-                    <li class="nav-item">
-                        <a th:href="@{/exits}" class="nav-link">
-                            <i class="fas fa-chart-line"></i>
+                    <li class="nav-item has-submenu">
+                        <a class="nav-link">
+                            <i class="fa-solid fa-right-from-bracket"></i>
                             <span>Salidas</span>
+                            <i class="fas fa-chevron-down dropdown-icon"></i>
                         </a>
+                        <ul class="sub-menu">
+                            <li><a th:href="@{/issue}" class="nav-link">Consultar</a></li>
+                            <li><a th:href="@{/issue/form}" class="nav-link">Nueva Salida</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Proveedores -->
+                     <li class="nav-item has-submenu">
+                        <a class="nav-link">
+                            <i class="fas fa-users"></i>
+                            <span>Proveedores</span>
+                            <i class="fas fa-chevron-down dropdown-icon"></i>
+                        </a>
+                        <ul class="sub-menu">
+                            <li><a th:href="@{/suppliers}" class="nav-link">Consultar</a></li>
+                            <li><a th:href="@{/suppliers/form}" class="nav-link">Nuevo Proveedor</a></li>
+
+                        </ul>
                     </li>
                 </ul>
 
@@ -178,7 +201,7 @@
                                 </a>
                                 <form th:action="@{'/productreturns/delete/' + ${return.idReturn}}" method="post"
                                     style="display:inline;">
-                                    <button type="submit" class="btn-delete">
+                                    <button type="submit" class="btn btn-delete btn-danger">
                                         <i class="fas fa-trash-alt"></i>
                                     </button>
                                 </form>
@@ -221,7 +244,9 @@
         </div>
     </footer>
     <!-- Scripts -->
-    <script th:src="@{/js/sales-module.js}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script th:src="@{/js/swing-alert.js}"></script>
+    <script th:src="@{/js/navigation.js}"></script>
 
 </body>
 

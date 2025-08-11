@@ -41,7 +41,7 @@ public class ProductReturnController {
     @GetMapping
     public String list(@RequestParam(defaultValue = "0") int page, Model model) {
         Page<ProductReturns> returns = productReturnsRepository.findAll(
-                PageRequest.of(page, 10, Sort.by("date").descending()));
+                PageRequest.of(page, 10, Sort.by("date").ascending()));
         model.addAttribute("productreturns", returns);
         return "sales/returns";
     }

@@ -8,7 +8,6 @@
     <link rel="stylesheet" th:href="@{/css/form_stylesheet.css}">
     <link rel="stylesheet" th:href="@{/css/style.css}">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
 </head>
 
 <body>
@@ -102,6 +101,46 @@
                             <li><a th:href="@{/catalog/categories}" class="nav-link">Categorías</a></li>
                         </ul>
                     </li>
+
+                    <!-- Entradas -->
+                    <li class="nav-item has-submenu">
+                        <a class="nav-link">
+                            <i class="fa-solid fa-right-to-bracket"></i>
+                            <span>Entradas</span>
+                            <i class="fas fa-chevron-down dropdown-icon"></i>
+                        </a>
+                        <ul class="sub-menu">
+                            <li><a th:href="@{/entries}" class="nav-link">Consultar</a></li>
+                            <li><a th:href="@{/entries/form}" class="nav-link">Nueva Entrada</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Salidas -->
+                    <li class="nav-item has-submenu">
+                        <a class="nav-link">
+                            <i class="fa-solid fa-right-from-bracket"></i>
+                            <span>Salidas</span>
+                            <i class="fas fa-chevron-down dropdown-icon"></i>
+                        </a>
+                        <ul class="sub-menu">
+                            <li><a th:href="@{/issue}" class="nav-link">Consultar</a></li>
+                            <li><a th:href="@{/issue/form}" class="nav-link">Nueva Salida</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Proveedores -->
+                    <li class="nav-item has-submenu">
+                        <a class="nav-link">
+                            <i class="fas fa-users"></i>
+                            <span>Proveedores</span>
+                            <i class="fas fa-chevron-down dropdown-icon"></i>
+                        </a>
+                        <ul class="sub-menu">
+                            <li><a th:href="@{/suppliers}" class="nav-link">Consultar</a></li>
+                            <li><a th:href="@{/suppliers/form}" class="nav-link">Nuevo Proveedor</a></li>
+
+                        </ul>
+                    </li>
                 </ul>
 
                 <!-- Logout -->
@@ -132,9 +171,8 @@
             </div>
 
             <div class="form-container">
-                <form class="form-content" th:action="@{/purchases/save}" method="post">
+                <form class="form-content" th:action="@{/purchases/save}" method="post" th:object="${purchase}">
 
-                    <!-- Información General -->
                     <div class="form-section">
                         <div class="form-section-header">
                             <h2 class="form-section-title">
@@ -149,7 +187,7 @@
                                     <i class="fas fa-calendar-alt"></i>
                                     Fecha de Compra
                                 </label>
-                                <input type="date" id="date" name="date" class="form-input" required>
+                                <input type="date" id="date" th:field="*{date}" class="form-input" required>
                                 <span class="form-field-hint">Selecciona la fecha de la Compra</span>
                             </div>
 
@@ -158,18 +196,18 @@
                                     <i class="fas fa-dollar-sign"></i>
                                     Total de la Compra
                                 </label>
-                                <input type="number" id="total" name="total" class="form-input" placeholder="0.00"
-                                    required>
+                                <input type="number" id="total" th:field="*{total}" class="form-input"
+                                    placeholder="0.00" required>
                                 <span class="form-field-hint">Monto total de la compra</span>
                             </div>
 
                             <div class="form-input-group">
-                                <label for="total" class="form-label">
+                                <label for="quantity" class="form-label">
                                     <i class="fas fa-dollar-sign"></i>
                                     Cantidad de la Compra
                                 </label>
-                                <input type="number" id="total" name="total" class="form-input" step="1" min="0"
-                                    placeholder="0.00" required>
+                                <input type="number" id="quantity" th:field="*{quantity}" class="form-input" step="1"
+                                    min="0" placeholder="0" required>
                                 <span class="form-field-hint">Cantidad total de la compra</span>
                             </div>
 
@@ -189,7 +227,6 @@
                         </div>
                     </div>
 
-                    <!-- Información del Cliente y Empleado -->
                     <div class="form-section">
                         <div class="form-section-header">
                             <h2 class="form-section-title">
@@ -200,66 +237,60 @@
 
                         <div class="form-grid">
                             <div class="form-input-group">
-                                <label for="id_client" class="form-label">
+                                <label for="supplier" class="form-label">
                                     <i class="fas fa-user"></i>
                                     Proveedor
                                 </label>
-                                <select id="id_client" name="id_client" class="form-select" required>
+                                <select id="supplier" th:field="*{supplier}" class="form-select" required>
                                     <option value="">Selecciona un Proveedor</option>
-                                    <option value="1">Proveedor Uno</option>
-                                    <option value="2">Proveedor Dos</option>
-                                    <option value="3">Proveedor Tres</option>
-                                    <option value="4">Proveedor Cuatro</option>
-                                    <option value="5">Proveedor Cinco</option>
+                                    <option th:each="supplier : ${suppliers}" th:value="${supplier}"
+                                        th:text="${supplier.name}">
+                                    </option>
                                 </select>
                                 <span class="form-field-hint">Proveedor que realiza la compra</span>
                             </div>
 
                             <div class="form-input-group">
-                                <label for="id_employee" class="form-label">
+                                <label for="employee" class="form-label">
                                     <i class="fas fa-user-tie"></i>
-                                    Empleado
+                                    Vendedor *
                                 </label>
-                                <select id="id_employee" name="id_employee" class="form-select" required>
-                                    <option value="">Selecciona un empleado</option>
-                                    <option value="1">Roberto Silva</option>
-                                    <option value="2">Patricia Morales</option>
-                                    <option value="3">Diego Herrera</option>
-                                    <option value="4">Carmen Jiménez</option>
-                                    <option value="5">Felipe Castro</option>
+                                <select id="employee" th:field="*{employee}" class="form-select" required>
+                                    <option value="">Seleccione empleado</option>
+                                    <option th:each="employee : ${employees}" th:value="${employee}"
+                                        th:text="${employee.name}">
+                                    </option>
                                 </select>
                                 <span class="form-field-hint">Empleado que realiza la compra</span>
                             </div>
 
                             <div class="form-input-group">
-                                <label for="id_employee" class="form-label">
-                                    <i class="fas fa-user-tie"></i>
+                                <label for="article" class="form-label">
+                                    <i class="fas fa-box"></i>
                                     Artículo
                                 </label>
-                                <select id="id_employee" name="id_employee" class="form-select" required>
+                                <select id="article" th:field="*{article}" class="form-select" required>
                                     <option value="">Selecciona un Artículo</option>
-                                    <option value="1">Martillo 16oz</option>
-                                    <option value="2">Destornillador Plano</option>
-                                    <option value="3">Pinza de Corte</option>
-                                    <option value="4">Tornillo 3x20mm</option>
-                                    <option value="5">Tuerca 1/4"</option>
+                                    <option th:each="article : ${articles}" th:value="${article}"
+                                        th:text="${article.name}">
+                                    </option>
                                 </select>
-                                <span class="form-field-hint">Artículo a vender</span>
+                                <span class="form-field-hint">Artículo comprado</span>
                             </div>
                         </div>
                     </div>
 
                     <!-- Botones de Acción -->
                     <div class="form-actions-container">
-                        <button type="submit" class="btn-add">
+                        <button type="submit" class="btn-add" id="btnActualizar">
                             <i class="fas fa-save"></i>
-                            Guardar Compra
+                            <span th:text="${purchase.idPurchase != null} ? 'Actualizar' : 'Guardar'"></span>
                         </button>
                         <button type="reset" class="btn-excel">
                             <i class="fas fa-eraser"></i>
-                            Limpiar Formulario
+                            Limpiar
                         </button>
-                        <a th:href="@{/sales}" class="btn-pdf">
+                        <a th:href="@{/purchases}" class="btn-pdf">
                             <i class="fas fa-times"></i>
                             Cancelar
                         </a>
@@ -268,73 +299,6 @@
             </div>
         </main>
 
-        <!-- EJEMPLO: Formulario de Devoluciones con las mismas clases -->
-        <main class="form-main-container form-accent-returns" style="display: none;">
-            <div class="form-header">
-                <div class="form-title-section">
-                    <h1 class="form-title">
-                        <i class="fas fa-undo-alt"></i>
-                        Nueva Devolución
-                    </h1>
-                    <p class="form-subtitle">Registra una nueva devolución de productos</p>
-                </div>
-                <div class="form-header-actions">
-                    <a th:href="@{/productreturns}" class="form-btn-back">
-                        <i class="fas fa-arrow-left"></i>
-                        Volver al listado
-                    </a>
-                </div>
-            </div>
-
-            <div class="form-container">
-                <form class="form-content" th:action="@{/productreturns/save}" method="post">
-                    <div class="form-section">
-                        <div class="form-section-header">
-                            <h2 class="form-section-title">
-                                <i class="fas fa-info-circle"></i>
-                                Información General
-                            </h2>
-                        </div>
-
-                        <div class="form-grid">
-                            <div class="form-input-group">
-                                <label for="date" class="form-label">
-                                    <i class="fas fa-calendar-alt"></i>
-                                    Fecha de Devolución
-                                </label>
-                                <input type="date" id="date" name="date" class="form-input" required>
-                                <span class="form-field-hint">Selecciona la fecha de la devolución</span>
-                            </div>
-
-                            <div class="form-input-group">
-                                <label for="total" class="form-label">
-                                    <i class="fas fa-dollar-sign"></i>
-                                    Total de la Devolución
-                                </label>
-                                <input type="number" id="total" name="total" class="form-input" step="0.01" min="0"
-                                    placeholder="0.00" required>
-                                <span class="form-field-hint">Monto total de la devolución</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-actions-container">
-                        <button type="submit" class="btn-add">
-                            <i class="fas fa-save"></i>
-                            Guardar Devolución
-                        </button>
-                        <button type="reset" class="btn-excel">
-                            <i class="fas fa-eraser"></i>
-                            Limpiar Formulario
-                        </button>
-                        <a th:href="@{/productreturns}" class="btn-pdf">
-                            <i class="fas fa-times"></i>
-                            Cancelar
-                        </a>
-                    </div>
-                </form>
-            </div>
-        </main>
     </div>
 
     <!-- Footer -->
@@ -347,7 +311,9 @@
         </div>
     </footer>
     <!-- Scripts -->
-    <script th:src="@{/js/sales-module.js}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script th:src="@{/js/swing-alert.js}"></script>
+    <script th:src="@{/js/navigation.js}"></script>
 </body>
 
 </html>

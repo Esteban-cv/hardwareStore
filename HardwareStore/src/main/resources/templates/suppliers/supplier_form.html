@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ferretería Store - Dashboard</title>
+    <link rel="stylesheet" th:href="@{/css/form_stylesheet.css}">
     <link rel="stylesheet" th:href="@{/css/style.css}">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
@@ -36,7 +37,7 @@
                         </a>
                     </li>
 
-                    <!-- Ventas (con submenú) -->
+                    <!-- Ventas -->
                     <li class="nav-item has-submenu">
                         <a class="nav-link">
                             <i class="fas fa-shopping-cart"></i>
@@ -49,7 +50,7 @@
                         </ul>
                     </li>
 
-                    <!-- Devoluciones (con submenú) -->
+                    <!-- Devoluciones -->
                     <li class="nav-item has-submenu">
                         <a class="nav-link">
                             <i class="fas fa-undo-alt"></i>
@@ -58,11 +59,11 @@
                         </a>
                         <ul class="sub-menu">
                             <li><a th:href="@{/productreturns}" class="nav-link">Consultar</a></li>
-                            <li><a th:href="@{/productreturns/form}" class="nav-link">Nueva Devolucion</a></li>
+                            <li><a th:href="@{/productreturns/form}" class="nav-link">Nueva Devolución</a></li>
                         </ul>
                     </li>
 
-                    <!-- Compras (con submenú) -->
+                    <!-- Compras -->
                     <li class="nav-item has-submenu">
                         <a class="nav-link">
                             <i class="fas fa-truck"></i>
@@ -128,16 +129,15 @@
                     </li>
 
                     <!-- Proveedores -->
-                     <li class="nav-item has-submenu">
+                    <li class="nav-item has-submenu">
                         <a class="nav-link">
                             <i class="fas fa-users"></i>
                             <span>Proveedores</span>
                             <i class="fas fa-chevron-down dropdown-icon"></i>
                         </a>
                         <ul class="sub-menu">
-                            <li><a th:href="@{/suppliers}" class="nav-link">Consultar</a></li>
+                            <li><a th:href="@{/supplier}" class="nav-link">Consultar</a></li>
                             <li><a th:href="@{/suppliers/form}" class="nav-link">Nuevo Proveedor</a></li>
-
                         </ul>
                     </li>
                 </ul>
@@ -152,82 +152,85 @@
             </div>
         </nav>
 
-        <!-- Main Content -->
         <main class="main-content">
-            <div class="dashboard-header">
-                <h1>Gestíon de Compras</h1>
-            </div>
-            <h4>Gestiona fácilmente las compras registradas: consulta, edita o elimina según sea necesario.</h4>
-            <br>
-            <div class="action-buttons" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px;">
-                <a th:href="@{/purchases/form}" class="btn-add" style="display: flex; align-items: center; gap: 5px;">
-                    <i class="fas fa-plus-circle"></i> Nueva Compra
-                </a>
-                <a th:href="@{/purchases/purchasereport}" class="btn-pdf"
-                    style="display: flex; align-items: center; gap: 5px;">
-                    <i class="fas fa-file-export"></i>PDF
-                </a>
-                <a th:href="@{/purchases/purchasereport/excel}" class="btn-excel"
-                    style="display: flex; align-items: center; gap: 5px;">
-                    <i class="fas fa-file-export"></i>EXCEL
-                </a>
+            <div class="form-header">
+                <div class="form-title-section">
+                    <h1 class="form-title">
+                        <i class="fas fa-users"></i>
+                        <span th:text="${supplier.idSupplier != null} ? 'Editar Proveedor' : 'Nuevo Proveedor'"></span>
+                    </h1>
+                    <p class="form-subtitle" th:text="${supplier.idSupplier != null} ? 
+            'Actualiza los datos del Proveedor' : 'Registra un nuevo Proveedor'"></p>
+                </div>
+                <div class="form-header-actions">
+                    <a th:href="@{/suppliers}" class="btn-pdf">
+                        <i class="fas fa-arrow-left"></i>
+                        Volver al listado
+                    </a>
+                </div>
             </div>
 
-            <!-- Clients Table -->
-            <div class="section-for-all">
-                <table class="tables-for-all">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>CANTIDAD</th>
-                            <th>TOTAL</th>
-                            <th>ESTADO</th>
-                            <th>NOMBRE ARTICULO</th>
-                            <th>ACCIONES</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr th:each="purchase : ${purchases}">
-                            <td th:text="${purchase.idPurchase}"></td>
-                            <td th:text="${purchase.quantity}"></td>
-                            <td th:text="${purchase.total}"></td>
-                            <td th:text="${purchase.status}"></td>
-                            <td th:text="${purchase.article.name}"></td>
-                            <td>
-                                <a th:href="@{'/purchases/edit/' + ${purchase.idPurchase}}" class="btn-edit">
-                                    <i class="fas fa-pencil-alt"></i>
-                                </a>
-                                <form th:action="@{'/purchases/delete/' + ${purchase.idPurchase}}" method="post"
-                                    style="display:inline;">
-                                    <button type="submit" class="btn btn-delete btn-danger">
-                                        <i class="fas fa-trash-alt"></i>
-                                    </button>
-                                </form>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-                <nav class="pagination-nav">
-                    <ul class="pagination-list">
+            <div class="form-container">
+                <form class="form-content" th:action="@{/suppliers/save}" method="post" th:object="${supplier}">
+                    <input type="hidden" th:field="*{idSupplier}" />
 
-                        <!-- back -->
-                        <li th:classappend="${!purchases.hasPrevious()} ? 'disabled'">
-                            <a th:href="@{/purchases(page=${purchases.number - 1})}">Anterior</a>
-                        </li>
+                    <!-- Información General -->
+                    <div class="form-section">
+                        <div class="form-section-header">
+                            <h2 class="form-section-title">
+                                <i class="fas fa-info-circle"></i>
+                                Información General
+                            </h2>
+                        </div>
 
-                        <!-- numbers -->
-                        <li th:each="i : ${#numbers.sequence(0, purchases.totalPages - 1)}"
-                            th:classappend="${i == purchases.number} ? 'active'">
-                            <a th:href="@{/purchases(page=${i})}" th:text="${i + 1}"></a>
-                        </li>
+                        <div class="form-grid">
+                            <div class="form-input-group">
+                                <label for="name" class="form-label">
+                                    <i class="fas fa-user"></i>
+                                    Nombre
+                                </label>
+                                <input type="text" id="name" th:field="*{name}" class="form-input"
+                                    placeholder="Nombre del proveedor" required>
+                                <span class="form-field-hint">Nombre completo del proveedor</span>
+                            </div>
 
-                        <!-- next -->
-                        <li th:classappend="${!purchases.hasNext()} ? 'disabled'">
-                            <a th:href="@{/purchases(page=${purchases.number + 1})}">Siguiente</a>
-                        </li>
+                            <div class="form-input-group">
+                                <label for="document" class="form-label">
+                                    <i class="fas fa-id-card"></i>
+                                    Documento
+                                </label>
+                                <input type="text" id="document" th:field="*{document}" class="form-input"
+                                    placeholder="Número de documento" required>
+                                <span class="form-field-hint">Documento de identificación</span>
+                            </div>
 
-                    </ul>
-                </nav>
+                            <div class="form-input-group">
+                                <label for="phone" class="form-label">
+                                    <i class="fas fa-phone"></i>
+                                    Teléfono
+                                </label>
+                                <input type="text" id="phone" th:field="*{phone}" class="form-input"
+                                    placeholder="Número de teléfono" required>
+                                <span class="form-field-hint">Teléfono de contacto</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-actions-container">
+                        <button type="submit" class="btn-add" id="btnUpdate">
+                            <i class="fas fa-save"></i>
+                            <span th:text="${supplier.idSupplier != null} ? 'Actualizar' : 'Guardar'"></span>
+                        </button>
+                        <button type="reset" class="btn-excel">
+                            <i class="fas fa-eraser"></i>
+                            Limpiar
+                        </button>
+                        <a th:href="@{/suppliers}" class="btn-pdf">
+                            <i class="fas fa-times"></i>
+                            Cancelar
+                        </a>
+                    </div>
+                </form>
             </div>
         </main>
     </div>
@@ -241,6 +244,7 @@
             <span>Hecho con <i class="fas fa-heart"></i> por Aprendices SENA</span>
         </div>
     </footer>
+
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script th:src="@{/js/swing-alert.js}"></script>
