@@ -467,7 +467,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Filtrado de menú por búsqueda
-    const barSearch = document.getElementById('sidebarSearch');
+    const sidebarSearch = document.getElementById('sidebarSearch');
     const navItems = document.querySelectorAll('.nav-item');
 
     if (sidebarSearch) {

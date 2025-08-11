@@ -162,10 +162,12 @@
                 <a th:href="@{/suppliers/form}" class="btn-add" style="display: flex; align-items: center; gap: 5px;">
                     <i class="fas fa-plus-circle"></i> Nuevo Proveedor
                 </a>
-                <a th:href="@{/supplier/supplierreport}" class="btn-pdf" style="display: flex; align-items: center; gap: 5px;">
+                <a th:href="@{/supplier/supplierreport}" class="btn-pdf"
+                    style="display: flex; align-items: center; gap: 5px;">
                     <i class="fas fa-file-export"></i>PDF
                 </a>
-                <a th:href="@{/supplier/supplierreport/excel}" class="btn-excel" style="display: flex; align-items: center; gap: 5px;">
+                <a th:href="@{/supplier/supplierreport/excel}" class="btn-excel"
+                    style="display: flex; align-items: center; gap: 5px;">
                     <i class="fas fa-file-export"></i>EXCEL
                 </a>
             </div>
@@ -192,8 +194,9 @@
                                 <a th:href="@{'/suppliers/edit/' + ${supplier.idSupplier}}" class="btn-edit">
                                     <i class="fas fa-pencil-alt"></i>
                                 </a>
-                                <form th:action="@{'/suppliers/delete/' + ${supplier.idSupplier}}" method="post" style="display:inline;">
-                                    <button type="submit" class="btn-delete" id="btnDelete">
+                                <form th:action="@{'/suppliers/delete/' + ${supplier.idSupplier}}" method="post"
+                                    style="display:inline;">
+                                    <button type="submit" class="btn btn-delete btn-danger"> 
                                         <i class="fas fa-trash-alt"></i>
                                     </button>
                                 </form>
@@ -209,7 +212,8 @@
                             <a th:href="@{/suppliers(page=${suppliers.number - 1})}">Anterior</a>
                         </li>
 
-                        <li th:each="i : ${#numbers.sequence(0, suppliers.totalPages - 1)}" th:classappend="${i == suppliers.number} ? 'active'">
+                        <li th:each="i : ${#numbers.sequence(0, suppliers.totalPages - 1)}"
+                            th:classappend="${i == suppliers.number} ? 'active'">
                             <a th:href="@{/suppliers(page=${i})}" th:text="${i + 1}"></a>
                         </li>
 
@@ -235,6 +239,7 @@
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script th:src="@{/js/swing-alert.js}"></script>
+    <script th:src="@{/js/navigation.js}"></script>
 </body>
 
 </html>

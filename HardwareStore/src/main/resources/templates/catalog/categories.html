@@ -196,7 +196,7 @@
                                 </a>
                                 <form th:action="@{'/catalog/deleteCategory/' + ${category.idCategory}}" method="post"
                                     style="display:inline;">
-                                    <button type="submit" class="btn-delete" id="btnDelete">
+                                    <button type="submit" class="btn btn-delete btn-danger">
                                         <i class="fas fa-trash-alt"></i>
                                     </button>
                                 </form>
@@ -243,7 +243,7 @@
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script th:src="@{/js/swing-alert.js}"></script>
-    <script th:src="@{/js/sales-module.js}"></script>
+    <script th:src="@{/js/navigation.js}"></script>
 </body>
 
 </html>
