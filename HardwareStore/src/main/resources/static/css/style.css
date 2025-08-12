@@ -508,48 +508,58 @@ body {
     background: linear-gradient(135deg, #13401e 0%, #2e8b57 70%, #3cb371 100%);
 }
 
+/* Estilo base para todos los botones de acción */
+.btn-edit,
+.btn-delete,
+.btn-view {
+    min-width: 32px;        /* mismo ancho mínimo */
+    height: 32px;           /* misma altura */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    color: #fff;
+}
+
+.btn-edit i,
+.btn-delete i,
+.btn-view i {
+    font-size: 16px;
+    color: #fff;
+}
+
+/* Editar */
 .btn-edit {
     background: linear-gradient(45deg, #f59e0b, #facc15);
-    /* naranja a amarillo */
-    color: #fff;
-    text-decoration: none;
-    border: none;
-    padding: 6px 10px;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background 0.3s ease;
     margin-right: 5px;
 }
-
-.btn-edit i {
-    color: #fff;
-}
-
 .btn-edit:hover {
     background: linear-gradient(45deg, #facc15, #f59e0b);
-    /* reversa suave */
 }
 
+/* Eliminar */
 .btn-delete {
     background-color: #ef4444;
-    /* rojo fuerte */
-    color: #fff;
-    border: none;
-    padding: 6px 10px;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background 0.3s ease;
     margin-left: 5px;
 }
-
-.btn-delete i {
-    color: #fff;
-}
-
 .btn-delete:hover {
     background-color: #dc2626;
-    /* rojo más oscuro */
 }
+
+/* Ver detalle */
+.btn-view {
+    background-color: #3b82f6;
+    margin: 0 5px;
+}
+.btn-view:hover {
+    background-color: #2563eb;
+}
+
+
 
 
 
@@ -1160,3 +1170,241 @@ tr * {
     text-align: center !important; 
 }
 
+/* ===== MODAL STYLES ===== */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    z-index: 9999;
+    animation: fadeIn 0.3s ease;
+}
+
+.modal-overlay.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.modal-container {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    max-width: 90%;
+    max-height: 90%;
+    width: 800px;
+    position: relative;
+    animation: slideIn 0.3s ease;
+    overflow: hidden;
+}
+
+@keyframes slideIn {
+    from { 
+        transform: scale(0.7) translateY(-50px);
+        opacity: 0;
+    }
+    to { 
+        transform: scale(1) translateY(0);
+        opacity: 1;
+    }
+}
+
+.modal-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 20px 30px;
+    border-radius: 12px 12px 0 0;
+    position: relative;
+}
+
+.modal-title {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.modal-title i {
+    font-size: 1.3rem;
+}
+
+.modal-close {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.3s ease;
+}
+
+.modal-close:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.modal-close i {
+    font-size: 18px;
+}
+
+.modal-body {
+    padding: 30px;
+    max-height: 70vh;
+    overflow-y: auto;
+}
+
+.modal-section {
+    margin-bottom: 25px;
+}
+
+.modal-section:last-child {
+    margin-bottom: 0;
+}
+
+.modal-section-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 15px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #e5e7eb;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.modal-info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 15px;
+}
+
+.modal-info-item {
+    background: #f9fafb;
+    padding: 15px;
+    border-radius: 8px;
+    border-left: 4px solid #3b82f6;
+}
+
+.modal-info-label {
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 5px;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.modal-info-value {
+    color: #1f2937;
+    font-size: 1rem;
+}
+
+.modal-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.modal-table th {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 12px 15px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.modal-table td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.modal-table tbody tr:hover {
+    background-color: #f9fafb;
+}
+
+.modal-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.modal-summary-row {
+    background: #f3f4f6 !important;
+    font-weight: 600;
+}
+
+.modal-summary-row.total-row {
+    background: #3b82f6 !important;
+    color: white;
+}
+
+.modal-summary-row.total-row td {
+    color: white;
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .modal-container {
+        width: 95%;
+        margin: 20px;
+    }
+    
+    .modal-info-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .modal-header {
+        padding: 15px 20px;
+    }
+    
+    .modal-body {
+        padding: 20px;
+    }
+    
+    .modal-title {
+        font-size: 1.3rem;
+    }
+}
+
+/* Loading spinner para cuando se carga la info */
+.modal-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+}
+
+.modal-spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #e5e7eb;
+    border-left: 4px solid #3b82f6;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}

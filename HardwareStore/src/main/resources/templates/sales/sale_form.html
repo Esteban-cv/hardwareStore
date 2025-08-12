@@ -211,10 +211,10 @@
                         <div class="products-grid" id="productsGrid">
                             <!-- Los artículos se cargarán aquí dinámicamente -->
                             <div th:each="article : ${articles}" class="product-card" th:attr="data-id=${article.idArticle},
-                          data-name=${article.name},
-                          data-code=${article.code},
-                          data-price=${article.price},
-                          data-stock=${article.quantity}">
+                      data-name=${article.name},
+                      data-code=${article.code},
+                      data-price=${article.price},
+                      data-stock=${article.quantity}">
 
                                 <div class="product-info">
                                     <h4 th:text="${article.name}">Artículo</h4>
@@ -252,7 +252,7 @@
 
                 <!-- Panel de Venta -->
                 <div class="sale-panel">
-                    <form id="saleForm" th:action="@{/sales/save}" method="post" th:object="${sale}">
+                    <form id="saleForm" th:action="@{/sales/save-with-details}" method="post" th:object="${sale}">
                         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 
                         <!-- Campo oculto para la fecha -->
@@ -348,7 +348,9 @@
                                     <span id="total">$0.00</span>
                                 </div>
 
-                                <!-- Campo oculto para el total -->
+                                <!-- Campos ocultos para el resumen -->
+                                <input type="hidden" th:field="*{subTotal}" id="subTotalInput">
+                                <input type="hidden" th:field="*{tax}" id="taxInput">
                                 <input type="hidden" th:field="*{total}" id="totalInput">
                             </div>
                         </div>
