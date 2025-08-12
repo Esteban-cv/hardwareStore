@@ -57,11 +57,18 @@ public class CatalogController {
 
     @PostMapping("/article/save")
     public String saveArticle(@ModelAttribute Article article, RedirectAttributes ra) {
-        try {
+         try {
+            boolean esNuevo = (article.getIdArticle() == null);
+
             articleRepository.save(article);
-            ra.addFlashAttribute("success", "Artículo guardado correctamente.");
+
+            if (esNuevo) {
+                ra.addFlashAttribute("success", "Artículo creado exitosamente");
+            } else {
+                ra.addFlashAttribute("success", "Artículo actualizado exitosamente");
+            }
         } catch (Exception e) {
-            ra.addFlashAttribute("error", "Hubo un error al guardar el artículo.");
+            ra.addFlashAttribute("error", "Error al guardar el artículo");
         }
         return "redirect:/catalog/articles";
     }
@@ -84,9 +91,9 @@ public class CatalogController {
     public String deleteArticle(@PathVariable("id") Integer idArticle, RedirectAttributes ra) {
         try {
             articleRepository.deleteById(idArticle);
-            ra.addFlashAttribute("success", "Artículo guardado correctamente.");
+            ra.addFlashAttribute("success", "Artículo eliminado exitosamente.");
         } catch (Exception e) {
-            ra.addFlashAttribute("error", "Hubo un error al guardar el artículo.");
+            ra.addFlashAttribute("error", "Hubo un error al eliminar el artículo.");
         }
         return "redirect:/catalog/articles";
     }
@@ -139,8 +146,19 @@ public class CatalogController {
 
     @PostMapping("/save/category")
     public String saveCategory(@ModelAttribute Category category, RedirectAttributes ra) {
-        categoryRepository.save(category);
-        ra.addFlashAttribute("success", "Categoría guardada exitosamente");
+        try {
+            boolean esNuevo = (category.getIdCategory() == null);
+
+            categoryRepository.save(category);
+
+            if (esNuevo) {
+                ra.addFlashAttribute("success", "Categoría creada exitosamente");
+            } else {
+                ra.addFlashAttribute("success", "Categoría actualizada exitosamente");
+            }
+        } catch (Exception e) {
+            ra.addFlashAttribute("error", "Error al guardar la categoría");
+        }
         return "redirect:/catalog/categories";
     }
 

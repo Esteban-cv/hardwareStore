@@ -53,8 +53,19 @@ public class ProductReturnController {
 
     @PostMapping("/save")
     public String save(@ModelAttribute ProductReturns productReturn, RedirectAttributes ra) {
-        productReturnsRepository.save(productReturn);
-        ra.addFlashAttribute("success", "Devolución guardada exitosamente");
+        try {
+            boolean esNuevo = (productReturn.getIdReturn() == null);
+
+            productReturnsRepository.save(productReturn);
+
+            if (esNuevo) {
+                ra.addFlashAttribute("success", "Devolución creada exitosamente");
+            } else {
+                ra.addFlashAttribute("success", "Devolución actualizada exitosamente");
+            }
+        } catch (Exception e) {
+            ra.addFlashAttribute("error", "Error al guardar la devolución");
+        }
         return "redirect:/productreturns";
     }
 

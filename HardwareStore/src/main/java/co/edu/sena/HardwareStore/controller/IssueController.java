@@ -57,7 +57,7 @@ public class IssueController {
     @PostMapping("/save")
     public String save(@ModelAttribute Issue issue, RedirectAttributes ra) {
         issueRepository.save(issue);
-        ra.addFlashAttribute("success", "Salida guardada exitosamente");
+        ra.addFlashAttribute("success", "Salida actualizada exitosamente");
         return "redirect:/issue";
     }
 

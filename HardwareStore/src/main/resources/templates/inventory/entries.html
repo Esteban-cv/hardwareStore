@@ -9,7 +9,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <!-- DataTable -->
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.datatables.net/2.3.2/css/dataTables.dataTables.css"/>
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.3.2/css/dataTables.dataTables.css" />
     <script src="https://cdn.datatables.net/2.3.2/js/dataTables.js"></script>
 </head>
 
@@ -132,7 +132,7 @@
                     </li>
 
                     <!-- Proveedores -->
-                     <li class="nav-item has-submenu">
+                    <li class="nav-item has-submenu">
                         <a class="nav-link">
                             <i class="fas fa-users"></i>
                             <span>Proveedores</span>
@@ -191,6 +191,9 @@
                 </a>
             </div>
 
+            <div th:if="${success}" th:text="${success}" class="alert alert-success mt-2" id="alert-success">
+            </div>
+
             <!-- Entries Table -->
             <div class="section-for-all">
                 <table id="myTable">
@@ -242,6 +245,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script th:src="@{/js/swing-alert.js}"></script>
     <script th:src="@{/js/navigation.js}"></script>
+    <script th:src="@{/js/alert-success.js}"></script>
 </body>
 
 </html>
