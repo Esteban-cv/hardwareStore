@@ -6,8 +6,6 @@ import co.edu.sena.HardwareStore.services.ExcelReportService;
 import co.edu.sena.HardwareStore.services.PdfReportService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -31,9 +29,8 @@ public class SupplierController {
     private ExcelReportService excelReportService;
 
     @GetMapping
-    public String listSuppliers(@RequestParam(defaultValue = "0") int page, Model model) {
-        Page<Supplier> suppliers = supplierRepository.findAll(
-            PageRequest.of(page, 10, Sort.by("idSupplier").ascending()));
+    public String listSuppliers(Model model) {
+        List<Supplier> suppliers = supplierRepository.findAll(Sort.by("idSupplier").ascending());
         model.addAttribute("suppliers", suppliers);
         return "suppliers/supplier"; 
     }
