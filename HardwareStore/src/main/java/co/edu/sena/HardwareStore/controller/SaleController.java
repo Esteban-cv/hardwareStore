@@ -6,8 +6,6 @@ import co.edu.sena.HardwareStore.services.ExcelReportService;
 import co.edu.sena.HardwareStore.services.PdfReportService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -42,8 +40,8 @@ public class SaleController {
     private ExcelReportService excelReportService;
 
     @GetMapping
-    public String listSales(@RequestParam(defaultValue = "0") int page, Model model) {
-        Page<Sale> sales = saleRepository.findAll(PageRequest.of(page, 10, Sort.by("date").descending()));
+    public String listSales(Model model) {
+        List<Sale> sales = saleRepository.findAll(Sort.by("date").descending());
         model.addAttribute("sales", sales);
         return "sales/sale";
     }

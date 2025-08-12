@@ -7,6 +7,10 @@
     <title>Ferretería Store - Dashboard</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- DataTable -->
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.3.2/css/dataTables.dataTables.css"/>
+    <script src="https://cdn.datatables.net/2.3.2/js/dataTables.js"></script>
 </head>
 
 <body>
@@ -191,7 +195,7 @@
 
             <!-- Articles Table -->
             <div class="section-for-all">
-                <table class="tables-for-all">
+                <table id="myTable">
                     <thead>
                         <tr>
                             <th>ID</th>
@@ -204,7 +208,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr th:each="article : ${articles.content}">
+                        <tr th:each="article : ${articles}">
                             <td th:text="${article.idArticle}"></td>
                             <td th:text="${article.name}"></td>
                             <td th:text="${article.code}"></td>
@@ -225,27 +229,6 @@
                         </tr>
                     </tbody>
                 </table>
-
-                <!-- pagination -->
-                <nav class="pagination-nav">
-                    <ul class="pagination-list">
-                        <!-- back -->
-                        <li th:classappend="${!articles.hasPrevious()} ? 'disabled'">
-                            <a th:href="@{/catalog/articles(page=${articles.number - 1})}">Anterior</a>
-                        </li>
-
-                        <!-- numbers -->
-                        <li th:each="i : ${#numbers.sequence(0, articles.totalPages - 1)}"
-                            th:classappend="${i == articles.number} ? 'active'">
-                            <a th:href="@{/catalog/articles(page=${i})}" th:text="${i + 1}"></a>
-                        </li>
-
-                        <!-- next -->
-                        <li th:classappend="${!articles.hasNext()} ? 'disabled'">
-                            <a th:href="@{/catalog/articles(page=${articles.number + 1})}">Siguiente</a>
-                        </li>
-                    </ul>
-                </nav>
             </div>
         </main>
 

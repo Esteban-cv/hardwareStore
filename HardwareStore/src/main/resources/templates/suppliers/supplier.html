@@ -7,6 +7,10 @@
     <title>Ferretería Store - Proveedores</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- DataTable -->
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.3.2/css/dataTables.dataTables.css"/>
+    <script src="https://cdn.datatables.net/2.3.2/js/dataTables.js"></script>
 </head>
 
 <body>
@@ -188,7 +192,7 @@
 
             <!-- Suppliers Table -->
             <div class="section-for-all">
-                <table class="tables-for-all">
+                <table id="myTable">
                     <thead>
                         <tr>
                             <th>ID</th>
@@ -218,24 +222,6 @@
                         </tr>
                     </tbody>
                 </table>
-
-                <!-- Pagination -->
-                <nav class="pagination-nav">
-                    <ul class="pagination-list">
-                        <li th:classappend="${!suppliers.hasPrevious()} ? 'disabled'">
-                            <a th:href="@{/suppliers(page=${suppliers.number - 1})}">Anterior</a>
-                        </li>
-
-                        <li th:each="i : ${#numbers.sequence(0, suppliers.totalPages - 1)}"
-                            th:classappend="${i == suppliers.number} ? 'active'">
-                            <a th:href="@{/suppliers(page=${i})}" th:text="${i + 1}"></a>
-                        </li>
-
-                        <li th:classappend="${!suppliers.hasNext()} ? 'disabled'">
-                            <a th:href="@{/suppliers(page=${suppliers.number + 1})}">Siguiente</a>
-                        </li>
-                    </ul>
-                </nav>
             </div>
         </main>
     </div>
