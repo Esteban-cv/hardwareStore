@@ -61,3 +61,24 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+
+// DATATABLE
+document.addEventListener("DOMContentLoaded", function() {
+    if (typeof jQuery !== 'undefined' && $('#myTable').length) {
+        $('#myTable').DataTable({
+            language: {
+                url: "https://cdn.datatables.net/plug-ins/2.0.3/i18n/es-ES.json"
+            },
+            pageLength: 10, // Mostrar 10 registros por página
+            lengthMenu: [10, 25, 50, 100], // Opciones de cantidad de registros por página
+            responsive: true, // Hacer la tabla responsiva
+            order: [[1, 'desc']], // Ordenar por fecha descendente por defecto
+            columnDefs: [
+                { 
+                    targets: 2, // Columna del total
+                    type: 'num-fmt' // Para manejar números con comas
+                }
+            ]
+        });
+    }
+});

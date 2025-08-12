@@ -6,8 +6,6 @@ import co.edu.sena.HardwareStore.services.ExcelReportService;
 import co.edu.sena.HardwareStore.services.PdfReportService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -29,8 +27,8 @@ public class LocationController {
     @Autowired
     private ExcelReportService excelReportService;
     @GetMapping
-    public String listLocations(@RequestParam(defaultValue = "0") int page, Model model) {
-        Page<Location> locations = locationRepository.findAll(PageRequest.of(page, 10, Sort.by("idLocation").descending()));
+    public String listLocations(Model model) {
+        List<Location> locations = locationRepository.findAll(Sort.by("idLocation").descending());
         model.addAttribute("locations", locations);
         return "inventory/locations";
     }

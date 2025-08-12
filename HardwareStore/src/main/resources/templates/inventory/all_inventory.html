@@ -7,6 +7,10 @@
     <title>Ferretería Store - Dashboard</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- DataTable -->
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.3.2/css/dataTables.dataTables.css"/>
+    <script src="https://cdn.datatables.net/2.3.2/js/dataTables.js"></script>
 </head>
 
 <body>
@@ -190,7 +194,7 @@
 
             <!-- Clients Table -->
             <div class="section-for-all">
-                <table class="tables-for-all">
+                <table id="myTable">
                     <thead>
                         <tr>
                             <th>ID</th>
@@ -224,27 +228,6 @@
                         </tr>
                     </tbody>
                 </table>
-                <nav class="pagination-nav">
-                    <ul class="pagination-list">
-
-                        <!-- back -->
-                        <li th:classappend="${!inventories.hasPrevious()} ? 'disabled'">
-                            <a th:href="@{/inventories(page=${inventories.number - 1})}">Anterior</a>
-                        </li>
-
-                        <!-- numbers -->
-                        <li th:each="i : ${#numbers.sequence(0, inventories.totalPages - 1)}"
-                            th:classappend="${i == inventories.number} ? 'active'">
-                            <a th:href="@{/inventories(page=${i})}" th:text="${i + 1}"></a>
-                        </li>
-
-                        <!-- next -->
-                        <li th:classappend="${!inventories.hasNext()} ? 'disabled'">
-                            <a th:href="@{/inventories(page=${inventories.number + 1})}">Siguiente</a>
-                        </li>
-
-                    </ul>
-                </nav>
             </div>
         </main>
     </div>

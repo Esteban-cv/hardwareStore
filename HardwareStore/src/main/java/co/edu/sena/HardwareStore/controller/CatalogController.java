@@ -11,8 +11,6 @@ import co.edu.sena.HardwareStore.services.ExcelReportService;
 import co.edu.sena.HardwareStore.services.PdfReportService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
-import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -44,15 +41,9 @@ public class CatalogController {
 
 
     @GetMapping("/articles")
-    public String listArticles(@RequestParam(defaultValue = "0") int page, Model model) {
-        Page<Article> articles = articleRepository.findAll(PageRequest.of(page, 10, Sort.by("idArticle").ascending()));
-        articles.forEach(p -> {
-            if (p.getPrice() != null) {
-                p.setPrice(p.getPrice().setScale(2, RoundingMode.HALF_UP));
-            }
-        });
-        model.addAttribute("articles", articles);
-        return "catalog/articles";
+    public String listArticles(Model model) {
+        model.addAttribute("articles", articleRepository.findAll());
+        return "catalog/articles";  
     }
 
     @GetMapping("/article/form")
@@ -135,10 +126,8 @@ public class CatalogController {
     // ---------- CATEGORIES ------------------
 
     @GetMapping("/categories")
-    public String listCategories(@RequestParam(defaultValue = "0") int page, Model model) {
-        Page<Category> categories = categoryRepository.findAll(
-                PageRequest.of(page, 10, Sort.by("idCategory").ascending()));
-        model.addAttribute("categories", categories);
+    public String listCategories(Model model) {
+        model.addAttribute("categories", categoryRepository.findAll());
         return "catalog/categories";
     }
 

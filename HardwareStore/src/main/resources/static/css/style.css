@@ -1156,4 +1156,7 @@ body {
 }
 
 
+tr * {
+    text-align: center !important; 
+}
 

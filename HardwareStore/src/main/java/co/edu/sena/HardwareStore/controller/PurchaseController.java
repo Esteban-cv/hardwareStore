@@ -9,8 +9,6 @@ import co.edu.sena.HardwareStore.services.ExcelReportService;
 import co.edu.sena.HardwareStore.services.PdfReportService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -42,8 +40,8 @@ public class PurchaseController {
     private ExcelReportService excelReportService;
 
     @GetMapping
-    public String listPurchases(@RequestParam(defaultValue = "0") int page, Model model) {
-        Page<Purchase> purchases = purchaseRepository.findAll(PageRequest.of(page, 10, Sort.by("date").descending()));
+    public String listPurchases(Model model) {
+        List<Purchase> purchases = purchaseRepository.findAll(Sort.by("date").descending());
         purchases.forEach(s -> {
             if (s.getTotal() != null) {
                 s.setTotal(s.getTotal().setScale(2, RoundingMode.HALF_UP));
