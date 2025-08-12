@@ -107,18 +107,17 @@ class UniversalModal {
         }
     }
 
-    // Método formatContent actualizado
+    // Formatear contenido según el tipo de datos
     formatContent(data) {
-        switch(data.type) {
-            case 'sale':
-                return this.formatSaleContent(data);
-            case 'purchase':
-                return this.formatPurchaseContent(data);
-            case 'inventory':
-                return this.formatInventoryContent(data);
-            default:
-                return this.formatGenericContent(data);
+        if (data.type === 'sale') {
+            return this.formatSaleContent(data);
+        } else if (data.type === 'purchase') {
+            return this.formatPurchaseContent(data);
+        } else if (data.type === 'inventory') {
+            return this.formatInventoryContent(data);
         }
+        // Agregar más tipos según necesites
+        return this.formatGenericContent(data);
     }
 
     formatSaleContent(data) {
@@ -203,7 +202,6 @@ class UniversalModal {
         `;
     }
 
-    // Nuevo formato para compras (purchase)
     formatPurchaseContent(data) {
         return `
             <div class="modal-section">
@@ -214,136 +212,48 @@ class UniversalModal {
                 <div class="modal-info-grid">
                     <div class="modal-info-item">
                         <div class="modal-info-label">ID Compra</div>
-                        <div class="modal-info-value">${data.id_purchase}</div>
+                        <div class="modal-info-value">${data.idPurchase}</div>
                     </div>
                     <div class="modal-info-item">
                         <div class="modal-info-label">Fecha</div>
-                        <div class="modal-info-value">${new Date(data.date).toLocaleDateString()}</div>
-                    </div>
-                    <div class="modal-info-item">
-                        <div class="modal-info-label">Cantidad Total</div>
-                        <div class="modal-info-value">${data.quantity}</div>
-                    </div>
-                    <div class="modal-info-item">
-                        <div class="modal-info-label">Estado</div>
-                        <div class="modal-info-value ${data.status.toLowerCase()}">${data.status}</div>
-                    </div>
-                    <div class="modal-info-item">
-                        <div class="modal-info-label">Total</div>
-                        <div class="modal-info-value">$${data.total.toFixed(2)}</div>
-                    </div>
-                    <div class="modal-info-item">
-                        <div class="modal-info-label">Precio Unitario</div>
-                        <div class="modal-info-value">$${data.unit_price.toFixed(2)}</div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="modal-section">
-                <div class="modal-section-title">
-                    <i class="fas fa-link"></i>
-                    Relaciones
-                </div>
-                <div class="modal-info-grid">
-                    <div class="modal-info-item">
-                        <div class="modal-info-label">Artículo</div>
-                        <div class="modal-info-value">${data.article_name || `ID: ${data.id_article}`}</div>
+                        <div class="modal-info-value">${data.date}</div>
                     </div>
                     <div class="modal-info-item">
                         <div class="modal-info-label">Proveedor</div>
-                        <div class="modal-info-value">${data.supplier_name || `ID: ${data.id_supplier}`}</div>
+                        <div class="modal-info-value">${data.supplierName}</div>
                     </div>
                     <div class="modal-info-item">
-                        <div class="modal-info-label">Empleado</div>
-                        <div class="modal-info-value">${data.employee_name || `ID: ${data.id_employee}`}</div>
+                        <div class="modal-info-label">Total</div>
+                        <div class="modal-info-value">$${data.total.toLocaleString()}</div>
                     </div>
                 </div>
             </div>
             
-            <div class="modal-section">
-                <div class="modal-section-title">
-                    <i class="fas fa-clock"></i>
-                    Auditoría
-                </div>
-                <div class="modal-info-grid">
-                    <div class="modal-info-item">
-                        <div class="modal-info-label">Creado en</div>
-                        <div class="modal-info-value">${new Date(data.created_at).toLocaleString()}</div>
-                    </div>
-                    <div class="modal-info-item">
-                        <div class="modal-info-label">Actualizado en</div>
-                        <div class="modal-info-value">${new Date(data.updated_at).toLocaleString()}</div>
-                    </div>
-                </div>
-            </div>
-        `;
-    }
-
-    // Nuevo formato para inventario (inventory)
-    formatInventoryContent(data) {
-        return `
             <div class="modal-section">
                 <div class="modal-section-title">
                     <i class="fas fa-boxes"></i>
-                    Información de Inventario
+                    Productos Comprados
                 </div>
-                <div class="modal-info-grid">
-                    <div class="modal-info-item">
-                        <div class="modal-info-label">ID Inventario</div>
-                        <div class="modal-info-value">${data.id_inventory}</div>
-                    </div>
-                    <div class="modal-info-item">
-                        <div class="modal-info-label">Stock Actual</div>
-                        <div class="modal-info-value ${data.current_stock < data.minimum_stock ? 'warning' : ''}">
-                            ${data.current_stock}
-                            ${data.current_stock < data.minimum_stock ? 
-                              '<i class="fas fa-exclamation-triangle"></i>' : ''}
-                        </div>
-                    </div>
-                    <div class="modal-info-item">
-                        <div class="modal-info-label">Stock Mínimo</div>
-                        <div class="modal-info-value">${data.minimum_stock}</div>
-                    </div>
-                    <div class="modal-info-item">
-                        <div class="modal-info-label">Última Actualización</div>
-                        <div class="modal-info-value">${data.updating_date ? 
-                            new Date(data.updating_date).toLocaleDateString() : 'Nunca'}</div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="modal-section">
-                <div class="modal-section-title">
-                    <i class="fas fa-link"></i>
-                    Relaciones
-                </div>
-                <div class="modal-info-grid">
-                    <div class="modal-info-item">
-                        <div class="modal-info-label">Artículo</div>
-                        <div class="modal-info-value">${data.article_name || `ID: ${data.id_article}`}</div>
-                    </div>
-                    <div class="modal-info-item">
-                        <div class="modal-info-label">Ubicación</div>
-                        <div class="modal-info-value">${data.location_name || `ID: ${data.id_location}`}</div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="modal-section">
-                <div class="modal-section-title">
-                    <i class="fas fa-clock"></i>
-                    Auditoría
-                </div>
-                <div class="modal-info-grid">
-                    <div class="modal-info-item">
-                        <div class="modal-info-label">Creado en</div>
-                        <div class="modal-info-value">${new Date(data.created_at).toLocaleString()}</div>
-                    </div>
-                    <div class="modal-info-item">
-                        <div class="modal-info-label">Actualizado en</div>
-                        <div class="modal-info-value">${new Date(data.updated_at).toLocaleString()}</div>
-                    </div>
-                </div>
+                <table class="modal-table">
+                    <thead>
+                        <tr>
+                            <th>Producto</th>
+                            <th>Cantidad</th>
+                            <th>Precio Unit.</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${data.details.map(detail => `
+                            <tr>
+                                <td>${detail.articleName}</td>
+                                <td>${detail.quantity}</td>
+                                <td>$${detail.unitPrice.toLocaleString()}</td>
+                                <td>$${detail.total.toLocaleString()}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
             </div>
         `;
     }
@@ -444,24 +354,27 @@ function bindViewButtons() {
 // Función para mostrar detalles
 function showDetails(id, type) {
     const endpoints = {
-        'sale': `/api/sales/${id}`,
-        'purchase': `/api/purchases/${id}`,
-        'inventory': `/api/inventory/${id}`,
-        // ... otros endpoints
+        'sale': `/sales/view/${id}`,
+        'purchase': `/purchases/view/${id}`,
+        'inventory': `/inventory/view/${id}`,
+        'entry': `/entries/view/${id}`,
+        'issue': `/issue/view/${id}`
     };
     
     const titles = {
         'sale': 'Detalle de Venta',
-        'purchase': 'Detalle de Compra',
-        'inventory': 'Detalle de Inventario',
-        // ... otros títulos
+        'purchase': 'Detalle de Compra', 
+        'inventory': 'Detalle de Producto',
+        'entry': 'Detalle de Entrada',
+        'issue': 'Detalle de Salida'
     };
     
     const icons = {
         'sale': 'fas fa-shopping-cart',
-        'purchase': 'fas fa-truck-loading',
-        'inventory': 'fas fa-boxes',
-        // ... otros íconos
+        'purchase': 'fas fa-truck',
+        'inventory': 'fas fa-box',
+        'entry': 'fas fa-right-to-bracket',
+        'issue': 'fas fa-right-from-bracket'
     };
     
     const url = endpoints[type];
