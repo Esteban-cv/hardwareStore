@@ -48,8 +48,21 @@ public class EntryController {
 
     @PostMapping("/save")
     public String save(@ModelAttribute Entry entry, RedirectAttributes ra){
-        entryRepository.save(entry);
-        ra.addFlashAttribute("success", "Entrada guardada exitosamente");
+
+         try {
+            boolean esNuevo = (entry.getIdEntry() == null);
+
+            entryRepository.save(entry);
+
+            if (esNuevo) {
+                ra.addFlashAttribute("success", "Entrada creada exitosamente");
+            } else {
+                ra.addFlashAttribute("success", "Entrada actualizada exitosamente");
+            }
+        } catch (Exception e) {
+            ra.addFlashAttribute("error", "Error al guardar la entrada");
+        }
+
         return "redirect:/entries";
     }
 

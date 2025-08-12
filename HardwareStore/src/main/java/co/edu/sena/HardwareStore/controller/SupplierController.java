@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Controller
-@RequestMapping("/suppliers")  // Cambié de /supplier a /suppliers para consistencia
+@RequestMapping("/suppliers") // Cambié de /supplier a /suppliers para consistencia
 public class SupplierController {
 
     @Autowired
@@ -32,36 +32,43 @@ public class SupplierController {
     public String listSuppliers(Model model) {
         List<Supplier> suppliers = supplierRepository.findAll(Sort.by("idSupplier").ascending());
         model.addAttribute("suppliers", suppliers);
-        return "suppliers/supplier"; 
+        return "suppliers/supplier";
     }
 
     @GetMapping("/form")
     public String form(Model model) {
         model.addAttribute("supplier", new Supplier());
-        return "suppliers/supplier_form"; 
+        return "suppliers/supplier_form";
     }
 
     @PostMapping("/save")
     public String save(@ModelAttribute Supplier supplier, RedirectAttributes ra) {
         try {
+            boolean esNuevo = (supplier.getIdSupplier() == null);
+
             supplierRepository.save(supplier);
-            ra.addFlashAttribute("success", "Proveedor guardado exitosamente");
+
+            if (esNuevo) {
+                ra.addFlashAttribute("success", "Proveedor creado exitosamente");
+            } else {
+                ra.addFlashAttribute("success", "Proveedor actualizado exitosamente");
+            }
         } catch (Exception e) {
             ra.addFlashAttribute("error", "Error al guardar el proveedor");
         }
-        return "redirect:/suppliers"; 
+        return "redirect:/suppliers";
     }
 
     @GetMapping("/edit/{id}")
     public String edit(@PathVariable("id") Long idSupplier, Model model, RedirectAttributes ra) {
         try {
             Supplier supplier = supplierRepository.findById(idSupplier)
-                .orElseThrow(() -> new Exception("Proveedor no encontrado"));
+                    .orElseThrow(() -> new Exception("Proveedor no encontrado"));
             model.addAttribute("supplier", supplier);
             return "suppliers/supplier_form";
         } catch (Exception e) {
             ra.addFlashAttribute("error", "Proveedor no encontrado");
-            return "redirect:/suppliers"; 
+            return "redirect:/suppliers";
         }
     }
 
@@ -73,10 +80,10 @@ public class SupplierController {
         } catch (Exception e) {
             ra.addFlashAttribute("error", "Error al eliminar el proveedor");
         }
-        return "redirect:/suppliers"; 
+        return "redirect:/suppliers";
     }
 
-   @GetMapping("/supplierreport")
+    @GetMapping("/supplierreport")
     public void generateSupplierReport(HttpServletResponse response) throws IOException {
         try {
             List<Supplier> suppliers = supplierRepository.findAll();
@@ -86,8 +93,7 @@ public class SupplierController {
                             String.valueOf(s.getIdSupplier()),
                             s.getName(),
                             s.getDocument(),
-                            s.getPhone()
-                    ))
+                            s.getPhone()))
                     .collect(Collectors.toList());
 
             response.setContentType("application/pdf");
@@ -110,8 +116,7 @@ public class SupplierController {
                             String.valueOf(s.getIdSupplier()),
                             s.getName(),
                             s.getDocument(),
-                            s.getPhone()
-                    ))
+                            s.getPhone()))
                     .collect(Collectors.toList());
 
             response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");

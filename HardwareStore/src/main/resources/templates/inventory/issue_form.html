@@ -37,7 +37,7 @@
                         </a>
                     </li>
 
-                    <!-- Ventas (con submenú) -->
+                    <!-- Ventas -->
                     <li class="nav-item has-submenu">
                         <a class="nav-link">
                             <i class="fas fa-shopping-cart"></i>
@@ -50,7 +50,7 @@
                         </ul>
                     </li>
 
-                    <!-- Devoluciones (con submenú) -->
+                    <!-- Devoluciones -->
                     <li class="nav-item has-submenu">
                         <a class="nav-link">
                             <i class="fas fa-undo-alt"></i>
@@ -59,11 +59,11 @@
                         </a>
                         <ul class="sub-menu">
                             <li><a th:href="@{/productreturns}" class="nav-link">Consultar</a></li>
-                            <li><a th:href="@{/productreturns/form}" class="nav-link">Nueva Devolucion</a></li>
+                            <li><a th:href="@{/productreturns/form}" class="nav-link">Nueva Devolución</a></li>
                         </ul>
                     </li>
 
-                    <!-- Compras (con submenú) -->
+                    <!-- Compras -->
                     <li class="nav-item has-submenu">
                         <a class="nav-link">
                             <i class="fas fa-truck"></i>
@@ -76,7 +76,7 @@
                         </ul>
                     </li>
 
-                    <!-- Inventario (con submenú) -->
+                    <!-- Inventario -->
                     <li class="nav-item has-submenu">
                         <a class="nav-link">
                             <i class="fas fa-boxes"></i>
@@ -138,7 +138,6 @@
                         <ul class="sub-menu">
                             <li><a th:href="@{/suppliers}" class="nav-link">Consultar</a></li>
                             <li><a th:href="@{/suppliers/form}" class="nav-link">Nuevo Proveedor</a></li>
-
                         </ul>
                     </li>
 
@@ -152,7 +151,6 @@
                         <ul class="sub-menu">
                             <li><a th:href="@{/locations}" class="nav-link">Consultar</a></li>
                             <li><a th:href="@{/locations/form}" class="nav-link">Nueva Ubicación</a></li>
-
                         </ul>
                     </li>
                 </ul>
@@ -188,6 +186,7 @@
             <div class="form-container">
                 <form class="form-content" th:action="@{/issue/save}" method="post" th:object="${issue}">
                     <input type="hidden" th:field="*{idIssue}" />
+                    
                     <!-- Información General -->
                     <div class="form-section">
                         <div class="form-section-header">
@@ -218,6 +217,16 @@
                                     min="0" required>
                                 <span class="form-field-hint">Cantidad de la salida</span>
                             </div>
+
+                            <div class="form-input-group">
+                                <label for="observations" class="form-label">
+                                    <i class="fas fa-comment"></i>
+                                    Observaciones
+                                </label>
+                                <input type="text" id="observations" th:field="*{observations}" class="form-input"
+                                    placeholder="Ej: Salida por inventario" required>
+                                <span class="form-field-hint">Escriba las observaciones correspondientes</span>
+                            </div>
                         </div>
                     </div>
 
@@ -232,16 +241,6 @@
 
                         <div class="form-grid">
                             <div class="form-input-group">
-                                <label for="observations" class="form-label">
-                                    <i class="fas fa-comment"></i>
-                                    Observaciones
-                                </label>
-                                <input type="text" id="observations" th:field="*{observations}" class="form-input"
-                                    placeholder="Ej: Salida por inventario" required>
-                                <span class="form-field-hint">Escriba las observaciones correspondientes</span>
-                            </div>
-
-                            <div class="form-input-group">
                                 <label for="article" class="form-label">
                                     <i class="fas fa-box"></i>
                                     Artículo
@@ -251,7 +250,6 @@
                                     <option th:each="article : ${articles}" th:value="${article.idArticle}"
                                         th:text="${article.name}"></option>
                                 </select>
-
                                 <span class="form-field-hint">Artículo de Salida</span>
                             </div>
 
@@ -265,7 +263,6 @@
                                     <option th:each="client : ${clients}" th:value="${client.idClient}"
                                         th:text="${client.name}"></option>
                                 </select>
-
                                 <span class="form-field-hint">Cliente de Salida</span>
                             </div>
 
@@ -279,15 +276,14 @@
                                     <option th:each="employee : ${employees}" th:value="${employee.idEmployee}"
                                         th:text="${employee.name}"></option>
                                 </select>
-
                                 <span class="form-field-hint">Empleado de Salida</span>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Botones Acción -->
+                    <!-- Botones de Acción -->
                     <div class="form-actions-container">
-                        <button type="submit" class="btn-add" id="btnActualizar">
+                        <button type="submit" class="btn-add" id="btnUpdate">
                             <i class="fas fa-save"></i>
                             <span th:text="${issue.idIssue != null} ? 'Actualizar' : 'Guardar'"></span>
                         </button>
@@ -303,74 +299,6 @@
                 </form>
             </div>
         </main>
-        <!-- EJEMPLO: Formulario de Devoluciones con las mismas clases -->
-        <main class="form-main-container form-accent-returns" style="display: none;">
-            <div class="form-header">
-                <div class="form-title-section">
-                    <h1 class="form-title">
-                        <i class="fas fa-undo-alt"></i>
-                        Nueva Devolución
-                    </h1>
-                    <p class="form-subtitle">Registra una nueva devolución de productos</p>
-                </div>
-                <div class="form-header-actions">
-                    <a th:href="@{/productreturns}" class="form-btn-back">
-                        <i class="fas fa-arrow-left"></i>
-                        Volver al listado
-                    </a>
-                </div>
-            </div>
-
-            <div class="form-container">
-                <form class="form-content" th:action="@{/productreturns/save}" method="post">
-                    <div class="form-section">
-                        <div class="form-section-header">
-                            <h2 class="form-section-title">
-                                <i class="fas fa-info-circle"></i>
-                                Información General
-                            </h2>
-                        </div>
-
-                        <div class="form-grid">
-                            <div class="form-input-group">
-                                <label for="date" class="form-label">
-                                    <i class="fas fa-calendar-alt"></i>
-                                    Fecha de Devolución
-                                </label>
-                                <input type="date" id="date" name="date" class="form-input" required>
-                                <span class="form-field-hint">Selecciona la fecha de la devolución</span>
-                            </div>
-
-                            <div class="form-input-group">
-                                <label for="total" class="form-label">
-                                    <i class="fas fa-dollar-sign"></i>
-                                    Total de la Devolución
-                                </label>
-                                <input type="number" id="total" name="total" class="form-input" step="0.01" min="0"
-                                    placeholder="0.00" required>
-                                <span class="form-field-hint">Monto total de la devolución</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-actions-container">
-                        <button type="submit" class="btn-add">
-                            <i class="fas fa-save"></i>
-                            Guardar Devolución
-                        </button>
-                        <button type="reset" class="btn-excel">
-                            <i class="fas fa-eraser"></i>
-                            Limpiar Formulario
-                        </button>
-                        <a th:href="@{/productreturns}" class="btn-pdf">
-                            <i class="fas fa-times"></i>
-                            Cancelar
-                        </a>
-                    </div>
-                </form>
-            </div>
-        </main>
-
     </div>
 
     <!-- Footer -->
@@ -382,6 +310,7 @@
             <span>Hecho con <i class="fas fa-heart"></i> por Aprendices SENA</span>
         </div>
     </footer>
+
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script th:src="@{/js/swing-alert.js}"></script>

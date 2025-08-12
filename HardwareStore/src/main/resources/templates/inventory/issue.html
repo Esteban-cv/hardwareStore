@@ -191,6 +191,9 @@
                 </a>
             </div>
 
+            <div th:if="${success}" th:text="${success}" class="alert alert-success mt-2" id="alert-success">
+            </div>
+
             <!-- Issues Table -->
             <div class="section-for-all">
                 <table id="myTable">
@@ -246,6 +249,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script th:src="@{/js/swing-alert.js}"></script>
     <script th:src="@{/js/navigation.js}"></script>
+    <script th:src="@{/js/alert-success.js}"></script>
 </body>
 
 </html>
