@@ -251,6 +251,7 @@
         opacity: 0;
         transform: translateY(-10px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -388,36 +389,42 @@
    ====================================== */
 /* ===================== RESPONSIVE ===================== */
 @media (max-width: 1200px) {
-  .sales-container {
-    grid-template-columns: 1fr;
-    gap: 20px;
-  }
-  .sale-panel {
-    position: static;
-  }
+    .sales-container {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .sale-panel {
+        position: static;
+    }
 }
+
 @media (max-width: 768px) {
-  .products-grid {
-    grid-template-columns: 1fr;
-    max-height: 400px;
-  }
-  .product-details {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 15px;
-  }
-  .btn-add-product {
-    width: 100%;
-    justify-content: center;
-  }
-  .cart-item {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 10px;
-  }
-  .cart-item-controls {
-    justify-content: space-between;
-  }
+    .products-grid {
+        grid-template-columns: 1fr;
+        max-height: 400px;
+    }
+
+    .product-details {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 15px;
+    }
+
+    .btn-add-product {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .cart-item {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+    }
+
+    .cart-item-controls {
+        justify-content: space-between;
+    }
 }
 
 /* ======================================
@@ -445,5 +452,427 @@
 }
 
 @keyframes spin {
-    to { transform: rotate(360deg); }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ======================================
+   ESTILOS ADICIONALES PARA MEJORAR UX
+   ====================================== */
+
+/* Estilos para inputs de cantidad mejorados */
+.quantity-input {
+    width: 45px !important;
+    height: 28px;
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 0 4px;
+    background: var(--color-white);
+    transition: all 0.2s ease;
+}
+
+.quantity-input:focus {
+    outline: none;
+    border-color: var(--current-accent);
+    box-shadow: 0 0 0 2px rgba(var(--current-accent), 0.2);
+}
+
+.quantity-input:invalid {
+    border-color: #dc2626;
+    background-color: #fef2f2;
+}
+
+/* Estilo para botón de eliminar producto mejorado */
+.remove-item-btn {
+    background: #fee2e2;
+    color: #dc2626;
+    border: none;
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 12px;
+}
+
+.remove-item-btn:hover {
+    background: #fecaca;
+    transform: scale(1.1);
+    box-shadow: 0 2px 8px rgba(220, 38, 38, 0.3);
+}
+
+.remove-item-btn:active {
+    transform: scale(0.95);
+}
+
+/* Animaciones para el carrito */
+.cart-item {
+    animation: slideInCart 0.4s ease-out;
+}
+
+@keyframes slideInCart {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+        max-height: 0;
+        padding: 0;
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+        max-height: 200px;
+        padding: 15px 0;
+    }
+}
+
+/* Estilos para estados de validación */
+.form-select:invalid,
+.form-input:invalid {
+    border-color: #dc2626;
+    background-color: #fef2f2;
+}
+
+.form-select:valid,
+.form-input:valid {
+    border-color: #10b981;
+}
+
+/* Indicadores de carga */
+.btn-add.processing {
+    position: relative;
+    pointer-events: none;
+    opacity: 0.8;
+}
+
+.btn-add.processing::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 16px;
+    height: 16px;
+    border: 2px solid transparent;
+    border-top: 2px solid currentColor;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+/* Mejoras visuales para productos sin stock */
+.product-card[data-stock="0"] {
+    opacity: 0.6;
+    position: relative;
+}
+
+.product-card[data-stock="0"]::after {
+    content: 'SIN STOCK';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-20deg);
+    background: rgba(220, 38, 38, 0.9);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 700;
+    z-index: 2;
+    pointer-events: none;
+}
+
+.product-card[data-stock="0"] .product-info,
+.product-card[data-stock="0"] .product-details {
+    filter: blur(1px);
+}
+
+/* Notificaciones mejoradas */
+.notification-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 10000;
+    pointer-events: none;
+}
+
+.notification {
+    background: var(--color-primary);
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    opacity: 0;
+    transform: translateX(100%);
+    transition: all 0.3s ease;
+    pointer-events: auto;
+    max-width: 300px;
+    word-wrap: break-word;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.notification.success {
+    background: #10b981;
+}
+
+.notification.error {
+    background: #ef4444;
+}
+
+.notification.warning {
+    background: #f59e0b;
+}
+
+.notification.info {
+    background: #3b82f6;
+}
+
+.notification.show {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* Estilos para resaltado de productos agregados */
+.product-card.just-added {
+    animation: pulseGreen 0.6s ease-in-out;
+}
+
+@keyframes pulseGreen {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+    }
+
+    50% {
+        transform: scale(1.02);
+        box-shadow: 0 0 0 8px rgba(16, 185, 129, 0.3);
+    }
+
+    100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+    }
+}
+
+/* Mejoras para el resumen de venta */
+.sale-summary {
+    background: linear-gradient(135deg, var(--color-border-light) 0%, rgba(var(--current-accent), 0.05) 100%);
+    border: 1px solid rgba(var(--current-accent), 0.2);
+}
+
+.total-row {
+    background: rgba(var(--current-accent), 0.1);
+    margin: -20px;
+    margin-top: 15px;
+    padding: 20px;
+    border-radius: 0 0 12px 12px;
+}
+
+/* Estilos para validación en tiempo real */
+.validation-error {
+    border-color: #dc2626 !important;
+    background-color: #fef2f2;
+    animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+
+    25% {
+        transform: translateX(-4px);
+    }
+
+    75% {
+        transform: translateX(4px);
+    }
+}
+
+.validation-message {
+    color: #dc2626;
+    font-size: 12px;
+    margin-top: 4px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.validation-message::before {
+    content: '⚠';
+    font-size: 14px;
+}
+
+/* Mejoras responsive adicionales */
+@media (max-width: 480px) {
+    .cart-item {
+        flex-direction: column;
+        gap: 12px;
+        padding: 12px 0;
+    }
+
+    .cart-item-controls {
+        justify-content: space-between;
+        width: 100%;
+    }
+
+    .quantity-controls {
+        flex: 1;
+        justify-content: center;
+    }
+
+    .quantity-input {
+        width: 50px !important;
+    }
+
+    .sale-summary {
+        padding: 15px;
+    }
+
+    .summary-row {
+        font-size: 13px;
+    }
+
+    .total-row {
+        font-size: 16px;
+    }
+}
+
+/* Estados hover mejorados */
+.cart-item:hover {
+    background-color: rgba(var(--current-accent), 0.02);
+    border-radius: 8px;
+    margin: 0 -10px;
+    padding-left: 25px;
+    padding-right: 25px;
+    transition: all 0.3s ease;
+}
+
+.cart-item:hover .remove-item-btn {
+    opacity: 1;
+    visibility: visible;
+}
+
+.remove-item-btn {
+    opacity: 0.7;
+    visibility: visible;
+    transition: all 0.3s ease;
+}
+
+/* Indicador de stock crítico */
+.stock-critical {
+    background: #fecaca;
+    color: #991b1b;
+    animation: blink 2s infinite;
+}
+
+@keyframes blink {
+
+    0%,
+    50% {
+        opacity: 1;
+    }
+
+    51%,
+    100% {
+        opacity: 0.5;
+    }
+}
+
+
+
+/* estilos para la tabla de vista de edicion*/
+
+/* Estilos solo para la tabla de productos vendidos en editar venta */
+.edit-sale-products-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(60, 60, 60, 0.08);
+    margin-bottom: 1.5rem;
+    font-size: 1rem;
+}
+
+.edit-sale-products-table thead {
+    background: #f5f6fa;
+}
+
+.edit-sale-products-table th,
+.edit-sale-products-table td {
+    padding: 0.75rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid #ececec;
+}
+
+.edit-sale-products-table th {
+    color: #333;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+}
+
+.edit-sale-products-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.edit-sale-products-table tbody tr:hover {
+    background: #f0f4ff;
+    transition: background 0.2s;
+}
+
+@media (max-width: 700px) {
+
+    .edit-sale-products-table,
+    .edit-sale-products-table thead,
+    .edit-sale-products-table tbody,
+    .edit-sale-products-table th,
+    .edit-sale-products-table td,
+    .edit-sale-products-table tr {
+        display: block;
+        width: 100%;
+    }
+
+    .edit-sale-products-table thead {
+        display: none;
+    }
+
+    .edit-sale-products-table tr {
+        margin-bottom: 1rem;
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 1px 4px rgba(60, 60, 60, 0.06);
+        padding: 0.5rem 0;
+    }
+
+    .edit-sale-products-table td {
+        border: none;
+        position: relative;
+        padding-left: 50%;
+        min-height: 2.5rem;
+        font-size: 0.98rem;
+    }
+
+    .edit-sale-products-table td:before {
+        position: absolute;
+        left: 1rem;
+        top: 0.75rem;
+        width: 45%;
+        white-space: nowrap;
+        font-weight: 600;
+        color: #888;
+        content: attr(data-label);
+    }
 }

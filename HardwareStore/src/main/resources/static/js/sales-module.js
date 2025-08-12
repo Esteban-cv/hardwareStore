@@ -12,27 +12,31 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // ======================================
-// FUNCIONES DE SESSIONSTORAGE
+// FUNCIONES DE VALIDATION
 // ======================================
-function saveCartToSession() {
-    try {
-        sessionStorage.setItem('ferreteriaCart', JSON.stringify(cart));
-    } catch (error) {
-        console.error('Error guardando carrito en sessionStorage:', error);
-    }
+function validateStock(productId, requestedQuantity) {
+    const productCard = document.querySelector(`[data-id="${productId}"]`);
+    if (!productCard) return false;
+    
+    const availableStock = parseInt(productCard.dataset.stock) || 0;
+    return requestedQuantity <= availableStock;
 }
 
-function loadCartFromSession() {
-    try {
-        const savedCart = sessionStorage.getItem('ferreteriaCart');
-        if (savedCart) {
-            cart = JSON.parse(savedCart);
-            return true;
-        }
-    } catch (error) {
-        console.error('Error cargando carrito desde sessionStorage:', error);
+function validateCartBeforeSubmit() {
+    if (cart.length === 0) {
+        showNotification('No puede procesar una venta sin productos', 'warning');
+        return false;
     }
-    return false;
+
+    // Validar stock actualizado para cada producto
+    for (let item of cart) {
+        if (!validateStock(item.id, item.quantity)) {
+            showNotification(`Stock insuficiente para ${item.name}`, 'error');
+            return false;
+        }
+    }
+
+    return true;
 }
 
 // ======================================
@@ -56,34 +60,63 @@ function updateTotals() {
     const subtotalElement = document.getElementById('subtotal');
     const taxElement = document.getElementById('tax');
     const totalElement = document.getElementById('total');
+    const subTotalInputElement = document.getElementById('subTotalInput');
+    const taxInputElement = document.getElementById('taxInput');
     const totalInputElement = document.getElementById('totalInput');
 
-    if (subtotalElement) subtotalElement.textContent = `$${subtotal.toFixed(2)}`;
-    if (taxElement) taxElement.textContent = `$${tax.toFixed(2)}`;
-    if (totalElement) totalElement.textContent = `$${total.toFixed(2)}`;
+    if (subtotalElement) subtotalElement.textContent = formatCurrency(subtotal);
+    if (taxElement) taxElement.textContent = formatCurrency(tax);
+    if (totalElement) totalElement.textContent = formatCurrency(total);
+    if (subTotalInputElement) subTotalInputElement.value = subtotal.toFixed(2);
+    if (taxInputElement) taxInputElement.value = tax.toFixed(2);
     if (totalInputElement) totalInputElement.value = total.toFixed(2);
 
-    // Guardar en sessionStorage
-    saveCartToSession();
+    // Actualizar estado del botón
+    updateProcessButton();
+}
+
+function updateProcessButton() {
+    const processButton = document.getElementById('processButton');
+    const clientSelect = document.getElementById('client');
+    const employeeSelect = document.getElementById('employee');
+    
+    if (processButton) {
+        const hasItems = cart.length > 0;
+        const hasClient = clientSelect && clientSelect.value !== '';
+        const hasEmployee = employeeSelect && employeeSelect.value !== '';
+        
+        processButton.disabled = !(hasItems && hasClient && hasEmployee);
+    }
 }
 
 // ======================================
 // INICIALIZACIÓN DEL MÓDULO
 // ======================================
 function initializeSalesModule() {
-    // Cargar carrito desde sessionStorage si existe
-    if (loadCartFromSession()) {
-        updateCartDisplay();
-        updateTotals();
-    }
-
     // Configurar funcionalidades
     setupSearchFilter();
     setupFormSubmission();
+    setupClientEmployeeValidation();
 
     // Actualizar display inicial
     updateCartDisplay();
     updateTotals();
+}
+
+// ======================================
+// VALIDACIÓN DE CLIENTE Y EMPLEADO
+// ======================================
+function setupClientEmployeeValidation() {
+    const clientSelect = document.getElementById('client');
+    const employeeSelect = document.getElementById('employee');
+
+    if (clientSelect) {
+        clientSelect.addEventListener('change', updateProcessButton);
+    }
+
+    if (employeeSelect) {
+        employeeSelect.addEventListener('change', updateProcessButton);
+    }
 }
 
 // ======================================
@@ -202,10 +235,10 @@ function updateQuantity(productId, newQuantity) {
         return;
     }
 
-    if (newQuantity > item.stock) {
+    if (!validateStock(productId, newQuantity)) {
         showNotification('Cantidad excede el stock disponible', 'warning');
         // Restaurar el valor anterior en el input
-        const quantityInput = document.querySelector(`input[value="${item.quantity}"]`);
+        const quantityInput = document.querySelector(`input[data-product-id="${productId}"]`);
         if (quantityInput) {
             quantityInput.value = item.quantity;
         }
@@ -261,11 +294,9 @@ function updateCartDisplay() {
     if (cart.length === 0) {
         if (emptyCart) emptyCart.style.display = 'block';
         if (cartItems) cartItems.classList.remove('active');
-        if (processButton) processButton.disabled = true;
     } else {
         if (emptyCart) emptyCart.style.display = 'none';
         if (cartItems) cartItems.classList.add('active');
-        if (processButton) processButton.disabled = false;
     }
 
     // Generar HTML de items del carrito
@@ -273,25 +304,29 @@ function updateCartDisplay() {
         cartItems.innerHTML = cart.map(item => `
             <div class="cart-item" data-id="${item.id}">
                 <div class="cart-item-info">
-                    <div class="cart-item-name">${item.name}</div>
-                    <div class="cart-item-code">${item.code}</div>
+                    <div class="cart-item-name">${escapeHtml(item.name)}</div>
+                    <div class="cart-item-code">${escapeHtml(item.code)}</div>
                 </div>
                 <div class="cart-item-controls">
-                    <div class="cart-item-price">$${item.price.toFixed(2)}</div>
+                    <div class="cart-item-price">${formatCurrency(item.price)}</div>
                     <div class="quantity-controls">
-                        <button class="quantity-btn" onclick="updateQuantity(${item.id}, ${item.quantity-1})">-</button>
+                        <button class="quantity-btn" onclick="updateQuantity(${item.id}, ${item.quantity-1})" type="button">-</button>
                         <input type="number" class="quantity-input" value="${item.quantity}"
+                               data-product-id="${item.id}"
                                onchange="updateQuantity(${item.id}, parseInt(this.value) || 0)"
                                min="1" max="${item.stock}" title="Cantidad (Max: ${item.stock})">
-                        <button class="quantity-btn" onclick="updateQuantity(${item.id}, ${item.quantity+1})">+</button>
+                        <button class="quantity-btn" onclick="updateQuantity(${item.id}, ${item.quantity+1})" type="button">+</button>
                     </div>
-                        <button class="remove-item-btn" onclick="removeFromCart(${item.id})" title="Eliminar producto">
+                    <button class="remove-item-btn" onclick="removeFromCart(${item.id})" title="Eliminar producto" type="button">
                         <i class="fas fa-trash"></i>
                     </button>
                 </div>
             </div>
         `).join('');
     }
+
+    // Actualizar estado del botón de procesar
+    updateProcessButton();
 }
 
 // ======================================
@@ -302,33 +337,40 @@ function generateCartInputs() {
 
     if (!cartItemsHidden) {
         console.error('No se encontró el contenedor de inputs ocultos');
-        return;
+        return false;
     }
 
-    cartItemsHidden.innerHTML = ''; // limpiar inputs anteriores
+    cartItemsHidden.innerHTML = ''; // Limpiar inputs anteriores
+
+    if (cart.length === 0) {
+        console.warn('No hay items en el carrito para generar inputs');
+        return false;
+    }
 
     cart.forEach((item, index) => {
-        // Para ID del artículo
+        // Input para ID del artículo
         const inputId = document.createElement('input');
         inputId.type = 'hidden';
-        inputId.name = `details[${index}].article.id`;
+        inputId.name = 'articleIds';
         inputId.value = item.id;
         cartItemsHidden.appendChild(inputId);
 
-        // Para cantidad
+        // Input para cantidad
         const inputQuantity = document.createElement('input');
         inputQuantity.type = 'hidden';
-        inputQuantity.name = `details[${index}].quantity`;
+        inputQuantity.name = 'quantities';
         inputQuantity.value = item.quantity;
         cartItemsHidden.appendChild(inputQuantity);
 
-        // Para precio unitario
+        // Input para precio unitario
         const inputPrice = document.createElement('input');
         inputPrice.type = 'hidden';
-        inputPrice.name = `details[${index}].price`;
-        inputPrice.value = item.price;
+        inputPrice.name = 'prices';
+        inputPrice.value = item.price.toFixed(2);
         cartItemsHidden.appendChild(inputPrice);
     });
+
+    return true;
 }
 
 // ======================================
@@ -343,14 +385,62 @@ function setupFormSubmission() {
     }
 
     saleForm.addEventListener('submit', function(e) {
-        if (cart.length === 0) {
-            e.preventDefault();
-            showNotification('No puede procesar una venta sin productos', 'warning');
+        // Prevenir envío por defecto
+        e.preventDefault();
+
+        // Asegurar que los totales estén actualizados justo antes de enviar
+        updateTotals();
+
+        // Validaciones
+        if (!validateCartBeforeSubmit()) {
             return;
         }
 
-        generateCartInputs(); // Agrega los inputs ocultos antes de enviar el formulario
+        // Validar cliente y empleado
+        const clientSelect = document.getElementById('client');
+        const employeeSelect = document.getElementById('employee');
+
+        if (!clientSelect.value) {
+            showNotification('Debe seleccionar un cliente', 'warning');
+            clientSelect.focus();
+            return;
+        }
+
+        if (!employeeSelect.value) {
+            showNotification('Debe seleccionar un empleado', 'warning');
+            employeeSelect.focus();
+            return;
+        }
+
+        // Generar inputs ocultos para el carrito
+        if (!generateCartInputs()) {
+            showNotification('Error al preparar los datos de la venta', 'error');
+            return;
+        }
+
+        // Deshabilitar botón y mostrar indicador de carga
+        const processButton = document.getElementById('processButton');
+        if (processButton) {
+            processButton.disabled = true;
+            processButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span>Procesando...</span>';
+        }
+
+        // Mostrar notificación de procesamiento
         showNotification('Procesando venta...', 'info');
+
+        // Enviar formulario
+        try {
+            saleForm.submit();
+        } catch (error) {
+            console.error('Error al enviar formulario:', error);
+            showNotification('Error al procesar la venta', 'error');
+            
+            // Restaurar botón
+            if (processButton) {
+                processButton.disabled = false;
+                processButton.innerHTML = '<i class="fas fa-cash-register"></i> <span>Procesar Venta</span>';
+            }
+        }
     });
 }
 
@@ -429,8 +519,16 @@ function getNotificationColor(type) {
 function formatCurrency(amount) {
     return new Intl.NumberFormat('es-CO', {
         style: 'currency',
-        currency: 'COP'
+        currency: 'COP',
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
     }).format(amount);
+}
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
 }
 
 // ======================================
@@ -441,6 +539,9 @@ window.addEventListener('error', function(e) {
     showNotification('Ha ocurrido un error inesperado', 'error');
 });
 
+// ======================================
+// NAVEGACIÓN DEL SIDEBAR (CÓDIGO EXISTENTE)
+// ======================================
 document.addEventListener('DOMContentLoaded', function() {
     // Toggle submenús
     const hasSubmenuItems = document.querySelectorAll('.has-submenu');
