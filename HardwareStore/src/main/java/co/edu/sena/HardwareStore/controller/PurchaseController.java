@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
@@ -73,12 +74,6 @@ public class PurchaseController {
         return "purchases/purchase";
     }
 
-    /**
-     * Muestra el formulario para registrar una nueva compra.
-     *
-     * @param model Objeto para enviar datos a la vista.
-     * @return Nombre de la plantilla del formulario de compra.
-     */
     @GetMapping("/form")
     public String form(Model model) {
         model.addAttribute("purchase", new Purchase());
@@ -88,16 +83,24 @@ public class PurchaseController {
         return "/purchases/purchase_form";
     }
 
-    /**
-     * Guarda una compra nueva o actualizada.
-     *
-     * @param purchase Objeto Purchase a guardar.
-     * @param ra Objeto para enviar mensajes flash.
-     * @return Redirección a la lista de compras.
-     */
     @PostMapping("/save")
     public String save(@ModelAttribute Purchase purchase, RedirectAttributes ra) {
         try {
+            // CAMBIO: calcular subTotal antes de guardar
+            if (purchase.getUnitPrice() != null && purchase.getQuantity() != null) {
+                BigDecimal subTotal = purchase.getUnitPrice().multiply(BigDecimal.valueOf(purchase.getQuantity()));
+                purchase.setSubTotal(subTotal);
+
+                // CAMBIO: calcular total con impuesto
+                if (purchase.getTax() != null) {
+                    BigDecimal taxAmount = subTotal.multiply(purchase.getTax().divide(BigDecimal.valueOf(100)));
+                    BigDecimal total = subTotal.add(taxAmount);
+                    purchase.setTotal(total);
+                } else {
+                    purchase.setTotal(subTotal); // sin impuestos
+                }
+            }
+
             boolean esNuevo = (purchase.getIdPurchase() == null);
             purchaseRepository.save(purchase);
             if (esNuevo) {
@@ -111,14 +114,6 @@ public class PurchaseController {
         return "redirect:/purchases";
     }
 
-    /**
-     * Muestra el formulario de edición de una compra existente.
-     *
-     * @param idPurchase ID de la compra a editar.
-     * @param model Objeto para enviar datos a la vista.
-     * @param ra Objeto para enviar mensajes flash.
-     * @return Nombre de la plantilla del formulario o redirección si no se encuentra.
-     */
     @GetMapping("/edit/{id}")
     public String edit(@PathVariable("id") Long idPurchase, Model model, RedirectAttributes ra) {
         try {
@@ -135,13 +130,6 @@ public class PurchaseController {
         }
     }
 
-    /**
-     * Elimina una compra por su ID.
-     *
-     * @param idPurchase ID de la compra a eliminar.
-     * @param ra Objeto para enviar mensajes flash.
-     * @return Redirección a la lista de compras.
-     */
     @PostMapping("/delete/{id}")
     public String delete(@PathVariable("id") Long idPurchase, RedirectAttributes ra) {
         purchaseRepository.deleteById(idPurchase);
@@ -159,8 +147,10 @@ public class PurchaseController {
     public void generatepurchaseReport(HttpServletResponse response) throws IOException {
         try {
             List<Purchase> purchases = purchaseRepository.findAll();
-            List<String> headers = Arrays.asList("ID", "Fecha", "Cantidad", "Total", "Estado", "Proveedor", "Empleado",
-                    "Articulo");
+
+            // CAMBIO: agregar columnas nuevas
+            List<String> headers = Arrays.asList("ID", "Fecha", "Cantidad", "Precio Unitario", "Subtotal", "Impuesto (%)", "Total", "Estado", "Proveedor", "Empleado", "Artículo");
+
             List<List<String>> rows = purchases.stream()
                     .map(s -> {
                         String fechaFormateada = s.getDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
@@ -168,11 +158,15 @@ public class PurchaseController {
                                 String.valueOf(s.getIdPurchase()),
                                 fechaFormateada,
                                 String.valueOf(s.getQuantity()),
+                                String.valueOf(s.getUnitPrice()),
+                                String.valueOf(s.getSubTotal()),
+                                String.valueOf(s.getTax()),
                                 String.valueOf(s.getTotal()),
                                 String.valueOf(s.getStatus()),
                                 s.getSupplier() != null ? s.getSupplier().getName() : "N/A",
                                 s.getEmployee() != null ? s.getEmployee().getName() : "N/A",
-                                s.getArticle() != null ? s.getArticle().getName() : "N/A");
+                                s.getArticle() != null ? s.getArticle().getName() : "N/A"
+                        );
                     })
                     .collect(Collectors.toList());
 
@@ -196,8 +190,10 @@ public class PurchaseController {
     public void generatePurchaseExcelReport(HttpServletResponse response) throws IOException {
         try {
             List<Purchase> purchases = purchaseRepository.findAll();
-            List<String> headers = Arrays.asList("ID", "Fecha", "Cantidad", "Total", "Estado", "Proveedor", "Empleado",
-                    "Articulo");
+
+            // CAMBIO: agregar columnas nuevas
+            List<String> headers = Arrays.asList("ID", "Fecha", "Cantidad", "Precio Unitario", "Subtotal", "Impuesto (%)", "Total", "Estado", "Proveedor", "Empleado", "Artículo");
+
             List<List<String>> rows = purchases.stream()
                     .map(s -> {
                         String fechaFormateada = s.getDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
@@ -205,11 +201,15 @@ public class PurchaseController {
                                 String.valueOf(s.getIdPurchase()),
                                 fechaFormateada,
                                 String.valueOf(s.getQuantity()),
+                                String.valueOf(s.getUnitPrice()),
+                                String.valueOf(s.getSubTotal()),
+                                String.valueOf(s.getTax()),
                                 String.valueOf(s.getTotal()),
                                 String.valueOf(s.getStatus()),
                                 s.getSupplier() != null ? s.getSupplier().getName() : "N/A",
                                 s.getEmployee() != null ? s.getEmployee().getName() : "N/A",
-                                s.getArticle() != null ? s.getArticle().getName() : "N/A");
+                                s.getArticle() != null ? s.getArticle().getName() : "N/A"
+                        );
                     })
                     .collect(Collectors.toList());
 

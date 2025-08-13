@@ -50,7 +50,10 @@ document.addEventListener('DOMContentLoaded', function () {
     document.querySelectorAll('.btn-delete').forEach(btn => {
         btn.addEventListener('click', function (e) {
             e.preventDefault();
-            const url = this.getAttribute('href');
+
+            // Obtener el formulario padre del botón
+            const form = this.closest('form');
+
             Swal.fire({
                 title: '¿Eliminar registro?',
                 text: 'Esta acción no se puede deshacer.',
@@ -63,7 +66,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 allowOutsideClick: false
             }).then((result) => {
                 if (result.isConfirmed) {
-                    window.location.href = url;
+                    // Enviar el formulario
+                    form.submit();
                 }
             });
         });

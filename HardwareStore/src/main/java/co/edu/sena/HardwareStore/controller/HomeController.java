@@ -62,8 +62,7 @@ public class HomeController {
         // Consulta: Top 10 clientes que más han gastado
         List<Object[]> topSpendingClients = clientRepository.findTopSpendingClients();
 
-        // Consulta: Top 10 clientes más recientes con total gastado
-        List<Object[]> recentClientsData = clientRepository.findRecentClientsWithTotalSpent();
+        
 
         // Por defecto se usan los clientes que más han gastado
         model.addAttribute("recentClients", topSpendingClients);
@@ -103,10 +102,5 @@ public class HomeController {
         response.addCookie(cookie);
 
         return "redirect:/login";
-
-    @GetMapping("/logout") // Mapea la ruta "/logout"
-    public String logOut() {
-        // Retorna la vista de logout ubicada en templates/home/logout.html
-        return "home/logout";
     }
 }

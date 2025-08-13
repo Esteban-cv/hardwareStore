@@ -16,29 +16,50 @@ public class Purchase {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_purchase")
     private Long idPurchase;
-    private Integer quantity;
+
     @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @Column(nullable = false)
     private LocalDate date;
+
+    @Column(precision = 10, scale = 2, nullable = false)
+    private BigDecimal tax;
+
     @Column(precision = 10, scale = 2, nullable = false)
     private BigDecimal total;
-    private BigDecimal unitPrice;
-    @Column(length = 20)
-    private String status;
-    @ManyToOne
-    @JoinColumn(name = "id_article", nullable = false)
-    private Article article;
+
+    @Column(length = 20, nullable = false)
+    private String status = "PENDIENTE";
+
     @ManyToOne
     @JoinColumn(name = "id_supplier", nullable = false)
     private Supplier supplier;
+
     @ManyToOne
     @JoinColumn(name = "id_employee", nullable = false)
     private Employee employee;
+
     @CreationTimestamp
-    @Column(name = "created_at", updatable = false)
+    @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
+
     @UpdateTimestamp
-    @Column(name = "updated_at")
+    @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
+
+    @Column(name = "sub_total", precision = 10, scale = 2)
+    private BigDecimal subTotal;
+
+    @Column(name = "unit_price", precision = 38, scale = 2)
+    private BigDecimal unitPrice;
+
+    @ManyToOne
+    @JoinColumn(name = "id_article", nullable = false)
+    private Article article;
+
+    @Column(nullable = false)
+    private Integer quantity;
+
+    // Getters y Setters
 
     public Long getIdPurchase() {
         return idPurchase;
@@ -46,14 +67,6 @@ public class Purchase {
 
     public void setIdPurchase(Long idPurchase) {
         this.idPurchase = idPurchase;
-    }
-
-    public Integer getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(Integer quantity) {
-        this.quantity = quantity;
     }
 
     public LocalDate getDate() {
@@ -64,6 +77,14 @@ public class Purchase {
         this.date = date;
     }
 
+    public BigDecimal getTax() {
+        return tax;
+    }
+
+    public void setTax(BigDecimal tax) {
+        this.tax = tax;
+    }
+
     public BigDecimal getTotal() {
         return total;
     }
@@ -72,28 +93,12 @@ public class Purchase {
         this.total = total;
     }
 
-    public BigDecimal getUnitPrice() {
-        return unitPrice;
-    }
-
-    public void setUnitPrice(BigDecimal unitPrice) {
-        this.unitPrice = unitPrice;
-    }
-
     public String getStatus() {
         return status;
     }
 
     public void setStatus(String status) {
         this.status = status;
-    }
-
-    public Article getArticle() {
-        return article;
-    }
-
-    public void setArticle(Article article) {
-        this.article = article;
     }
 
     public Supplier getSupplier() {
@@ -127,4 +132,38 @@ public class Purchase {
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
+
+    public BigDecimal getSubTotal() {
+        return subTotal;
+    }
+
+    public void setSubTotal(BigDecimal subTotal) {
+        this.subTotal = subTotal;
+    }
+
+    public BigDecimal getUnitPrice() {
+        return unitPrice;
+    }
+
+    public void setUnitPrice(BigDecimal unitPrice) {
+        this.unitPrice = unitPrice;
+    }
+
+    public Article getArticle() {
+        return article;
+    }
+
+    public void setArticle(Article article) {
+        this.article = article;
+    }
+
+    public Integer getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
+    }
+
+    
 }

@@ -75,7 +75,7 @@
                             <li><a th:href="@{/employees/form}" class="nav-link">Nuevo Cliente</a></li>
                         </ul>
                     </li>
-                    
+
                     <!-- Compras (con submenú) -->
                     <li class="nav-item has-submenu">
                         <a class="nav-link">
@@ -236,18 +236,48 @@
                             </div>
 
                             <div class="form-input-group">
+                                <label for="tax" class="form-label">
+                                    <i class="fas fa-percentage"></i>
+                                    Impuesto
+                                </label>
+                                <input type="number" id="tax" th:field="*{tax}" class="form-input" step="0.01" min="0"
+                                    placeholder="0.00" required>
+                                <span class="form-field-hint">Impuesto aplicado a la compra (%)</span>
+                            </div>
+
+                            <div class="form-input-group">
+                                <label for="subTotal" class="form-label">
+                                    <i class="fas fa-calculator"></i>
+                                    Subtotal
+                                </label>
+                                <input type="number" id="subTotal" th:field="*{subTotal}" class="form-input" step="0.01"
+                                    min="0" placeholder="0.00" readonly>
+                                <span class="form-field-hint">Subtotal antes de impuestos</span>
+                            </div>
+
+                            <div class="form-input-group">
+                                <label for="unitPrice" class="form-label">
+                                    <i class="fas fa-tag"></i>
+                                    Precio Unitario
+                                </label>
+                                <input type="number" id="unitPrice" th:field="*{unitPrice}" class="form-input"
+                                    step="0.01" min="0" placeholder="0.00" required>
+                                <span class="form-field-hint">Precio por unidad del artículo</span>
+                            </div>
+
+                            <div class="form-input-group">
                                 <label for="total" class="form-label">
                                     <i class="fas fa-dollar-sign"></i>
                                     Total de la Compra
                                 </label>
                                 <input type="number" id="total" th:field="*{total}" class="form-input"
-                                    placeholder="0.00" required>
+                                    placeholder="0.00" readonly>
                                 <span class="form-field-hint">Monto total de la compra</span>
                             </div>
 
                             <div class="form-input-group">
                                 <label for="quantity" class="form-label">
-                                    <i class="fas fa-dollar-sign"></i>
+                                    <i class="fas fa-sort-numeric-up-alt"></i>
                                     Cantidad de la Compra
                                 </label>
                                 <input type="number" id="quantity" th:field="*{quantity}" class="form-input" step="1"
@@ -256,8 +286,8 @@
                             </div>
 
                             <div class="form-input-group">
-                                <label for="id_client" class="form-label">
-                                    <i class="fas fa-user"></i>
+                                <label for="status" class="form-label">
+                                    <i class="fas fa-info-circle"></i>
                                     Estado
                                 </label>
                                 <select id="status" th:field="*{status}" class="form-select" required>
