@@ -1,54 +1,84 @@
-document.addEventListener('DOMContentLoaded', function() {
-    // Función para manejar el botón de actualizar/guardar
-    const btnUpdate = document.getElementById('btnUpdate');
-    
-    if (btnUpdate) {
-        btnUpdate.addEventListener('click', function(e) {
+document.addEventListener('DOMContentLoaded', function () {
+
+    // --- CONFIRMACIÓN EN EL SUBMIT DEL FORM ---
+    const form = document.querySelector('form.form-content');
+    if (form) {
+        form.addEventListener('submit', function (e) {
+            if (form.dataset.confirmed === 'true') return; // evitar doble envío
+
+            // Validación HTML5
+            if (!form.checkValidity()) {
+                e.preventDefault();
+                form.reportValidity();
+                return;
+            }
+
+            // --- Evitar cadena vacía en RUT ---
+            const rutInput = document.getElementById('rut');
+            if (rutInput && rutInput.value.trim() === '') {
+                rutInput.value = ''; // Para HTML5
+                rutInput.removeAttribute('name'); // Evita enviarlo si está vacío
+            }
+
             e.preventDefault();
-            
-            const btnText = this.querySelector('span')?.textContent.trim() || '';
-            const isUpdate = btnText === 'Actualizar';
+
+            const idVal = document.getElementById('idClient')?.value?.trim();
+            const isUpdate = !!(idVal && idVal.length > 0);
 
             Swal.fire({
-                title: isUpdate ? '¿Estás seguro?' : '¿Guardar cambios?',
-                text: isUpdate ? "Se actualizará la información" : "Se guardará la información",
-                icon: isUpdate ? 'warning' : 'question',
+                title: isUpdate ? '¿Actualizar cliente?' : '¿Guardar nuevo cliente?',
+                text: isUpdate
+                    ? 'Se actualizará la información del cliente.'
+                    : 'Se guardará la información del cliente.',
+                icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: isUpdate ? '#3085d6' : '#28a745',
                 cancelButtonColor: '#d33',
                 confirmButtonText: isUpdate ? 'Sí, actualizar' : 'Sí, guardar',
-                cancelButtonText: 'Cancelar'
+                cancelButtonText: 'Cancelar',
+                allowOutsideClick: false
             }).then((result) => {
                 if (result.isConfirmed) {
-                    this.closest('form').submit();
+                    form.dataset.confirmed = 'true';
+                    form.submit();
                 }
             });
         });
     }
 
-    // Función para manejar los botones de eliminar
-    const deleteButtons = document.querySelectorAll('.btn-delete');
-    
-    deleteButtons.forEach(button => {
-        button.addEventListener('click', function(e) {
+    // --- CONFIRMACIÓN PARA ELIMINAR ---
+    document.querySelectorAll('.btn-delete').forEach(btn => {
+        btn.addEventListener('click', function (e) {
             e.preventDefault();
-            
+            const url = this.getAttribute('href');
             Swal.fire({
-                title: '¿Estás seguro?',
-                text: "Esta acción no se puede deshacer",
+                title: '¿Eliminar registro?',
+                text: 'Esta acción no se puede deshacer.',
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#d33',
                 cancelButtonColor: '#3085d6',
                 confirmButtonText: 'Sí, eliminar',
                 cancelButtonText: 'Cancelar',
-                reverseButtons: true
+                allowOutsideClick: false
             }).then((result) => {
                 if (result.isConfirmed) {
-                    this.closest('form').submit();
+                    window.location.href = url;
                 }
             });
         });
     });
-    
+
+    // --- FUNCIÓN PARA MOSTRAR ERRORES DESDE EL BACKEND ---
+    window.showDeleteError = function (message, title = 'Error al eliminar') {
+        Swal.fire({
+            title: title,
+            text: message,
+            icon: 'error',
+            confirmButtonColor: '#d33',
+            confirmButtonText: 'Entendido',
+            allowOutsideClick: false
+        });
+    };
+
 });

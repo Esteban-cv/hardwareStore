@@ -7,6 +7,7 @@
     <title>Ferretería Store - Dashboard</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
 </head>
 
 <body>
@@ -49,16 +50,16 @@
                         </ul>
                     </li>
 
-                    <!-- Devoluciones (con submenú) -->
+                    <!-- clientes (con submenú) -->
                     <li class="nav-item has-submenu">
                         <a class="nav-link">
-                            <i class="fas fa-undo-alt"></i>
-                            <span>Devoluciones</span>
+                            <i class="fas fa-user"></i>
+                            <span>Clientes</span>
                             <i class="fas fa-chevron-down dropdown-icon"></i>
                         </a>
                         <ul class="sub-menu">
-                            <li><a th:href="@{/productreturns}" class="nav-link">Consultar</a></li>
-                            <li><a th:href="@{/productreturns/form}" class="nav-link">Nueva Devolucion</a></li>
+                            <li><a th:href="@{/clients}" class="nav-link">Consultar</a></li>
+                            <li><a th:href="@{/clients/form}" class="nav-link">Nuevo Cliente</a></li>
                         </ul>
                     </li>
 
@@ -167,11 +168,12 @@
         </nav>
 
         <!-- Main Content -->
-        <main class="main-content">
+        <main class="main-content form-accent-returns">
             <div class="dashboard-header">
-                <h1>Dashboard</h1>
+                <h1>Dashboard Principal</h1>
             </div>
-
+            <p>Aqui puedes ver todas las estadisticas de tu ferreteria</p>
+            <br>
             <!-- Stats and Chart Section -->
             <div class="stats-grid">
                 <div class="chart-container">
@@ -182,89 +184,81 @@
                 <div class="active-clients">
                     <h3>Clientes activos</h3>
                     <div class="progress-ring">
-                        <svg>
-                            <defs>
-                                <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                                    <stop offset="0%" style="stop-color:#667eea" />
-                                    <stop offset="100%" style="stop-color:#764ba2" />
-                                </linearGradient>
-                            </defs>
+                        <svg width="120" height="120">
                             <circle class="bg" cx="60" cy="60" r="45"></circle>
-                            <circle class="progress" cx="60" cy="60" r="45"></circle>
+                            <circle class="progress" id="ringProgress" cx="60" cy="60" r="45"></circle>
                         </svg>
                     </div>
-                    <div class="client-number">289</div>
+                    <div class="client-number" th:text="${activeClients}">0</div>
+                    <small>
+                        <span th:text="${activeClientsPercent}">0</span>% de <span th:text="${totalClients}">0</span>
+                    </small>
                 </div>
             </div>
 
-            <!-- Stats Cards -->
-            <div class="stats-cards">
+            <div class="stats-container">
                 <div class="stat-card">
                     <i class="fas fa-users"></i>
-                    <div class="stat-number">5203</div>
+                    <div class="stat-number" th:text="${totalClients}">0</div>
                     <div class="stat-label">Total clientes</div>
                 </div>
 
                 <div class="stat-card">
                     <i class="fas fa-box"></i>
-                    <div class="stat-number">7909</div>
+                    <div class="stat-number" th:text="${totalArticles}">0</div>
                     <div class="stat-label">Total artículos</div>
                 </div>
 
                 <div class="stat-card">
                     <i class="fas fa-arrow-up"></i>
-                    <div class="stat-number">3209</div>
+                    <div class="stat-number" th:text="${totalIssues}">0</div>
                     <div class="stat-label">Total salidas</div>
                 </div>
 
                 <div class="stat-card">
                     <i class="fas fa-arrow-down"></i>
-                    <div class="stat-number">4921</div>
+                    <div class="stat-number" th:text="${totalEntries}">0</div>
                     <div class="stat-label">Total entradas</div>
                 </div>
             </div>
 
             <!-- Clients Table -->
             <div class="clients-section">
-                <h3>Clientes</h3>
-                <p class="clients-subtitle">Estos clientes han comprado en los últimos 6 meses.</p>
+                <h3 th:text="${clientsTitle} ?: 'Clientes'">Clientes</h3>
+                <p class="clients-subtitle">Clientes ordenados por total de compras realizadas.</p>
 
                 <table class="clients-table">
                     <thead>
                         <tr>
-                            <th>Compañía</th>
-                            <th>Estado</th>
-                            <th>Acerca</th>
-                            <th>Porcentaje ventas</th>
-                            <th></th>
+                            <th>Cliente</th>
+                            <th>Documento</th>
+                            <th>Teléfono</th>
+                            <th>Email</th>
+                            <th>Total Gastado</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
+                        <tr th:each="client, iterStat : ${recentClients}">
+                            <!-- Nombre -->
                             <td>
-                                <div class="client-info">
-                                    <div class="client-avatar">C</div>
-                                    <div class="client-details">
-                                        <h4>Catalog</h4>
-                                        <p>catalogapp.io</p>
-                                    </div>
+                                <div style="display: flex; align-items: center;">
+                                    <span th:text="${iterStat.count}"
+                                        style="background: #f0f0f0; border-radius: 50%; width: 25px; height: 25px; display: inline-flex; align-items: center; justify-content: center; margin-right: 10px; font-size: 12px; font-weight: bold;"></span>
+                                    <span th:text="${client[2]}"></span>
                                 </div>
                             </td>
+                            <!-- Documento -->
+                            <td th:text="${client[1]}"></td>
+                            <!-- Teléfono -->
+                            <td th:text="${client[3]}"></td>
+                            <!-- Email -->
+                            <td th:text="${client[4]}"></td>
+                            <!-- Total gastado con formato mejorado -->
                             <td>
-                                <span class="status-badge">Cliente</span>
-                            </td>
-                            <td>
-                                <div>Content curating app</div>
-                                <small>Brings all your news into one place</small>
-                            </td>
-                            <td>
-                                <div class="progress-bar">
-                                    <div class="progress-fill"></div>
-                                </div>
-                                <small>70%</small>
-                            </td>
-                            <td>
-                                <button class="more-btn"><i class="fas fa-ellipsis-v"></i></button>
+                                <span th:if="${client[9]} > 0"
+                                    th:text="'$' + ${#numbers.formatDecimal(client[9], 1, 'COMMA', 2, 'POINT')}"
+                                    style="color: #10b981; font-weight: 600;"></span>
+                                <span th:if="${client[9]} == 0" style="color: #6b7280;">Sin compras</span>
                             </td>
                         </tr>
                     </tbody>
@@ -282,50 +276,50 @@
             <span>Hecho con <i class="fas fa-heart"></i> por Aprendices SENA</span>
         </div>
     </footer>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
 
     <script th:inline="javascript">
-        // Chart.js configuration
+        /*<![CDATA[*/
         const ctx = document.getElementById('clientChart').getContext('2d');
-        const chartData = /*[[${chartData}]]*/[
-            110, 125, 140, 120, 135, 150, 145, 160, 155, 170, 165, 180
-        ];
+
+        const labels = /*[[${clientChartLabels}]]*/["2025-01"];
+        const chartData = /*[[${clientChartData}]]*/[0];
 
         new Chart(ctx, {
             type: 'line',
             data: {
-                labels: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11'],
+                labels: labels, // e.g., ["2024-09", ... "2025-08"]
                 datasets: [{
                     data: chartData,
                     borderColor: '#10b981',
                     backgroundColor: 'rgba(16, 185, 129, 0.1)',
                     borderWidth: 2,
                     fill: true,
-                    tension: 0.4
+                    tension: 0.35,
+                    pointRadius: 3
                 }]
             },
             options: {
                 responsive: true,
-                plugins: {
-                    legend: {
-                        display: false
-                    }
-                },
+                plugins: { legend: { display: false } },
                 scales: {
-                    y: {
-                        beginAtZero: true,
-                        max: 220,
-                        ticks: {
-                            stepSize: 55
-                        }
-                    },
-                    x: {
-                        grid: {
-                            display: true
-                        }
-                    }
+                    y: { beginAtZero: true },
+                    x: { grid: { display: true } }
                 }
             }
         });
+
+        // Progress ring (clientes activos %)
+        (function updateRing() {
+            const circle = document.getElementById('ringProgress');
+            if (!circle) return;
+            const r = 45;
+            const circ = 2 * Math.PI * r;
+            circle.style.strokeDasharray = circ;
+            const percent = /*[[${activeClientsPercent}]]*/ 0;
+            circle.style.strokeDashoffset = String(circ - (percent / 100) * circ);
+        })();
+        /*]]>*/
     </script>
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

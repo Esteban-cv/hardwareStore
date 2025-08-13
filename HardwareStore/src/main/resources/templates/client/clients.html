@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ferretería Store - Proveedores</title>
+    <title>Ferretería Store - Dashboard</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <!-- DataTable -->
@@ -40,7 +40,7 @@
                         </a>
                     </li>
 
-                    <!-- Ventas -->
+                    <!-- Ventas (con submenú) -->
                     <li class="nav-item has-submenu">
                         <a class="nav-link">
                             <i class="fas fa-shopping-cart"></i>
@@ -66,7 +66,7 @@
                         </ul>
                     </li>
 
-                    <!-- Compras -->
+                    <!-- Compras (con submenú) -->
                     <li class="nav-item has-submenu">
                         <a class="nav-link">
                             <i class="fas fa-truck"></i>
@@ -141,10 +141,9 @@
                         <ul class="sub-menu">
                             <li><a th:href="@{/suppliers}" class="nav-link">Consultar</a></li>
                             <li><a th:href="@{/suppliers/form}" class="nav-link">Nuevo Proveedor</a></li>
+
                         </ul>
                     </li>
-
-
 
                     <!-- Ubicaciones -->
                     <li class="nav-item has-submenu">
@@ -171,53 +170,57 @@
             </div>
         </nav>
 
+
         <!-- Main Content -->
         <main class="main-content">
             <div class="dashboard-header">
-                <h1>Gestión de Proveedores</h1>
+                <h1>Gestión de Clientes</h1>
             </div>
-            <h4>Gestiona fácilmente los proveedores registrados: consulta, edita o elimina según sea necesario.</h4>
+            <h4>Gestiona fácilmente los clientes registrados: consulta, edita o elimina según sea necesario.</h4>
             <br>
             <div class="action-buttons" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px;">
-                <a th:href="@{/suppliers/form}" class="btn-add" style="display: flex; align-items: center; gap: 5px;">
-                    <i class="fas fa-plus-circle"></i> Nuevo Proveedor
+                <a th:href="@{/clients/form}" class="btn-add" style="display: flex; align-items: center; gap: 5px;">
+                    <i class="fas fa-plus-circle"></i> Nuevo Cliente
                 </a>
-                <a th:href="@{/suppliers/supplierreport}" class="btn-pdf"
+                <a th:href="@{/clients/clientreport}" class="btn-pdf"
                     style="display: flex; align-items: center; gap: 5px;">
                     <i class="fas fa-file-export"></i>PDF
                 </a>
-                <a th:href="@{/suppliers/supplierreport/excel}" class="btn-excel"
+                <a th:href="@{/clients/clientreport/excel}" class="btn-excel"
                     style="display: flex; align-items: center; gap: 5px;">
                     <i class="fas fa-file-export"></i>EXCEL
                 </a>
             </div>
-
             <div th:if="${success}" th:text="${success}" class="alert alert-success mt-2" id="alert-success">
             </div>
 
-            <!-- Suppliers Table -->
+            <!-- Clients Table -->
             <div class="section-for-all">
                 <table id="myTable">
                     <thead>
                         <tr>
                             <th>ID</th>
-                            <th>NOMBRE</th>
                             <th>DOCUMENTO</th>
+                            <th>NOMBRE</th>
                             <th>TELÉFONO</th>
+                            <th>EMAIL</th>
+                            <th>RUT</th>
                             <th>ACCIONES</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr th:each="supplier : ${suppliers}">
-                            <td th:text="${supplier.idSupplier}"></td>
-                            <td th:text="${supplier.name}"></td>
-                            <td th:text="${supplier.document}"></td>
-                            <td th:text="${supplier.phone}"></td>
+                        <tr th:each="client : ${clients}">
+                            <td th:text="${client.idClient}"></td>
+                            <td th:text="${client.document}"></td>
+                            <td th:text="${client.name}"></td>
+                            <td th:text="${client.phone}"></td>
+                            <td th:text="${client.email}"></td>
+                            <td th:text="${client.rut != null ? client.rut : 'N/A'}"></td>
                             <td>
-                                <a th:href="@{'/suppliers/edit/' + ${supplier.idSupplier}}" class="btn-edit">
+                                <a th:href="@{'/clients/edit/' + ${client.idClient}}" class="btn-edit">
                                     <i class="fas fa-pencil-alt"></i>
                                 </a>
-                                <form th:action="@{'/suppliers/delete/' + ${supplier.idSupplier}}" method="post"
+                                <form th:action="@{'/clients/delete/' + ${client.idClient}}" method="post"
                                     style="display:inline;">
                                     <button type="submit" class="btn btn-delete btn-danger">
                                         <i class="fas fa-trash-alt"></i>
@@ -240,23 +243,11 @@
             <span>Hecho con <i class="fas fa-heart"></i> por Aprendices SENA</span>
         </div>
     </footer>
-
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script th:src="@{/js/swing-alert.js}"></script>
     <script th:src="@{/js/navigation.js}"></script>
     <script th:src="@{/js/alert-success.js}"></script>
-    <script th:inline="javascript">
-        const deleteError =  false;
-        const deleteErrorMessage =  null;
-
-        if (deleteError && deleteErrorMessage) {
-            window.addEventListener('DOMContentLoaded', function () {
-                showDeleteError(deleteErrorMessage);
-            });
-        }
-    </script>
-
 </body>
 
 </html>

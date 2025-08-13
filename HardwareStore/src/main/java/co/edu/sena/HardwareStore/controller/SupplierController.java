@@ -1,6 +1,7 @@
 package co.edu.sena.HardwareStore.controller;
 
 import co.edu.sena.HardwareStore.model.Supplier;
+import co.edu.sena.HardwareStore.repository.ArticleRepository;
 import co.edu.sena.HardwareStore.repository.SupplierRepository;
 import co.edu.sena.HardwareStore.services.ExcelReportService;
 import co.edu.sena.HardwareStore.services.PdfReportService;
@@ -18,9 +19,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Controller
-@RequestMapping("/suppliers") 
+@RequestMapping("/suppliers")
 public class SupplierController {
 
+    @Autowired
+    private ArticleRepository articleRepository;
     @Autowired
     private SupplierRepository supplierRepository;
     @Autowired
@@ -30,7 +33,7 @@ public class SupplierController {
 
     @GetMapping
     public String listSuppliers(Model model) {
-        List<Supplier> suppliers = supplierRepository.findAll(Sort.by("idSupplier").ascending());
+        List<Supplier> suppliers = supplierRepository.findAll(Sort.by("idSupplier").descending());
         model.addAttribute("suppliers", suppliers);
         return "suppliers/supplier";
     }
@@ -75,11 +78,35 @@ public class SupplierController {
     @PostMapping("/delete/{id}")
     public String delete(@PathVariable("id") Long idSupplier, RedirectAttributes ra) {
         try {
+            // Obtener información del proveedor
+            Supplier supplier = supplierRepository.findById(idSupplier)
+                    .orElseThrow(() -> new RuntimeException("Proveedor no encontrado"));
+
+            // Contar artículos asociados (más eficiente)
+            long articleCount = articleRepository.countBySupplierIdSupplier(idSupplier);
+
+            if (articleCount > 0) {
+                ra.addFlashAttribute("deleteError", true);
+                ra.addFlashAttribute("deleteErrorMessage",
+                        String.format(
+                                "No se puede eliminar el proveedor \"%s\" porque tiene %d artículo(s) activo(s). " +
+                                        "Elimine primero los artículos o asígnelos a otro proveedor.",
+                                supplier.getName(), articleCount));
+                return "redirect:/suppliers";
+            }
+
+            // Eliminar si no tiene artículos asociados
+            String supplierName = supplier.getName();
             supplierRepository.deleteById(idSupplier);
-            ra.addFlashAttribute("success", "Proveedor eliminado exitosamente");
+
+            ra.addFlashAttribute("success", "Proveedor \"" + supplierName + "\" eliminado exitosamente");
+            ra.addFlashAttribute("successType", "DELETE_SUCCESS");
+
         } catch (Exception e) {
-            ra.addFlashAttribute("error", "Error al eliminar el proveedor");
+            ra.addFlashAttribute("error", "Error inesperado al eliminar el proveedor: " + e.getMessage());
+            ra.addFlashAttribute("errorType", "DELETE_ERROR");
         }
+
         return "redirect:/suppliers";
     }
 
