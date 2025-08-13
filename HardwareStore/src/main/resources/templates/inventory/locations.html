@@ -192,6 +192,9 @@
                 </a>
             </div>
 
+            <div th:if="${success}" th:text="${success}" class="alert alert-success mt-2" id="alert-success">
+            </div>
+            
             <!-- Clients Table -->
             <div class="section-for-all">
                 <table id="myTable">
@@ -209,10 +212,10 @@
                             <td th:text="${location.name}"></td>
                             <td th:text="${location.code}"></td>
                             <td>
-                                <a th:href="@{'/location/edit/' + ${location.idLocation}}" class="btn-edit">
+                                <a th:href="@{/locations/edit/{id}(id=${location.idLocation})}" class="btn-edit">
                                     <i class="fas fa-pencil-alt"></i>
                                 </a>
-                                <form th:action="@{'/location/delete/' + ${location.idLocation}}" method="post"
+                                <form th:action="@{/locations/delete/{id}(id=${location.idLocation})}" method="post"
                                     style="display:inline;">
                                     <button type="submit" class="btn btn-delete btn-danger">
                                         <i class="fas fa-trash-alt"></i>
@@ -239,6 +242,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script th:src="@{/js/swing-alert.js}"></script>
     <script th:src="@{/js/navigation.js}"></script>
+    <script th:src="@{/js/alert-success.js}"></script>
 </body>
 
 </html>

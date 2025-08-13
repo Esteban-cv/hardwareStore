@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Controller
-@RequestMapping("/suppliers") // Cambié de /supplier a /suppliers para consistencia
+@RequestMapping("/suppliers") 
 public class SupplierController {
 
     @Autowired

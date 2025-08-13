@@ -138,7 +138,6 @@
             <ul class="sub-menu">
               <li><a th:href="@{/suppliers}" class="nav-link">Consultar</a></li>
               <li><a th:href="@{/suppliers/form}" class="nav-link">Nuevo Proveedor</a></li>
-
             </ul>
           </li>
 
@@ -152,7 +151,6 @@
             <ul class="sub-menu">
               <li><a th:href="@{/locations}" class="nav-link">Consultar</a></li>
               <li><a th:href="@{/locations/form}" class="nav-link">Nueva Ubicación</a></li>
-
             </ul>
           </li>
         </ul>
@@ -168,13 +166,15 @@
     </nav>
 
     <main class="main-content">
+
       <div class="form-header">
         <div class="form-title-section">
           <h1 class="form-title">
-            <i class="fas fa-shopping-cart"></i>
-            Nueva Ubicación
+            <i class="fas fa-users"></i>
+            <span th:text="${location.idLocation != null} ? 'Editar Ubicación' : 'Nueva Ubicación'"></span>
           </h1>
-          <p class="form-subtitle">Registra una nueva ubicación</p>
+          <p class="form-subtitle" th:text="${location.idLocation != null} ? 
+            'Actualiza los datos de la Ubicación' : 'Registra una nueva Ubicación'"></p>
         </div>
         <div class="form-header-actions">
           <a th:href="@{/locations}" class="btn-pdf">
@@ -185,7 +185,10 @@
       </div>
 
       <div class="form-container">
-        <form class="form-content" th:action="@{/locations/save}" method="post">
+        <form class="form-content" th:action="@{/locations/save}" th:object="${location}" method="post">
+
+          <!-- CORRECCIÓN: campo oculto para el idLocation -->
+          <input type="hidden" th:field="*{idLocation}" />
 
           <!-- Información General -->
           <div class="form-section">
@@ -208,12 +211,12 @@
               </div>
 
               <div class="form-input-group">
-                <label for="clientName" class="form-label">
+                <label for="code" class="form-label">
                   <i class="fas fa-user"></i>
                   Código
                 </label>
-                <input type="text" id="clientName" name="clientName" class="form-input" title="Solo letras y espacios"
-                  placeholder="Ej: ALM-001" required>
+
+                <input type="text" id="code" th:field="*{code}" class="form-input" placeholder="Ej: ALM-001" required>
                 <span class="form-field-hint">Escriba el código de la ubicación</span>
               </div>
             </div>
@@ -221,15 +224,15 @@
 
           <!-- Botones de Acción -->
           <div class="form-actions-container">
-            <button type="submit" class="btn-add">
+            <button type="submit" class="btn-add" id="btnUpdate">
               <i class="fas fa-save"></i>
-              Guardar Ubicación
+              <span th:text="${location.idLocation != null} ? 'Actualizar' : 'Guardar'"></span>
             </button>
             <button type="reset" class="btn-excel">
               <i class="fas fa-eraser"></i>
-              Limpiar Formulario
+              Limpiar
             </button>
-            <a th:href="@{/sales}" class="btn-pdf">
+            <a th:href="@{/locations}" class="btn-pdf">
               <i class="fas fa-times"></i>
               Cancelar
             </a>
@@ -237,7 +240,6 @@
         </form>
       </div>
     </main>
-
   </div>
 
   <!-- Footer -->
@@ -249,6 +251,7 @@
       <span>Hecho con <i class="fas fa-heart"></i> por Aprendices SENA</span>
     </div>
   </footer>
+
   <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script th:src="@{/js/swing-alert.js}"></script>

@@ -218,7 +218,7 @@
                             <td th:text="${#numbers.formatDecimal(article.price, 1, 2, 'COMMA')}"></td>
                             <td th:text="${article.unit.name}"></td>
                             <td>
-                                <a th:href="@{'/catalog/editArticle/' + ${article.idArticle}}" class="btn-edit">
+                                <a th:href="@{'/catalog/edit/' + ${article.idArticle}}" class="btn-edit">
                                     <i class="fas fa-pencil-alt"></i>
                                 </a>
                                 <form th:action="@{'/catalog/deleteArticle/' + ${article.idArticle}}" method="post"
@@ -249,6 +249,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script th:src="@{/js/swing-alert.js}"></script>
     <script th:src="@{/js/navigation.js}"></script>
+    <script th:src="@{/js/alert-success.js}"></script>
 </body>
 
 </html>
