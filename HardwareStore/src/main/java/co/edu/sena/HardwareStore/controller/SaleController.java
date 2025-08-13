@@ -88,7 +88,7 @@ public class SaleController {
                 sale.setDate(LocalDate.now());
             }
 
-            // Validar stock
+        
             for (int i = 0; i < articleIds.size(); i++) {
                 Integer articleId = articleIds.get(i);
                 Integer quantity = quantities.get(i);
