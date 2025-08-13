@@ -4,13 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ferretería Store - Proveedores</title>
+    <title>Ferretería Store - Dashboard</title>
+    <link rel="stylesheet" th:href="@{/css/form_stylesheet.css}">
     <link rel="stylesheet" th:href="@{/css/style.css}">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <!-- DataTable -->
-    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.datatables.net/2.3.2/css/dataTables.dataTables.css" />
-    <script src="https://cdn.datatables.net/2.3.2/js/dataTables.js"></script>
 </head>
 
 <body>
@@ -40,7 +37,7 @@
                         </a>
                     </li>
 
-                    <!-- Ventas -->
+                    <!-- Ventas (con submenú) -->
                     <li class="nav-item has-submenu">
                         <a class="nav-link">
                             <i class="fas fa-shopping-cart"></i>
@@ -66,7 +63,7 @@
                         </ul>
                     </li>
 
-                    <!-- Compras -->
+                    <!-- Compras (con submenú) -->
                     <li class="nav-item has-submenu">
                         <a class="nav-link">
                             <i class="fas fa-truck"></i>
@@ -141,10 +138,9 @@
                         <ul class="sub-menu">
                             <li><a th:href="@{/suppliers}" class="nav-link">Consultar</a></li>
                             <li><a th:href="@{/suppliers/form}" class="nav-link">Nuevo Proveedor</a></li>
+
                         </ul>
                     </li>
-
-
 
                     <!-- Ubicaciones -->
                     <li class="nav-item has-submenu">
@@ -171,62 +167,121 @@
             </div>
         </nav>
 
-        <!-- Main Content -->
         <main class="main-content">
-            <div class="dashboard-header">
-                <h1>Gestión de Proveedores</h1>
-            </div>
-            <h4>Gestiona fácilmente los proveedores registrados: consulta, edita o elimina según sea necesario.</h4>
-            <br>
-            <div class="action-buttons" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px;">
-                <a th:href="@{/suppliers/form}" class="btn-add" style="display: flex; align-items: center; gap: 5px;">
-                    <i class="fas fa-plus-circle"></i> Nuevo Proveedor
-                </a>
-                <a th:href="@{/suppliers/supplierreport}" class="btn-pdf"
-                    style="display: flex; align-items: center; gap: 5px;">
-                    <i class="fas fa-file-export"></i>PDF
-                </a>
-                <a th:href="@{/suppliers/supplierreport/excel}" class="btn-excel"
-                    style="display: flex; align-items: center; gap: 5px;">
-                    <i class="fas fa-file-export"></i>EXCEL
-                </a>
+            <div class="form-header">
+                <div class="form-title-section">
+                    <h1 class="form-title">
+                        <i class="fas fa-user"></i>
+                        <span th:text="${client.idClient != null} ? 'Editar Cliente' : 'Nuevo Cliente'"></span>
+                    </h1>
+                    <p class="form-subtitle" th:text="${client.idClient != null} ? 
+            'Actualiza los datos del Cliente' : 'Registra un nuevo Cliente'"></p>
+                </div>
+                <div class="form-header-actions">
+                    <a th:href="@{/clients}" class="btn-pdf">
+                        <i class="fas fa-arrow-left"></i>
+                        Volver al listado
+                    </a>
+                </div>
             </div>
 
-            <div th:if="${success}" th:text="${success}" class="alert alert-success mt-2" id="alert-success">
+            <!-- Mostrar errores si existen -->
+            <div th:if="${error}" th:text="${error}" class="alert alert-danger mt-2">
             </div>
 
-            <!-- Suppliers Table -->
-            <div class="section-for-all">
-                <table id="myTable">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>NOMBRE</th>
-                            <th>DOCUMENTO</th>
-                            <th>TELÉFONO</th>
-                            <th>ACCIONES</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr th:each="supplier : ${suppliers}">
-                            <td th:text="${supplier.idSupplier}"></td>
-                            <td th:text="${supplier.name}"></td>
-                            <td th:text="${supplier.document}"></td>
-                            <td th:text="${supplier.phone}"></td>
-                            <td>
-                                <a th:href="@{'/suppliers/edit/' + ${supplier.idSupplier}}" class="btn-edit">
-                                    <i class="fas fa-pencil-alt"></i>
-                                </a>
-                                <form th:action="@{'/suppliers/delete/' + ${supplier.idSupplier}}" method="post"
-                                    style="display:inline;">
-                                    <button type="submit" class="btn btn-delete btn-danger">
-                                        <i class="fas fa-trash-alt"></i>
-                                    </button>
-                                </form>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+            <div class="form-container">
+                <form class="form-content" th:action="@{/clients/save}" method="post" th:object="${client}">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+
+                    <!-- Campo hidden para el ID -->
+                    <input type="hidden" th:field="*{idClient}">
+                    <!-- Información General -->
+                    <div class="form-section">
+                        <div class="form-section-header">
+                            <h2 class="form-section-title">
+                                <i class="fas fa-info-circle"></i>
+                                Información General
+                            </h2>
+                        </div>
+
+                        <div class="form-grid">
+                            <div class="form-input-group">
+                                <label for="document" class="form-label">
+                                    <i class="fas fa-id-card"></i>
+                                    Documento *
+                                </label>
+                                <input type="text" id="document" th:field="*{document}" class="form-input" required
+                                    placeholder="Ingrese el número de documento">
+                                <span class="form-field-hint">Número de documento de identidad</span>
+                            </div>
+
+                            <div class="form-input-group">
+                                <label for="name" class="form-label">
+                                    <i class="fas fa-user"></i>
+                                    Nombre Completo *
+                                </label>
+                                <input type="text" id="name" th:field="*{name}" class="form-input" required
+                                    placeholder="Ingrese el nombre completo">
+                                <span class="form-field-hint">Nombre completo del cliente</span>
+                            </div>
+
+                            <div class="form-input-group">
+                                <label for="phone" class="form-label">
+                                    <i class="fas fa-phone"></i>
+                                    Teléfono *
+                                </label>
+                                <input type="tel" id="phone" th:field="*{phone}" class="form-input" required
+                                    placeholder="Ingrese el número de teléfono">
+                                <span class="form-field-hint">Número de contacto</span>
+                            </div>
+
+                            <div class="form-input-group">
+                                <label for="email" class="form-label">
+                                    <i class="fas fa-envelope"></i>
+                                    Email *
+                                </label>
+                                <input type="email" id="email" th:field="*{email}" class="form-input" required
+                                    placeholder="ejemplo@correo.com">
+                                <span class="form-field-hint">Correo electrónico</span>
+                            </div>
+
+                            <div class="form-input-group">
+                                <label for="rut" class="form-label">
+                                    <i class="fas fa-building"></i>
+                                    RUT
+                                </label>
+                                <input type="text" id="rut" th:field="*{rut}" class="form-input"
+                                    placeholder="Registro Único Tributario (opcional)">
+                                <span class="form-field-hint">Registro Único Tributario (opcional)</span>
+                            </div>
+                            <div class="form-input-group">
+                                <label for="address" class="form-label">
+                                    <i class="fas fa-building"></i>
+                                    Dirección
+                                </label>
+                                <input type="text" id="address" th:field="*{address}" class="form-input"
+                                    placeholder="Dirección personal">
+                                <span class="form-field-hint">Dirección personal</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-actions-container">
+                        <button type="submit" class="btn-add" id="btnUpdate">
+                            <i class="fas fa-save"></i>
+                            <span
+                                th:text="${client.idClient != null} ? 'Actualizar Cliente' : 'Guardar Cliente'"></span>
+                        </button>
+                        <button type="reset" class="btn-excel">
+                            <i class="fas fa-eraser"></i>
+                            Limpiar
+                        </button>
+                        <a th:href="@{/clients}" class="btn-pdf">
+                            <i class="fas fa-times"></i>
+                            Cancelar
+                        </a>
+                    </div>
+                </form>
             </div>
         </main>
     </div>
@@ -240,23 +295,10 @@
             <span>Hecho con <i class="fas fa-heart"></i> por Aprendices SENA</span>
         </div>
     </footer>
-
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script th:src="@{/js/swing-alert.js}"></script>
     <script th:src="@{/js/navigation.js}"></script>
-    <script th:src="@{/js/alert-success.js}"></script>
-    <script th:inline="javascript">
-        const deleteError =  false;
-        const deleteErrorMessage =  null;
-
-        if (deleteError && deleteErrorMessage) {
-            window.addEventListener('DOMContentLoaded', function () {
-                showDeleteError(deleteErrorMessage);
-            });
-        }
-    </script>
-
 </body>
 
 </html>

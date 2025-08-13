@@ -50,18 +50,18 @@
             </ul>
           </li>
 
-          <!-- Devoluciones (con submenú) -->
-          <li class="nav-item has-submenu">
-            <a class="nav-link">
-              <i class="fas fa-undo-alt"></i>
-              <span>Devoluciones</span>
-              <i class="fas fa-chevron-down dropdown-icon"></i>
-            </a>
-            <ul class="sub-menu">
-              <li><a th:href="@{/productreturns}" class="nav-link">Consultar</a></li>
-              <li><a th:href="@{/productreturns/form}" class="nav-link">Nueva Devolucion</a></li>
-            </ul>
-          </li>
+          <!-- clientes (con submenú) -->
+                    <li class="nav-item has-submenu">
+                        <a class="nav-link">
+                            <i class="fas fa-user"></i>
+                            <span>Clientes</span>
+                            <i class="fas fa-chevron-down dropdown-icon"></i>
+                        </a>
+                        <ul class="sub-menu">
+                            <li><a th:href="@{/clients}" class="nav-link">Consultar</a></li>
+                            <li><a th:href="@{/clients/form}" class="nav-link">Nuevo Cliente</a></li>
+                        </ul>
+                    </li>
 
           <!-- Compras (con submenú) -->
           <li class="nav-item has-submenu">
@@ -247,7 +247,7 @@
               <div class="form-input-group">
                 <label for="updatingDate" class="form-label">
                   <i class="fas fa-calendar-day"></i>
-                  Fecha de Actualización
+                  Fecha de Actualización (OPCIONAL)
                 </label>
                 <input type="date" id="updatingDate" th:field="*{updatingDate}" class="form-input">
                 <span class="form-field-hint">Fecha de última actualización</span>
