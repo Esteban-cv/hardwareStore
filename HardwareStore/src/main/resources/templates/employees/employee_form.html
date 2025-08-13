@@ -141,9 +141,6 @@
                         </ul>
                     </li>
 
-
-
-
                     <!-- Ubicaciones -->
                     <li class="nav-item has-submenu">
                         <a class="nav-link">
@@ -302,6 +299,20 @@
 
                                 </ul>
                             </li>
+
+                            <!-- Empleados -->
+                            <li class="nav-item has-submenu">
+                                <a class="nav-link">
+                                    <i class="fas fa-users"></i>
+                                    <span>Empleados</span>
+                                    <i class="fas fa-chevron-down dropdown-icon"></i>
+                                </a>
+                                <ul class="sub-menu">
+                                    <li><a th:href="@{/employees}" class="nav-link">Consultar</a></li>
+                                    <li><a th:href="@{/employees/form}" class="nav-link">Nuevo Empleado</a></li>
+
+                                </ul>
+                            </li>
                         </ul>
 
                         <!-- Logout -->
@@ -389,7 +400,7 @@
 
                             <div class="form-group">
                                 <label for="roleId" class="fw-bold text-secondary">
-                                    <i class="bi bi-shield-lock-fill"></i> 
+                                    <i class="bi bi-shield-lock-fill"></i>
                                     Rol
                                 </label>
                                 <select id="roleId" name="roleId" class="form-select rounded-pill border-primary"
