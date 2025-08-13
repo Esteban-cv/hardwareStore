@@ -1,6 +1,7 @@
 package co.edu.sena.HardwareStore.controller;
 
 import co.edu.sena.HardwareStore.model.Purchase;
+import co.edu.sena.HardwareStore.model.Supplier;
 import co.edu.sena.HardwareStore.repository.ArticleRepository;
 import co.edu.sena.HardwareStore.repository.EmployeeRepository;
 import co.edu.sena.HardwareStore.repository.PurchaseRepository;
@@ -62,35 +63,34 @@ public class PurchaseController {
 
     @PostMapping("/save")
     public String save(@ModelAttribute Purchase purchase, RedirectAttributes ra) {
-        purchaseRepository.save(purchase);
-        ra.addFlashAttribute("success", "Compra guardada exitosamente.");
+        try {
+            boolean esNuevo = (purchase.getIdPurchase() == null);
+
+            purchaseRepository.save(purchase);
+
+            if (esNuevo) {
+                ra.addFlashAttribute("success", "Compra creada exitosamente");
+            } else {
+                ra.addFlashAttribute("success", "Compra actualizada exitosamente");
+            }
+        } catch (Exception e) {
+            ra.addFlashAttribute("error", "Error al guardar la compra");
+        }
         return "redirect:/purchases";
     }
 
     @GetMapping("/edit/{id}")
     public String edit(@PathVariable("id") Long idPurchase, Model model, RedirectAttributes ra) {
         try {
-            
             Purchase purchase = purchaseRepository.findById(idPurchase)
-                    .orElseThrow(() -> new IllegalArgumentException("Compra no encontrada"));
-            if (purchase.getArticle() != null) {
-                purchase.setArticle(articleRepository.findById(purchase.getArticle().getIdArticle()).orElse(null));
-            }
-            if (purchase.getSupplier() != null) {
-                purchase.setSupplier(supplierRepository.findById(purchase.getSupplier().getIdSupplier()).orElse(null));
-            }
-            if (purchase.getEmployee() != null) {
-                purchase.setEmployee(employeeRepository.findById(purchase.getEmployee().getIdEmployee()).orElse(null));
-            }
-
+                    .orElseThrow(() -> new Exception("Compra no encontrada"));
             model.addAttribute("purchase", purchase);
             model.addAttribute("articles", articleRepository.findAll());
             model.addAttribute("suppliers", supplierRepository.findAll());
             model.addAttribute("employees", employeeRepository.findAll());
-
-            return "purchases/purchase_form"; // Quita la barra inicial para consistencia
+            return "purchases/purchase_form";
         } catch (Exception e) {
-            ra.addFlashAttribute("error", "Error al cargar la compra: " + e.getMessage());
+            ra.addFlashAttribute("error", "Compra no encontrada");
             return "redirect:/purchases";
         }
     }

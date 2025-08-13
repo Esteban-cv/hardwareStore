@@ -4,12 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ferretería Store - Dashboard</title>
+    <title>Ferretería Store - Empleados</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <!-- DataTable -->
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.datatables.net/2.3.2/css/dataTables.dataTables.css"/>
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.3.2/css/dataTables.dataTables.css" />
     <script src="https://cdn.datatables.net/2.3.2/js/dataTables.js"></script>
 </head>
 
@@ -104,7 +104,6 @@
                             <li><a th:href="@{/catalog/categories}" class="nav-link">Categorías</a></li>
                         </ul>
                     </li>
-
                     <!-- Entradas -->
                     <li class="nav-item has-submenu">
                         <a class="nav-link">
@@ -158,6 +157,21 @@
 
                         </ul>
                     </li>
+
+                    <!-- Empleados -->
+                    <li class="nav-item has-submenu">
+                        <a class="nav-link">
+                            <i class="fas fa-users"></i>
+                            <span>Empleados</span>
+                            <i class="fas fa-chevron-down dropdown-icon"></i>
+                        </a>
+                        <ul class="sub-menu">
+                            <li><a th:href="@{/employees}" class="nav-link">Consultar</a></li>
+                            <li><a th:href="@{/employees/form}" class="nav-link">Nuevo Empleado</a></li>
+
+                        </ul>
+                    </li>
+
                 </ul>
 
                 <!-- Logout -->
@@ -173,19 +187,19 @@
         <!-- Main Content -->
         <main class="main-content">
             <div class="dashboard-header">
-                <h1>Gestíon de Compras</h1>
+                <h1>Gestión de Empleados</h1>
             </div>
-            <h4>Gestiona fácilmente las compras registradas: consulta, edita o elimina según sea necesario.</h4>
+            <h4>Gestiona fácilmente los empleados registrados: consulta, edita o elimina según sea necesario.</h4>
             <br>
             <div class="action-buttons" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px;">
-                <a th:href="@{/purchases/form}" class="btn-add" style="display: flex; align-items: center; gap: 5px;">
-                    <i class="fas fa-plus-circle"></i> Nueva Compra
+                <a th:href="@{/employees/form}" class="btn-add" style="display: flex; align-items: center; gap: 5px;">
+                    <i class="fas fa-plus-circle"></i> Nuevo Empleado
                 </a>
-                <a th:href="@{/purchases/purchasereport}" class="btn-pdf"
+                <a th:href="@{/employees/employeereport}" class="btn-pdf"
                     style="display: flex; align-items: center; gap: 5px;">
                     <i class="fas fa-file-export"></i>PDF
                 </a>
-                <a th:href="@{/purchases/purchasereport/excel}" class="btn-excel"
+                <a th:href="@{/employees/employeereport/excel}" class="btn-excel"
                     style="display: flex; align-items: center; gap: 5px;">
                     <i class="fas fa-file-export"></i>EXCEL
                 </a>
@@ -193,31 +207,28 @@
 
             <div th:if="${success}" th:text="${success}" class="alert alert-success mt-2" id="alert-success">
             </div>
-            <!-- Clients Table -->
+
+            <!-- Employees Table -->
             <div class="section-for-all">
                 <table id="myTable">
                     <thead>
                         <tr>
                             <th>ID</th>
-                            <th>CANTIDAD</th>
-                            <th>TOTAL</th>
-                            <th>ESTADO</th>
-                            <th>NOMBRE ARTICULO</th>
+                            <th>NOMBRE</th>
+                            <th>USUARIO</th>
                             <th>ACCIONES</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr th:each="purchase : ${purchases}">
-                            <td th:text="${purchase.idPurchase}"></td>
-                            <td th:text="${purchase.quantity}"></td>
-                            <td th:text="${purchase.total}"></td>
-                            <td th:text="${purchase.status}"></td>
-                            <td th:text="${purchase.article.name}"></td>
+                        <tr th:each="employee : ${employees}">
+                            <td th:text="${employee.idEmployee}"></td>
+                            <td th:text="${employee.name}"></td>
+                            <td th:text="${employee.user}"></td>
                             <td>
-                                <a th:href="@{'/purchases/edit/' + ${purchase.idPurchase}}" class="btn-edit">
+                                <a th:href="@{'/employees/edit/' + ${employee.idEmployee}}" class="btn-edit">
                                     <i class="fas fa-pencil-alt"></i>
                                 </a>
-                                <form th:action="@{'/purchases/delete/' + ${purchase.idPurchase}}" method="post"
+                                <form th:action="@{'/employees/delete/' + ${employee.idEmployee}}" method="post"
                                     style="display:inline;">
                                     <button type="submit" class="btn btn-delete btn-danger">
                                         <i class="fas fa-trash-alt"></i>
@@ -240,6 +251,7 @@
             <span>Hecho con <i class="fas fa-heart"></i> por Aprendices SENA</span>
         </div>
     </footer>
+
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script th:src="@{/js/swing-alert.js}"></script>
