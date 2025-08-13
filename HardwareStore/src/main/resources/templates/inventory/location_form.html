@@ -51,17 +51,17 @@
           </li>
 
           <!-- clientes (con submenú) -->
-                    <li class="nav-item has-submenu">
-                        <a class="nav-link">
-                            <i class="fas fa-user"></i>
-                            <span>Clientes</span>
-                            <i class="fas fa-chevron-down dropdown-icon"></i>
-                        </a>
-                        <ul class="sub-menu">
-                            <li><a th:href="@{/clients}" class="nav-link">Consultar</a></li>
-                            <li><a th:href="@{/clients/form}" class="nav-link">Nuevo Cliente</a></li>
-                        </ul>
-                    </li>
+          <li class="nav-item has-submenu">
+            <a class="nav-link">
+              <i class="fas fa-user"></i>
+              <span>Clientes</span>
+              <i class="fas fa-chevron-down dropdown-icon"></i>
+            </a>
+            <ul class="sub-menu">
+              <li><a th:href="@{/clients}" class="nav-link">Consultar</a></li>
+              <li><a th:href="@{/clients/form}" class="nav-link">Nuevo Cliente</a></li>
+            </ul>
+          </li>
 
           <!-- Compras (con submenú) -->
           <li class="nav-item has-submenu">
@@ -151,6 +151,20 @@
             <ul class="sub-menu">
               <li><a th:href="@{/locations}" class="nav-link">Consultar</a></li>
               <li><a th:href="@{/locations/form}" class="nav-link">Nueva Ubicación</a></li>
+            </ul>
+          </li>
+
+          <!-- Empleados -->
+          <li class="nav-item has-submenu">
+            <a class="nav-link">
+              <i class="fas fa-users"></i>
+              <span>Empleados</span>
+              <i class="fas fa-chevron-down dropdown-icon"></i>
+            </a>
+            <ul class="sub-menu">
+              <li><a th:href="@{/employees}" class="nav-link">Consultar</a></li>
+              <li><a th:href="@{/employees/form}" class="nav-link">Nuevo Empleado</a></li>
+
             </ul>
           </li>
         </ul>

@@ -1,6 +1,5 @@
 package co.edu.sena.HardwareStore.controller;
 
-
 import co.edu.sena.HardwareStore.model.Entry;
 import co.edu.sena.HardwareStore.repository.ArticleRepository;
 import co.edu.sena.HardwareStore.repository.EntryRepository;
@@ -23,15 +22,22 @@ import java.util.stream.Collectors;
 @Controller
 @RequestMapping("/entries")
 public class EntryController {
+
     @Autowired
     private EntryRepository entryRepository;
+
     @Autowired
     private ArticleRepository articleRepository;
+
     @Autowired
     private PdfReportService pdfReportService;
+
     @Autowired
     private ExcelReportService excelReportService;
 
+    /**
+     * Lista todas las entradas ordenadas por fecha descendente
+     */
     @GetMapping
     public String listEntry(Model model) {
         List<Entry> entries = entryRepository.findAll(Sort.by("dateEntry").descending());
@@ -39,37 +45,41 @@ public class EntryController {
         return "inventory/entries";
     }
 
+    /**
+     * Muestra el formulario de creación/edición de entrada
+     */
     @GetMapping("/form")
-    public String form(Model model){
+    public String form(Model model) {
         model.addAttribute("entry", new Entry());
         model.addAttribute("articles", articleRepository.findAll());
         return "inventory/entry_form";
     }
 
+    /**
+     * Guarda una entrada nueva o actualizada
+     */
     @PostMapping("/save")
-    public String save(@ModelAttribute Entry entry, RedirectAttributes ra){
-
-         try {
+    public String save(@ModelAttribute Entry entry, RedirectAttributes ra) {
+        try {
             boolean esNuevo = (entry.getIdEntry() == null);
-
             entryRepository.save(entry);
 
-            if (esNuevo) {
-                ra.addFlashAttribute("success", "Entrada creada exitosamente");
-            } else {
-                ra.addFlashAttribute("success", "Entrada actualizada exitosamente");
-            }
-        } catch (Exception e) {
-            ra.addFlashAttribute("error", "Error al guardar la entrada");
-        }
+            ra.addFlashAttribute("success",
+                    esNuevo ? "Entrada creada exitosamente" : "Entrada actualizada exitosamente");
 
+        } catch (Exception e) {
+            ra.addFlashAttribute("error", "Error al guardar la entrada: " + e.getMessage());
+        }
         return "redirect:/entries";
     }
 
+    /**
+     * Carga una entrada existente para edición
+     */
     @GetMapping("/edit/{id}")
-    public String edit(@PathVariable("id") Integer idEntry, Model model, RedirectAttributes ra){
+    public String edit(@PathVariable("id") Integer idEntry, Model model, RedirectAttributes ra) {
         Entry entry = entryRepository.findById(idEntry).orElse(null);
-        if(entry == null){
+        if (entry == null) {
             ra.addFlashAttribute("error", "Entrada no encontrada");
             return "redirect:/entries";
         }
@@ -79,30 +89,37 @@ public class EntryController {
         return "inventory/entry_form";
     }
 
+    /**
+     * Elimina una entrada
+     */
     @PostMapping("/delete/{id}")
-    public String delete(@PathVariable("id") Integer idEntry, RedirectAttributes ra){
-        entryRepository.deleteById(idEntry);
-        ra.addFlashAttribute("success", "Entrada eliminada exitosamente");
+    public String delete(@PathVariable("id") Integer idEntry, RedirectAttributes ra) {
+        try {
+            entryRepository.deleteById(idEntry);
+            ra.addFlashAttribute("success", "Entrada eliminada exitosamente");
+        } catch (Exception e) {
+            ra.addFlashAttribute("error", "Error al eliminar la entrada: " + e.getMessage());
+        }
         return "redirect:/entries";
     }
 
+    /**
+     * Genera un reporte PDF de entradas
+     */
     @GetMapping("/entryreport")
-    public void generateentryReport(HttpServletResponse response) throws IOException {
+    public void generateEntryReport(HttpServletResponse response) throws IOException {
         try {
             List<Entry> entries = entryRepository.findAll();
             List<String> headers = Arrays.asList("ID", "Fecha", "Cantidad", "Observaciones", "Artículo");
+
             List<List<String>> rows = entries.stream()
-                    .map(s -> {
-                        // Formatear fecha (ejemplo para java.util.Date)
-                        String fechaFormateada = s.getDateEntry().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-                        return Arrays.asList(
-                                String.valueOf(s.getIdEntry()),
-                                fechaFormateada,
-                                String.valueOf(s.getQuantity()),
-                                String.valueOf(s.getObservations()),
-                                s.getArticle() != null ? s.getArticle().getName() : "N/A"
-                        );
-                    })
+                    .map(entry -> Arrays.asList(
+                            String.valueOf(entry.getIdEntry()),
+                            entry.getDateEntry().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
+                            String.valueOf(entry.getQuantity()),
+                            entry.getObservations() != null ? entry.getObservations() : "",
+                            entry.getArticle() != null ? entry.getArticle().getName() : "N/A"
+                    ))
                     .collect(Collectors.toList());
 
             response.setContentType("application/pdf");
@@ -111,31 +128,31 @@ public class EntryController {
 
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            response.getWriter().println("Error al generar el reporte: " + e.getMessage());
+            response.getWriter().println("Error al generar el reporte PDF: " + e.getMessage());
         }
     }
 
+    /**
+     * Genera un reporte Excel de entradas
+     */
     @GetMapping("/entryreport/excel")
     public void generateEntryExcelReport(HttpServletResponse response) throws IOException {
         try {
             List<Entry> entries = entryRepository.findAll();
             List<String> headers = Arrays.asList("ID", "Fecha", "Cantidad", "Observaciones", "Artículo");
+
             List<List<String>> rows = entries.stream()
-                    .map(s -> {
-                        String fechaFormateada = s.getDateEntry().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-                        return Arrays.asList(
-                                String.valueOf(s.getIdEntry()),
-                                fechaFormateada,
-                                String.valueOf(s.getQuantity()),
-                                s.getObservations() != null ? s.getObservations() : "",
-                                s.getArticle() != null ? s.getArticle().getName() : "N/A"
-                        );
-                    })
+                    .map(entry -> Arrays.asList(
+                            String.valueOf(entry.getIdEntry()),
+                            entry.getDateEntry().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
+                            String.valueOf(entry.getQuantity()),
+                            entry.getObservations() != null ? entry.getObservations() : "",
+                            entry.getArticle() != null ? entry.getArticle().getName() : "N/A"
+                    ))
                     .collect(Collectors.toList());
 
             response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
             response.setHeader("Content-Disposition", "attachment; filename=reporte_entradas.xlsx");
-
             excelReportService.generateExcel(response, "Entradas", headers, rows);
 
         } catch (Exception e) {
@@ -143,5 +160,4 @@ public class EntryController {
             response.getWriter().println("Error al generar el reporte Excel: " + e.getMessage());
         }
     }
-
 }

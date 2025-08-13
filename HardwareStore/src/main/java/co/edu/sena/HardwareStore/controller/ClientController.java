@@ -22,17 +22,32 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
+/**
+ * Controlador para la gestión de clientes en el sistema.
+ * Permite realizar operaciones CRUD y generar reportes en PDF y Excel.
+ */
 @Controller
 @RequestMapping("/clients")
 public class ClientController {
+
+    /** Repositorio para el manejo de datos de clientes. */
     @Autowired
     private ClientRepository clientRepository;
 
+    /** Servicio para la generación de reportes PDF. */
     @Autowired
     private PdfReportService pdfReportService;
+
+    /** Servicio para la generación de reportes Excel. */
     @Autowired
     private ExcelReportService excelReportService;
 
+    /**
+     * Lista todos los clientes en orden descendente por su ID.
+     * 
+     * @param model Objeto para enviar datos a la vista.
+     * @return Nombre de la vista con la lista de clientes.
+     */
     @GetMapping
     public String listClient(Model model) {
         List<Client> clients = clientRepository.findAll(Sort.by("idClient").descending());
@@ -40,32 +55,42 @@ public class ClientController {
         return "client/clients";
     }
 
+    /**
+     * Muestra el formulario para crear o editar un cliente.
+     * 
+     * @param model Objeto para enviar datos a la vista.
+     * @return Nombre de la vista del formulario de cliente.
+     */
     @GetMapping("/form")
     public String form(Model model) {
         model.addAttribute("client", new Client());
         return "client/client_form";
     }
 
+    /**
+     * Guarda o actualiza un cliente en la base de datos.
+     * 
+     * @param client Objeto cliente a guardar o actualizar.
+     * @param ra Objeto para enviar mensajes flash.
+     * @return Redirección a la lista de clientes.
+     */
     @PostMapping("/save")
     public String save(@ModelAttribute Client client, RedirectAttributes ra) {
         try {
             boolean esNuevo = (client.getIdClient() == null);
 
             if (esNuevo) {
-                // Guardar nuevo cliente
                 clientRepository.save(client);
                 ra.addFlashAttribute("success", "Cliente creado exitosamente");
             } else {
-                // Actualizar cliente existente sin perder datos
                 Client existente = clientRepository.findById(client.getIdClient())
                         .orElseThrow(() -> new RuntimeException("Cliente no encontrado"));
 
-                // Copiar campos actualizables
                 existente.setDocument(client.getDocument());
                 existente.setName(client.getName());
                 existente.setPhone(client.getPhone());
                 existente.setEmail(client.getEmail());
-                existente.setRut(client.getRut()); // este puede ir null
+                existente.setRut(client.getRut());
 
                 clientRepository.save(existente);
                 ra.addFlashAttribute("success", "Cliente actualizado exitosamente");
@@ -78,6 +103,14 @@ public class ClientController {
         return "redirect:/clients";
     }
 
+    /**
+     * Muestra el formulario para editar un cliente existente.
+     * 
+     * @param idClient ID del cliente a editar.
+     * @param model Objeto para enviar datos a la vista.
+     * @param ra Objeto para enviar mensajes flash.
+     * @return Nombre de la vista del formulario de cliente o redirección.
+     */
     @GetMapping("/edit/{id}")
     public String edit(@PathVariable("id") Long idClient, Model model, RedirectAttributes ra) {
         Client client = clientRepository.findById(idClient).orElse(null);
@@ -90,6 +123,13 @@ public class ClientController {
         return "client/client_form";
     }
 
+    /**
+     * Elimina un cliente por su ID.
+     * 
+     * @param idClient ID del cliente a eliminar.
+     * @param ra Objeto para enviar mensajes flash.
+     * @return Redirección a la lista de clientes.
+     */
     @PostMapping("/delete/{id}")
     public String delete(@PathVariable("id") Long idClient, RedirectAttributes ra) {
         clientRepository.deleteById(idClient);
@@ -97,6 +137,12 @@ public class ClientController {
         return "redirect:/clients";
     }
 
+    /**
+     * Genera un reporte PDF con la lista de clientes.
+     * 
+     * @param response Objeto HTTP para enviar el archivo.
+     * @throws IOException Si ocurre un error de entrada/salida.
+     */
     @GetMapping("/clientreport")
     public void generateClientReport(HttpServletResponse response) throws IOException {
         try {
@@ -124,6 +170,12 @@ public class ClientController {
         }
     }
 
+    /**
+     * Genera un reporte Excel con la lista de clientes.
+     * 
+     * @param response Objeto HTTP para enviar el archivo.
+     * @throws IOException Si ocurre un error de entrada/salida.
+     */
     @GetMapping("/clientreport/excel")
     public void generateClientExcelReport(HttpServletResponse response) throws IOException {
         try {

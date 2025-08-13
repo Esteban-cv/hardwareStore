@@ -14,9 +14,10 @@ import co.edu.sena.HardwareStore.repository.EntryRepository;
 import co.edu.sena.HardwareStore.repository.IssueRepository;
 import co.edu.sena.HardwareStore.services.DashboardService;
 
-@Controller
+@Controller // Indica que esta clase es un controlador de Spring MVC que maneja peticiones HTTP
 public class HomeController {
 
+    // Inyección de dependencias para acceder a los repositorios y servicios
     @Autowired
     private ClientRepository clientRepository;
     @Autowired
@@ -28,50 +29,54 @@ public class HomeController {
     @Autowired
     private DashboardService dashboardService;
 
-    @GetMapping("/")
+    @GetMapping("/") // Mapea la URL raíz "/" a este método
     public String showLogin() {
+        // Retorna la vista de login ubicada en templates/home/login.html
         return "home/login";
     }
 
-    @GetMapping("/login")
+    @GetMapping("/login") // Mapea la ruta "/login"
     public String login(@RequestParam(value = "error", required = false) String error,
-            @RequestParam(value = "logout", required = false) String logout,
-            Model model) {
+                        @RequestParam(value = "logout", required = false) String logout,
+                        Model model) {
 
+        // Si existe un parámetro "error", se añade un mensaje al modelo
         if (error != null) {
             model.addAttribute("error", "Usuario o contraseña incorrectos");
         }
 
+        // Si existe un parámetro "logout", se añade un mensaje de cierre de sesión
         if (logout != null) {
             model.addAttribute("message", "Has cerrado sesión correctamente");
         }
 
+        // Retorna nuevamente la vista de login
         return "home/login";
     }
 
-    @GetMapping("/home")
+    @GetMapping("/home") // Mapea la ruta "/home"
     public String dashboard(Model model) {
-        // Opción 1: Los 10 clientes que más han gastado
+        // Consulta: Top 10 clientes que más han gastado
         List<Object[]> topSpendingClients = clientRepository.findTopSpendingClients();
 
-        // Opción 2: Los 10 clientes más recientes
+        // Consulta: Top 10 clientes más recientes con total gastado
         List<Object[]> recentClientsData = clientRepository.findRecentClientsWithTotalSpent();
 
-        // Usar los clientes que más han gastado para mostrar primero
+        // Por defecto se usan los clientes que más han gastado
         model.addAttribute("recentClients", topSpendingClients);
         model.addAttribute("clientsTitle", "Top 10 Clientes que Más Han Comprado");
 
-        // Stats para las cards
-        long totalClients = clientRepository.countClients();
-        long activeClients = dashboardService.getActiveClients();
-        double activeClientsPercent = dashboardService.getActiveClientsPercent();
+        // Estadísticas para las tarjetas del dashboard
+        long totalClients = clientRepository.countClients(); // Total de clientes
+        long activeClients = dashboardService.getActiveClients(); // Clientes activos
+        double activeClientsPercent = dashboardService.getActiveClientsPercent(); // Porcentaje activos
 
+        // Añadir datos al modelo para la vista
         model.addAttribute("totalClients", totalClients);
         model.addAttribute("totalArticles", articleRepository.countArticles());
         model.addAttribute("totalIssues", issueRepository.countIssues());
         model.addAttribute("totalEntries", entryRepository.countEntries());
 
-        // Datos para clientes activos
         model.addAttribute("activeClients", activeClients);
         model.addAttribute("activeClientsPercent", activeClientsPercent);
 
@@ -79,11 +84,13 @@ public class HomeController {
         model.addAttribute("clientChartLabels", dashboardService.getClientChartLabels());
         model.addAttribute("clientChartData", dashboardService.getClientChartData());
 
+        // Retorna la vista del dashboard ubicada en templates/home/index.html
         return "home/index";
     }
 
-    @GetMapping("/logout")
+    @GetMapping("/logout") // Mapea la ruta "/logout"
     public String logOut() {
+        // Retorna la vista de logout ubicada en templates/home/logout.html
         return "home/logout";
     }
 }

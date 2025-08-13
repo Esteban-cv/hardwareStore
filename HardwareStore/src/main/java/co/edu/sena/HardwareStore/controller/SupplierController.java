@@ -18,19 +18,40 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Controlador encargado de gestionar las operaciones relacionadas con los proveedores.
+ * Permite listar, crear, editar, eliminar y generar reportes en PDF y Excel.
+ *
+ * <p>Las vistas relacionadas se encuentran en la carpeta {@code suppliers} dentro de templates.</p>
+ *
+ * @author
+ */
 @Controller
 @RequestMapping("/suppliers")
 public class SupplierController {
 
+    /** Repositorio para gestionar los artículos y sus consultas. */
     @Autowired
     private ArticleRepository articleRepository;
+
+    /** Repositorio para gestionar los proveedores y sus consultas. */
     @Autowired
     private SupplierRepository supplierRepository;
+
+    /** Servicio para la generación de reportes en formato PDF. */
     @Autowired
     private PdfReportService pdfReportService;
+
+    /** Servicio para la generación de reportes en formato Excel. */
     @Autowired
     private ExcelReportService excelReportService;
 
+    /**
+     * Muestra la lista de proveedores ordenados por ID de forma descendente.
+     *
+     * @param model Modelo de datos para la vista.
+     * @return Nombre de la plantilla HTML para mostrar la lista de proveedores.
+     */
     @GetMapping
     public String listSuppliers(Model model) {
         List<Supplier> suppliers = supplierRepository.findAll(Sort.by("idSupplier").descending());
@@ -38,17 +59,29 @@ public class SupplierController {
         return "suppliers/supplier";
     }
 
+    /**
+     * Muestra el formulario para crear un nuevo proveedor.
+     *
+     * @param model Modelo de datos para la vista.
+     * @return Nombre de la plantilla HTML del formulario de proveedor.
+     */
     @GetMapping("/form")
     public String form(Model model) {
         model.addAttribute("supplier", new Supplier());
         return "suppliers/supplier_form";
     }
 
+    /**
+     * Guarda o actualiza un proveedor.
+     *
+     * @param supplier Objeto proveedor enviado desde el formulario.
+     * @param ra       Atributos para enviar mensajes flash a la vista.
+     * @return Redirección a la lista de proveedores.
+     */
     @PostMapping("/save")
     public String save(@ModelAttribute Supplier supplier, RedirectAttributes ra) {
         try {
             boolean esNuevo = (supplier.getIdSupplier() == null);
-
             supplierRepository.save(supplier);
 
             if (esNuevo) {
@@ -62,6 +95,14 @@ public class SupplierController {
         return "redirect:/suppliers";
     }
 
+    /**
+     * Muestra el formulario de edición para un proveedor específico.
+     *
+     * @param idSupplier ID del proveedor a editar.
+     * @param model      Modelo de datos para la vista.
+     * @param ra         Atributos para mensajes flash.
+     * @return Nombre de la plantilla HTML para edición o redirección en caso de error.
+     */
     @GetMapping("/edit/{id}")
     public String edit(@PathVariable("id") Long idSupplier, Model model, RedirectAttributes ra) {
         try {
@@ -75,14 +116,19 @@ public class SupplierController {
         }
     }
 
+    /**
+     * Elimina un proveedor si no tiene artículos asociados.
+     *
+     * @param idSupplier ID del proveedor a eliminar.
+     * @param ra         Atributos para mensajes flash.
+     * @return Redirección a la lista de proveedores.
+     */
     @PostMapping("/delete/{id}")
     public String delete(@PathVariable("id") Long idSupplier, RedirectAttributes ra) {
         try {
-            // Obtener información del proveedor
             Supplier supplier = supplierRepository.findById(idSupplier)
                     .orElseThrow(() -> new RuntimeException("Proveedor no encontrado"));
 
-            // Contar artículos asociados (más eficiente)
             long articleCount = articleRepository.countBySupplierIdSupplier(idSupplier);
 
             if (articleCount > 0) {
@@ -95,7 +141,6 @@ public class SupplierController {
                 return "redirect:/suppliers";
             }
 
-            // Eliminar si no tiene artículos asociados
             String supplierName = supplier.getName();
             supplierRepository.deleteById(idSupplier);
 
@@ -110,6 +155,12 @@ public class SupplierController {
         return "redirect:/suppliers";
     }
 
+    /**
+     * Genera un reporte PDF con la información de todos los proveedores.
+     *
+     * @param response Objeto HTTP para enviar el archivo como descarga.
+     * @throws IOException Si ocurre un error al escribir el archivo.
+     */
     @GetMapping("/supplierreport")
     public void generateSupplierReport(HttpServletResponse response) throws IOException {
         try {
@@ -133,6 +184,12 @@ public class SupplierController {
         }
     }
 
+    /**
+     * Genera un reporte Excel con la información de todos los proveedores.
+     *
+     * @param response Objeto HTTP para enviar el archivo como descarga.
+     * @throws IOException Si ocurre un error al escribir el archivo.
+     */
     @GetMapping("/supplierreport/excel")
     public void generateSupplierExcelReport(HttpServletResponse response) throws IOException {
         try {

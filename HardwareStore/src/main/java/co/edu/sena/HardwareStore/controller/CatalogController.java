@@ -1,6 +1,5 @@
 package co.edu.sena.HardwareStore.controller;
 
-
 import co.edu.sena.HardwareStore.model.Article;
 import co.edu.sena.HardwareStore.model.Category;
 import co.edu.sena.HardwareStore.repository.ArticleRepository;
@@ -21,30 +20,48 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Controlador para gestionar el catálogo de artículos y categorías.
+ * Incluye operaciones CRUD y generación de reportes en PDF y Excel.
+ */
 @Controller
 @RequestMapping("/catalog")
 public class CatalogController {
 
     @Autowired
     private SupplierRepository supplierRepository;
+
     @Autowired
     private ArticleRepository articleRepository;
+
     @Autowired
     private CategoryRepository categoryRepository;
+
     @Autowired
     private PdfReportService pdfReportService;
+
     @Autowired
     private UnitRepository unitRepository;
+
     @Autowired
     private ExcelReportService excelReportService;
 
-
+    /**
+     * Lista todos los artículos del catálogo.
+     * @param model modelo para pasar datos a la vista.
+     * @return vista con la lista de artículos.
+     */
     @GetMapping("/articles")
     public String listArticles(Model model) {
         model.addAttribute("articles", articleRepository.findAll());
-        return "catalog/articles";  
+        return "catalog/articles";
     }
 
+    /**
+     * Muestra el formulario para crear o editar un artículo.
+     * @param model modelo para pasar datos a la vista.
+     * @return vista del formulario de artículos.
+     */
     @GetMapping("/article/form")
     public String formArticle(Model model) {
         model.addAttribute("article", new Article());
@@ -54,13 +71,17 @@ public class CatalogController {
         return "catalog/article_form";
     }
 
+    /**
+     * Guarda un nuevo artículo o actualiza uno existente.
+     * @param article objeto artículo a guardar.
+     * @param ra atributos para mensajes flash.
+     * @return redirección a la lista de artículos.
+     */
     @PostMapping("/article/save")
     public String saveArticle(@ModelAttribute Article article, RedirectAttributes ra) {
-         try {
+        try {
             boolean esNuevo = (article.getIdArticle() == null);
-
             articleRepository.save(article);
-
             if (esNuevo) {
                 ra.addFlashAttribute("success", "Artículo creado exitosamente");
             } else {
@@ -72,6 +93,13 @@ public class CatalogController {
         return "redirect:/catalog/articles";
     }
 
+    /**
+     * Edita un artículo existente.
+     * @param idArticle ID del artículo a editar.
+     * @param model modelo para pasar datos a la vista.
+     * @param ra atributos para mensajes flash.
+     * @return vista del formulario con datos cargados.
+     */
     @GetMapping("/edit/{id}")
     public String editArticle(@PathVariable("id") Integer idArticle, Model model, RedirectAttributes ra) {
         Article article = articleRepository.findById(idArticle).orElse(null);
@@ -86,6 +114,12 @@ public class CatalogController {
         return "catalog/article_form";
     }
 
+    /**
+     * Elimina un artículo por su ID.
+     * @param idArticle ID del artículo a eliminar.
+     * @param ra atributos para mensajes flash.
+     * @return redirección a la lista de artículos.
+     */
     @PostMapping("/deleteArticle/{id}")
     public String deleteArticle(@PathVariable("id") Integer idArticle, RedirectAttributes ra) {
         try {
@@ -97,6 +131,11 @@ public class CatalogController {
         return "redirect:/catalog/articles";
     }
 
+    /**
+     * Genera un reporte PDF de los artículos.
+     * @param response respuesta HTTP para enviar el archivo.
+     * @throws IOException si ocurre un error en la escritura del archivo.
+     */
     @GetMapping("/articlereport")
     public void generateArticleReport(HttpServletResponse response) throws IOException {
         try {
@@ -118,38 +157,50 @@ public class CatalogController {
                         );
                     })
                     .collect(Collectors.toList());
-
             response.setContentType("application/pdf");
             response.setHeader("Content-Disposition", "attachment; filename=reporte_articulos.pdf");
             pdfReportService.generatePdf(response, "Reporte de Artículos", headers, rows);
-
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             response.getWriter().println("Error al generar el reporte: " + e.getMessage());
         }
     }
 
-    // ---------- CATEGORIES ------------------
+    // ---------- CATEGORÍAS ------------------
 
+    /**
+     * Lista todas las categorías.
+     * @param model modelo para pasar datos a la vista.
+     * @return vista con la lista de categorías.
+     */
     @GetMapping("/categories")
     public String listCategories(Model model) {
         model.addAttribute("categories", categoryRepository.findAll());
         return "catalog/categories";
     }
 
+    /**
+     * Muestra el formulario para crear o editar una categoría.
+     * @param model modelo para pasar datos a la vista.
+     * @return vista del formulario de categorías.
+     */
     @GetMapping("/category/form")
     public String formCategory(Model model) {
         model.addAttribute("category", new Category());
         return "catalog/category_form";
     }
 
+    /**
+     * Guarda una nueva categoría o actualiza una existente.
+     * @param category objeto categoría a guardar.
+     * @param ra atributos para mensajes flash.
+     * @return redirección a la lista de categorías.
+     */
     @PostMapping("/save/category")
     public String saveCategory(@ModelAttribute Category category, RedirectAttributes ra) {
         try {
             boolean esNuevo = (category.getIdCategory() == null);
-
             categoryRepository.save(category);
-
             if (esNuevo) {
                 ra.addFlashAttribute("success", "Categoría creada exitosamente");
             } else {
@@ -161,6 +212,13 @@ public class CatalogController {
         return "redirect:/catalog/categories";
     }
 
+    /**
+     * Edita una categoría existente.
+     * @param id ID de la categoría a editar.
+     * @param model modelo para pasar datos a la vista.
+     * @param ra atributos para mensajes flash.
+     * @return vista del formulario de categorías.
+     */
     @GetMapping("/editCategory/{idCategory}")
     public String editCategory(@PathVariable("idCategory") Integer id, Model model, RedirectAttributes ra) {
         Category category = categoryRepository.findById(id).orElse(null);
@@ -172,6 +230,12 @@ public class CatalogController {
         return "catalog/category_form";
     }
 
+    /**
+     * Elimina una categoría por su ID.
+     * @param id ID de la categoría a eliminar.
+     * @param ra atributos para mensajes flash.
+     * @return redirección a la lista de categorías.
+     */
     @PostMapping("/deleteCategory/{idCategory}")
     public String deleteCategory(@PathVariable("idCategory") Integer id, RedirectAttributes ra) {
         categoryRepository.deleteById(id);
@@ -179,6 +243,11 @@ public class CatalogController {
         return "redirect:/catalog/categories";
     }
 
+    /**
+     * Genera un reporte PDF de categorías.
+     * @param response respuesta HTTP para enviar el archivo.
+     * @throws IOException si ocurre un error en la escritura del archivo.
+     */
     @GetMapping("/categoryreport")
     public void generateCategoryReport(HttpServletResponse response) throws IOException {
         try {
@@ -190,17 +259,20 @@ public class CatalogController {
                             category.getName() != null ? category.getName() : "N/A"
                     ))
                     .collect(Collectors.toList());
-
             response.setContentType("application/pdf");
             response.setHeader("Content-Disposition", "attachment; filename=reporte_categorias.pdf");
             pdfReportService.generatePdf(response, "Reporte de Categorías", headers, rows);
-
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             response.getWriter().println("Error al generar el reporte: " + e.getMessage());
         }
     }
 
+    /**
+     * Genera un reporte Excel de artículos.
+     * @param response respuesta HTTP para enviar el archivo.
+     * @throws IOException si ocurre un error en la escritura del archivo.
+     */
     @GetMapping("/articlereport/excel")
     public void generateArticleExcelReport(HttpServletResponse response) throws IOException {
         try {
@@ -222,18 +294,20 @@ public class CatalogController {
                         );
                     })
                     .collect(Collectors.toList());
-
             response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
             response.setHeader("Content-Disposition", "attachment; filename=reporte_articulos.xlsx");
-
             excelReportService.generateExcel(response, "Artículos", headers, rows);
-
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             response.getWriter().println("Error al generar el reporte Excel: " + e.getMessage());
         }
     }
 
+    /**
+     * Genera un reporte Excel de categorías.
+     * @param response respuesta HTTP para enviar el archivo.
+     * @throws IOException si ocurre un error en la escritura del archivo.
+     */
     @GetMapping("/categoryreport/excel")
     public void generateCategoryExcelReport(HttpServletResponse response) throws IOException {
         try {
@@ -245,16 +319,12 @@ public class CatalogController {
                             category.getName() != null ? category.getName() : "N/A"
                     ))
                     .collect(Collectors.toList());
-
             response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
             response.setHeader("Content-Disposition", "attachment; filename=reporte_categorias.xlsx");
-
             excelReportService.generateExcel(response, "Categorías", headers, rows);
-
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             response.getWriter().println("Error al generar el reporte Excel: " + e.getMessage());
         }
     }
 }
-
