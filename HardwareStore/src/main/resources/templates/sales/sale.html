@@ -217,6 +217,8 @@
                 </a>
             </div>
 
+            <div th:if="${success}" th:text="${success}" class="alert alert-success mt-2" id="alert-success">
+            </div>
 
             <!-- sales Table -->
             <div class="section-for-all">
@@ -277,6 +279,7 @@
     <script th:src="@{/js/swing-alert.js}"></script>
     <script th:src="@{/js/navigation.js}"></script>
     <script th:src="@{/js/detail-modal.js}"></script>
+    <script th:src="@{/js/alert-success.js}"></script>
 </body>
 
 </html>

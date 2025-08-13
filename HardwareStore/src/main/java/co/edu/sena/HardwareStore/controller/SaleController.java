@@ -286,13 +286,15 @@ public class SaleController {
     public void generateSaleReport(HttpServletResponse response) throws IOException {
         try {
             List<Sale> sales = saleRepository.findAll();
-            List<String> headers = Arrays.asList("ID", "Fecha", "Total", "Cliente", "Empleado");
+            List<String> headers = Arrays.asList("ID", "Fecha","IVA","Subtotal", "Total", "Cliente", "Empleado");
             List<List<String>> rows = sales.stream()
                     .map(s -> {
                         String fechaFormateada = s.getDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
                         return Arrays.asList(
                                 String.valueOf(s.getIdSale()),
                                 fechaFormateada,
+                                String.valueOf(s.getTax()),
+                                String.valueOf(s.getSubTotal()),
                                 String.valueOf(s.getTotal()),
                                 s.getClient() != null ? s.getClient().getName() : "N/A",
                                 s.getEmployee() != null ? s.getEmployee().getName() : "N/A");
@@ -318,13 +320,15 @@ public class SaleController {
     public void generateSaleExcelReport(HttpServletResponse response) throws IOException {
         try {
             List<Sale> sales = saleRepository.findAll();
-            List<String> headers = Arrays.asList("ID", "Fecha", "Total", "Cliente", "Empleado");
+            List<String> headers = Arrays.asList("ID", "Fecha","IVA","Subtotal", "Total", "Cliente", "Empleado");
             List<List<String>> rows = sales.stream()
                     .map(s -> {
                         String fechaFormateada = s.getDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
                         return Arrays.asList(
                                 String.valueOf(s.getIdSale()),
                                 fechaFormateada,
+                                String.valueOf(s.getTax()),
+                                String.valueOf(s.getSubTotal()),
                                 String.valueOf(s.getTotal()),
                                 s.getClient() != null ? s.getClient().getName() : "N/A",
                                 s.getEmployee() != null ? s.getEmployee().getName() : "N/A");
