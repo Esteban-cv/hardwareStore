@@ -13,6 +13,9 @@ import co.edu.sena.HardwareStore.repository.ClientRepository;
 import co.edu.sena.HardwareStore.repository.EntryRepository;
 import co.edu.sena.HardwareStore.repository.IssueRepository;
 import co.edu.sena.HardwareStore.services.DashboardService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 @Controller // Indica que esta clase es un controlador de Spring MVC que maneja peticiones HTTP
 public class HomeController {
@@ -87,6 +90,19 @@ public class HomeController {
         // Retorna la vista del dashboard ubicada en templates/home/index.html
         return "home/index";
     }
+
+    @GetMapping("/logout")
+    public String logOut(HttpSession session, HttpServletResponse response) {
+        // Invalidar sesión
+        session.invalidate();
+
+        // Limpiar cookies si las usas
+        Cookie cookie = new Cookie("JSESSIONID", "");
+        cookie.setMaxAge(0);
+        cookie.setPath("/");
+        response.addCookie(cookie);
+
+        return "redirect:/login";
 
     @GetMapping("/logout") // Mapea la ruta "/logout"
     public String logOut() {
