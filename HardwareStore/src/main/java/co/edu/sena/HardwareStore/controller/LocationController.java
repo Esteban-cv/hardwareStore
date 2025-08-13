@@ -35,14 +35,25 @@ public class LocationController {
 
     @GetMapping("/form")
     public String form(Model model){
-        model.addAttribute("locations", new Location());
+        model.addAttribute("location", new Location());
         return "inventory/location_form";
     }
 
     @PostMapping("/save")
     public String save(@ModelAttribute Location location, RedirectAttributes ra){
-        locationRepository.save(location);
-        ra.addFlashAttribute("success", "Ubicación guardada exitosamente.");
+        try {
+            boolean esNuevo = (location.getIdLocation() == null);
+
+            locationRepository.save(location);
+
+            if (esNuevo) {
+                ra.addFlashAttribute("success", "Ubicación creada exitosamente");
+            } else {
+                ra.addFlashAttribute("success", "Ubicación actualizada exitosamente");
+            }
+        } catch (Exception e) {
+            ra.addFlashAttribute("error", "Error al guardar la ubicación");
+        }
         return "redirect:/locations";
     }
 

@@ -73,7 +73,7 @@ public class CatalogController {
         return "redirect:/catalog/articles";
     }
 
-    @GetMapping("/editArticle/{id}")
+    @GetMapping("/edit/{id}")
     public String editArticle(@PathVariable("id") Integer idArticle, Model model, RedirectAttributes ra) {
         Article article = articleRepository.findById(idArticle).orElse(null);
         if (article == null) {
