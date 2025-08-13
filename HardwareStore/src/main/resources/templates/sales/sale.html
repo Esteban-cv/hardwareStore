@@ -9,7 +9,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <!-- DataTable -->
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.datatables.net/2.3.2/css/dataTables.dataTables.css"/>
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.3.2/css/dataTables.dataTables.css" />
     <script src="https://cdn.datatables.net/2.3.2/js/dataTables.js"></script>
 </head>
 
@@ -198,6 +198,8 @@
                         <tr>
                             <th>ID</th>
                             <th>FECHA</th>
+                            <th>SUBTOTAL</th>
+                            <th>IVA</th>
                             <th>TOTAL</th>
                             <th>CLIENTE</th>
                             <th>EMPLEADO</th>
@@ -208,10 +210,15 @@
                         <tr th:each="sale : ${sales}">
                             <td th:text="${sale.idSale}"></td>
                             <td th:text="${sale.date}"></td>
+                            <td th:text="${#numbers.formatDecimal(sale.subTotal, 1, 2, 'COMMA')}"></td>
+                            <td th:text="${#numbers.formatDecimal(sale.tax, 1, 2, 'COMMA')}"></td>
                             <td th:text="${#numbers.formatDecimal(sale.total, 1, 2, 'COMMA')}"></td>
                             <td th:text="${sale.client.name}"></td>
                             <td th:text="${sale.employee.name}"></td>
                             <td>
+                                <button class="btn-view" th:data-id="${sale.idSale}" data-type="sale">
+                                    <i class="fas fa-eye"></i>
+                                </button>
                                 <a th:href="@{'/sales/edit/' + ${sale.idSale}}" class="btn-edit">
                                     <i class="fas fa-pencil-alt"></i>
                                 </a>
@@ -242,6 +249,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script th:src="@{/js/swing-alert.js}"></script>
     <script th:src="@{/js/navigation.js}"></script>
+    <script th:src="@{/js/detail-modal.js}"></script>
 </body>
 
 </html>

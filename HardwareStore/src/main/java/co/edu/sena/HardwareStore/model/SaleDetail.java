@@ -14,24 +14,32 @@ public class SaleDetail {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_sale_detail")
     private Integer idSaleDetail;
+    
     private Integer quantity;
+    
     @Column(name = "unit_price", precision = 10, scale = 2, nullable = false)
     private BigDecimal unitPrice;
-    @Column(name = "total")
-    private Integer total;
+    
+    @Column(name = "total", precision = 10, scale = 2, nullable = false)
+    private BigDecimal total; // Cambiado de Integer a BigDecimal
+    
     @ManyToOne
     @JoinColumn(name = "id_sale", nullable = false)
     private Sale sale;
+    
     @ManyToOne
     @JoinColumn(name = "id_article", nullable = false)
     private Article article;
+    
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
+    
     @UpdateTimestamp
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    // Getters y Setters
     public Integer getIdSaleDetail() {
         return idSaleDetail;
     }
@@ -56,11 +64,11 @@ public class SaleDetail {
         this.unitPrice = unitPrice;
     }
 
-    public Integer getTotal() {
+    public BigDecimal getTotal() {
         return total;
     }
 
-    public void setTotal(Integer total) {
+    public void setTotal(BigDecimal total) {
         this.total = total;
     }
 
