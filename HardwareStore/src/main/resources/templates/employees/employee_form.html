@@ -50,16 +50,29 @@
                         </ul>
                     </li>
 
-                    <!-- Devoluciones -->
+                    <!-- clientes (con submenú) -->
                     <li class="nav-item has-submenu">
                         <a class="nav-link">
-                            <i class="fas fa-undo-alt"></i>
-                            <span>Devoluciones</span>
+                            <i class="fas fa-user"></i>
+                            <span>Clientes</span>
                             <i class="fas fa-chevron-down dropdown-icon"></i>
                         </a>
                         <ul class="sub-menu">
-                            <li><a th:href="@{/productreturns}" class="nav-link">Consultar</a></li>
-                            <li><a th:href="@{/productreturns/form}" class="nav-link">Nueva Devolución</a></li>
+                            <li><a th:href="@{/clients}" class="nav-link">Consultar</a></li>
+                            <li><a th:href="@{/clients/form}" class="nav-link">Nuevo Cliente</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- EMPLEADOS (con submenú) -->
+                    <li class="nav-item has-submenu">
+                        <a class="nav-link">
+                            <i class="fa-solid fa-briefcase"></i>
+                            <span>Empleados</span>
+                            <i class="fas fa-chevron-down dropdown-icon"></i>
+                        </a>
+                        <ul class="sub-menu">
+                            <li><a th:href="@{/employees}" class="nav-link">Consultar</a></li>
+                            <li><a th:href="@{/employees/form}" class="nav-link">Nuevo Cliente</a></li>
                         </ul>
                     </li>
 
@@ -141,9 +154,6 @@
                         </ul>
                     </li>
 
-
-
-
                     <!-- Ubicaciones -->
                     <li class="nav-item has-submenu">
                         <a class="nav-link">
@@ -157,162 +167,7 @@
 
                         </ul>
                     </li>
-                </ul><!-- Sidebar Mejorado -->
-                <nav class="sidebar">
-                    <div class="sidebar-inner">
-                        <!-- Logo -->
-                        <div class="logo">
-                            <i class="fas fa-tools"></i>
-                            <h2>Ferretería Store</h2>
-                        </div>
-
-                        <!-- Buscador -->
-                        <div class="search-box">
-                            <i class="fas fa-search"></i>
-                            <input type="text" placeholder="Buscar módulo..." id="sidebarSearch">
-                        </div>
-
-                        <!-- Menú Principal -->
-                        <ul class="nav-menu">
-                            <!-- Dashboard -->
-                            <li class="nav-item">
-                                <a th:href="@{/home}" class="nav-link">
-                                    <i class="fas fa-chart-bar"></i>
-                                    <span>Dashboard</span>
-                                </a>
-                            </li>
-
-                            <!-- Ventas -->
-                            <li class="nav-item has-submenu">
-                                <a class="nav-link">
-                                    <i class="fas fa-shopping-cart"></i>
-                                    <span>Ventas</span>
-                                    <i class="fas fa-chevron-down dropdown-icon"></i>
-                                </a>
-                                <ul class="sub-menu">
-                                    <li><a th:href="@{/sales}" class="nav-link">Consultar</a></li>
-                                    <li><a th:href="@{/sales/form}" class="nav-link">Nueva Venta</a></li>
-                                </ul>
-                            </li>
-
-                            <!-- Devoluciones -->
-                            <li class="nav-item has-submenu">
-                                <a class="nav-link">
-                                    <i class="fas fa-undo-alt"></i>
-                                    <span>Devoluciones</span>
-                                    <i class="fas fa-chevron-down dropdown-icon"></i>
-                                </a>
-                                <ul class="sub-menu">
-                                    <li><a th:href="@{/productreturns}" class="nav-link">Consultar</a></li>
-                                    <li><a th:href="@{/productreturns/form}" class="nav-link">Nueva Devolución</a></li>
-                                </ul>
-                            </li>
-
-                            <!-- Compras -->
-                            <li class="nav-item has-submenu">
-                                <a class="nav-link">
-                                    <i class="fas fa-truck"></i>
-                                    <span>Compras</span>
-                                    <i class="fas fa-chevron-down dropdown-icon"></i>
-                                </a>
-                                <ul class="sub-menu">
-                                    <li><a th:href="@{/purchases}" class="nav-link">Consultar</a></li>
-                                    <li><a th:href="@{/purchases/form}" class="nav-link">Nueva Compra</a></li>
-                                </ul>
-                            </li>
-
-                            <!-- Inventario (con submenú) -->
-                            <li class="nav-item has-submenu">
-                                <a class="nav-link">
-                                    <i class="fas fa-boxes"></i>
-                                    <span>Inventario</span>
-                                    <i class="fas fa-chevron-down dropdown-icon"></i>
-                                </a>
-                                <ul class="sub-menu">
-                                    <li><a th:href="@{/inventory}" class="nav-link">Consultar</a></li>
-                                    <li><a th:href="@{/inventory/form}" class="nav-link">Nuevo Inventario</a></li>
-                                </ul>
-                            </li>
-
-                            <!-- Catálogo -->
-                            <li class="nav-item has-submenu">
-                                <a class="nav-link">
-                                    <i class="fas fa-list"></i>
-                                    <span>Catálogo</span>
-                                    <i class="fas fa-chevron-down dropdown-icon"></i>
-                                </a>
-                                <ul class="sub-menu">
-                                    <li><a th:href="@{/catalog/articles}" class="nav-link">Artículos</a></li>
-                                    <li><a th:href="@{/catalog/categories}" class="nav-link">Categorías</a></li>
-                                </ul>
-                            </li>
-
-                            <!-- Entradas -->
-                            <li class="nav-item has-submenu">
-                                <a class="nav-link">
-                                    <i class="fa-solid fa-right-to-bracket"></i>
-                                    <span>Entradas</span>
-                                    <i class="fas fa-chevron-down dropdown-icon"></i>
-                                </a>
-                                <ul class="sub-menu">
-                                    <li><a th:href="@{/entries}" class="nav-link">Consultar</a></li>
-                                    <li><a th:href="@{/entries/form}" class="nav-link">Nueva Entrada</a></li>
-                                </ul>
-                            </li>
-
-                            <!-- Salidas -->
-                            <li class="nav-item has-submenu">
-                                <a class="nav-link">
-                                    <i class="fa-solid fa-right-from-bracket"></i>
-                                    <span>Salidas</span>
-                                    <i class="fas fa-chevron-down dropdown-icon"></i>
-                                </a>
-                                <ul class="sub-menu">
-                                    <li><a th:href="@{/issue}" class="nav-link">Consultar</a></li>
-                                    <li><a th:href="@{/issue/form}" class="nav-link">Nueva Salida</a></li>
-                                </ul>
-                            </li>
-
-                            <!-- Proveedores -->
-                            <li class="nav-item has-submenu">
-                                <a class="nav-link">
-                                    <i class="fas fa-users"></i>
-                                    <span>Proveedores</span>
-                                    <i class="fas fa-chevron-down dropdown-icon"></i>
-                                </a>
-                                <ul class="sub-menu">
-                                    <li><a th:href="@{/supplier}" class="nav-link">Consultar</a></li>
-                                    <li><a th:href="@{/suppliers/form}" class="nav-link">Nuevo Proveedor</a></li>
-                                </ul>
-                            </li>
-
-
-
-
-                            <!-- Ubicaciones -->
-                            <li class="nav-item has-submenu">
-                                <a class="nav-link">
-                                    <i class="fas fa-map-marker-alt"></i>
-                                    <span>Ubicaciones</span>
-                                    <i class="fas fa-chevron-down dropdown-icon"></i>
-                                </a>
-                                <ul class="sub-menu">
-                                    <li><a th:href="@{/locations}" class="nav-link">Consultar</a></li>
-                                    <li><a th:href="@{/locations/form}" class="nav-link">Nueva Ubicación</a></li>
-
-                                </ul>
-                            </li>
-                        </ul>
-
-                        <!-- Logout -->
-                        <div class="logout-section">
-                            <a th:href="@{/logout}" class="nav-link logout-link">
-                                <i class="fas fa-sign-out-alt"></i>
-                                <span>Cerrar Sesión</span>
-                            </a>
-                        </div>
-                    </div>
-                </nav>
+                </ul>
 
                 <!-- Logout -->
                 <div class="logout-section">
@@ -377,8 +232,8 @@
                                 <span class="form-field-hint">Usuario del empleado</span>
                             </div>
 
-                            <div class="form-input-group">
-                                <label for="document" class="form-label">
+                            <div class="form-input-group" th:unless="${employee.idEmployee != null}">
+                                <label for="password" class="form-label">
                                     <i class="fas fa-id-card"></i>
                                     Contraseña
                                 </label>
@@ -389,7 +244,7 @@
 
                             <div class="form-group">
                                 <label for="roleId" class="fw-bold text-secondary">
-                                    <i class="bi bi-shield-lock-fill"></i> 
+                                    <i class="bi bi-shield-lock-fill"></i>
                                     Rol
                                 </label>
                                 <select id="roleId" name="roleId" class="form-select rounded-pill border-primary"

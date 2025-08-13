@@ -1,7 +1,6 @@
 package co.edu.sena.HardwareStore.controller;
 
 import co.edu.sena.HardwareStore.model.Purchase;
-import co.edu.sena.HardwareStore.model.Supplier;
 import co.edu.sena.HardwareStore.repository.ArticleRepository;
 import co.edu.sena.HardwareStore.repository.EmployeeRepository;
 import co.edu.sena.HardwareStore.repository.PurchaseRepository;
