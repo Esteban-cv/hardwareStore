@@ -166,6 +166,20 @@
                             <li><a th:href="@{/locations/form}" class="nav-link">Nueva Ubicación</a></li>
                         </ul>
                     </li>
+
+                    <!-- Empleados -->
+                    <li class="nav-item has-submenu">
+                        <a class="nav-link">
+                            <i class="fas fa-users"></i>
+                            <span>Empleados</span>
+                            <i class="fas fa-chevron-down dropdown-icon"></i>
+                        </a>
+                        <ul class="sub-menu">
+                            <li><a th:href="@{/employees}" class="nav-link">Consultar</a></li>
+                            <li><a th:href="@{/employees/form}" class="nav-link">Nuevo Empleado</a></li>
+
+                        </ul>
+                    </li>
                 </ul>
 
                 <!-- Logout -->
@@ -199,7 +213,7 @@
             <div class="form-container">
                 <form class="form-content" th:action="@{/issue/save}" method="post" th:object="${issue}">
                     <input type="hidden" th:field="*{idIssue}" />
-                    
+
                     <!-- Información General -->
                     <div class="form-section">
                         <div class="form-section-header">

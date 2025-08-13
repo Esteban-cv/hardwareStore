@@ -142,7 +142,7 @@
                     </li>
 
                     <!-- Proveedores -->
-                     <li class="nav-item has-submenu">
+                    <li class="nav-item has-submenu">
                         <a class="nav-link">
                             <i class="fas fa-users"></i>
                             <span>Proveedores</span>
@@ -165,6 +165,20 @@
                         <ul class="sub-menu">
                             <li><a th:href="@{/locations}" class="nav-link">Consultar</a></li>
                             <li><a th:href="@{/locations/form}" class="nav-link">Nueva Ubicación</a></li>
+
+                        </ul>
+                    </li>
+
+                    <!-- Empleados -->
+                    <li class="nav-item has-submenu">
+                        <a class="nav-link">
+                            <i class="fas fa-users"></i>
+                            <span>Empleados</span>
+                            <i class="fas fa-chevron-down dropdown-icon"></i>
+                        </a>
+                        <ul class="sub-menu">
+                            <li><a th:href="@{/employees}" class="nav-link">Consultar</a></li>
+                            <li><a th:href="@{/employees/form}" class="nav-link">Nuevo Empleado</a></li>
 
                         </ul>
                     </li>
@@ -221,7 +235,8 @@
                                     Nombre
                                 </label>
                                 <input type="text" id="name" name="name" class="form-input" th:value="${category.name}"
-                                    placeholder="Ej: Herramientas eléctricas" required oninput="this.value = this.value.toUpperCase()">
+                                    placeholder="Ej: Herramientas eléctricas" required
+                                    oninput="this.value = this.value.toUpperCase()">
                                 <span class="form-field-hint">Nombre de la categoría</span>
                             </div>
                         </div>
@@ -230,8 +245,7 @@
                     <div class="form-actions-container">
                         <button type="submit" class="btn-add" id="btnUpdate">
                             <i class="fas fa-save"></i>
-                            <span
-                                th:text="${category.idCategory != null} ? 'Actualizar' : 'Guardar categoria'"></span>
+                            <span th:text="${category.idCategory != null} ? 'Actualizar' : 'Guardar categoria'"></span>
                         </button>
                         <button type="reset" class="btn-excel">
                             <i class="fas fa-eraser"></i>

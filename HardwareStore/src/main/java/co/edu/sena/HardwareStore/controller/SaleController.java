@@ -27,6 +27,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * Controlador encargado de gestionar las operaciones relacionadas con las ventas.
+ * Incluye creación, edición, eliminación, visualización de detalles y generación de reportes.
+ */
 @Controller
 @RequestMapping("/sales")
 public class SaleController {
@@ -52,6 +56,11 @@ public class SaleController {
     @Autowired
     private ExcelReportService excelReportService;
 
+    /**
+     * Lista todas las ventas ordenadas por fecha descendente.
+     * @param model Modelo para enviar datos a la vista.
+     * @return Vista con la lista de ventas.
+     */
     @GetMapping
     public String listSales(Model model) {
         List<Sale> sales = saleRepository.findAll(Sort.by("date").descending());
@@ -59,6 +68,11 @@ public class SaleController {
         return "sales/sale";
     }
 
+    /**
+     * Muestra el formulario para registrar una nueva venta.
+     * @param model Modelo para enviar datos a la vista.
+     * @return Vista del formulario de ventas.
+     */
     @GetMapping("/form")
     public String form(Model model) {
         model.addAttribute("sale", new Sale());
@@ -68,6 +82,15 @@ public class SaleController {
         return "sales/sale_form";
     }
 
+    /**
+     * Guarda una nueva venta y sus detalles.
+     * @param sale Objeto de venta.
+     * @param articleIds Lista de IDs de artículos.
+     * @param quantities Lista de cantidades.
+     * @param prices Lista de precios unitarios.
+     * @param ra Atributos para redirección con mensajes.
+     * @return Redirección a la lista de ventas.
+     */
     @PostMapping("/save")
     @Transactional
     public String save(@ModelAttribute Sale sale,
@@ -75,6 +98,7 @@ public class SaleController {
             @RequestParam(value = "quantities", required = false) List<Integer> quantities,
             @RequestParam(value = "prices", required = false) List<BigDecimal> prices,
             RedirectAttributes ra) {
+        // Lógica original
         try {
             if (articleIds == null || articleIds.isEmpty()) {
                 ra.addFlashAttribute("error", "No se pueden procesar ventas sin productos");
@@ -88,7 +112,6 @@ public class SaleController {
                 sale.setDate(LocalDate.now());
             }
 
-        
             for (int i = 0; i < articleIds.size(); i++) {
                 Integer articleId = articleIds.get(i);
                 Integer quantity = quantities.get(i);
@@ -102,7 +125,6 @@ public class SaleController {
                 }
             }
 
-            // Calcular totales
             BigDecimal subTotal = calculateSubTotal(articleIds, quantities, prices);
             BigDecimal tax = subTotal.multiply(new BigDecimal("0.19")).setScale(2, RoundingMode.HALF_UP);
             BigDecimal total = subTotal.add(tax);
@@ -111,7 +133,6 @@ public class SaleController {
             sale.setTax(tax);
             sale.setTotal(total);
 
-            // Guardar venta y detalles
             Sale savedSale = saleRepository.save(sale);
             processSaleDetails(savedSale, articleIds, quantities, prices);
 
@@ -123,6 +144,13 @@ public class SaleController {
         }
     }
 
+    /**
+     * Muestra el formulario para editar una venta existente.
+     * @param id ID de la venta.
+     * @param model Modelo para enviar datos a la vista.
+     * @param ra Atributos para redirección.
+     * @return Vista de edición o redirección si no existe.
+     */
     @GetMapping("/edit/{id}")
     public String editForm(@PathVariable("id") Long id, Model model, RedirectAttributes ra) {
         Sale sale = saleRepository.findById(id).orElse(null);
@@ -139,6 +167,14 @@ public class SaleController {
         return "sales/edit_sale_form";
     }
 
+    /**
+     * Actualiza la información básica de una venta.
+     * @param id ID de la venta.
+     * @param date Nueva fecha.
+     * @param observations Observaciones adicionales.
+     * @param ra Atributos para redirección.
+     * @return Redirección a la lista de ventas.
+     */
     @PostMapping("/edit/{id}")
     @Transactional
     public String updateSale(@PathVariable("id") Long id,
@@ -164,8 +200,11 @@ public class SaleController {
         }
     }
 
-    // Agregar este método al SaleController existente
-
+    /**
+     * Obtiene los detalles de una venta en formato JSON.
+     * @param id ID de la venta.
+     * @return Respuesta con los datos de la venta y sus detalles.
+     */
     @GetMapping("/view/{id}")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> viewSaleDetails(@PathVariable("id") Long id) {
@@ -186,7 +225,6 @@ public class SaleController {
             response.put("total", sale.getTotal());
             response.put("observations", sale.getObservations());
 
-            // Obtener detalles de la venta
             List<SaleDetail> details = saleDetailRepository.findBySaleId(id);
             List<Map<String, Object>> detailsList = details.stream().map(detail -> {
                 Map<String, Object> detailMap = new HashMap<>();
@@ -206,6 +244,12 @@ public class SaleController {
         }
     }
 
+    /**
+     * Elimina una venta, restaura el stock y borra los detalles asociados.
+     * @param id ID de la venta.
+     * @param ra Atributos para redirección.
+     * @return Redirección a la lista de ventas.
+     */
     @PostMapping("/delete/{id}")
     @Transactional
     public String delete(@PathVariable("id") Long id, RedirectAttributes ra) {
@@ -216,7 +260,6 @@ public class SaleController {
                 return "redirect:/sales";
             }
 
-            // Restaurar stock
             List<SaleDetail> details = saleDetailRepository.findBySaleId(id);
             for (SaleDetail detail : details) {
                 Article article = detail.getArticle();
@@ -224,7 +267,6 @@ public class SaleController {
                 articleRepository.save(article);
             }
 
-            // Eliminar detalles y venta
             saleDetailRepository.deleteAll(details);
             saleRepository.deleteById(id);
 
@@ -235,6 +277,11 @@ public class SaleController {
         return "redirect:/sales";
     }
 
+    /**
+     * Genera un reporte PDF con todas las ventas.
+     * @param response Respuesta HTTP para descarga del archivo.
+     * @throws IOException En caso de error de escritura.
+     */
     @GetMapping("/salereport")
     public void generateSaleReport(HttpServletResponse response) throws IOException {
         try {
@@ -262,6 +309,11 @@ public class SaleController {
         }
     }
 
+    /**
+     * Genera un reporte Excel con todas las ventas.
+     * @param response Respuesta HTTP para descarga del archivo.
+     * @throws IOException En caso de error de escritura.
+     */
     @GetMapping("/salereport/excel")
     public void generateSaleExcelReport(HttpServletResponse response) throws IOException {
         try {
@@ -290,7 +342,13 @@ public class SaleController {
         }
     }
 
-    // Métodos privados de utilidad
+    /**
+     * Calcula el subtotal de una venta.
+     * @param articleIds IDs de los artículos.
+     * @param quantities Cantidades por artículo.
+     * @param prices Precios unitarios.
+     * @return Subtotal calculado.
+     */
     private BigDecimal calculateSubTotal(List<Integer> articleIds, List<Integer> quantities, List<BigDecimal> prices) {
         BigDecimal subTotal = BigDecimal.ZERO;
         for (int i = 0; i < articleIds.size(); i++) {
@@ -302,6 +360,13 @@ public class SaleController {
         return subTotal;
     }
 
+    /**
+     * Procesa y guarda los detalles de una venta, actualizando el inventario.
+     * @param savedSale Venta guardada.
+     * @param articleIds IDs de artículos vendidos.
+     * @param quantities Cantidades vendidas.
+     * @param prices Precios unitarios.
+     */
     private void processSaleDetails(Sale savedSale, List<Integer> articleIds, List<Integer> quantities,
             List<BigDecimal> prices) {
         for (int i = 0; i < articleIds.size(); i++) {
@@ -321,7 +386,6 @@ public class SaleController {
 
             saleDetailRepository.save(saleDetail);
 
-            // Actualizar inventario
             article.setQuantity(article.getQuantity() - quantity);
             articleRepository.save(article);
         }
